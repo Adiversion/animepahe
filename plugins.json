@@ -1,10 +1,10 @@
 [
     {
         "iconUrl": "https://animepahe.pw/favicon.ico",
-        "fileHash": "sha256-b06a427fa51e2051734038126ce0f03c5f6a93930380649c8b607694ef71e4fc",
+        "fileHash": "sha256-c92f079ba4911cae36d84627fa2830a03bd4edac30ed013dbb8f96105f37c849",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/animepahe",
-        "fileSize": 32515,
+        "fileSize": 33336,
         "status": 1,
         "language": "en",
         "authors": [
@@ -15,7 +15,7 @@
             "Anime",
             "OVA"
         ],
-        "version": 2,
+        "version": 3,
         "internalName": "AnimePaheProvider",
         "description": "AnimePahe anime provider with Kwik and Pahe stream resolvers.",
         "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/AnimePaheProvider.cs3",
