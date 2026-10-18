@@ -80,7 +80,7 @@ subprojects {
         // https://github.com/recloudstream/cloudstream/blob/master/app/build.gradle.kts
         implementation(kotlin("stdlib")) // Adds Standard Kotlin Features
         implementation("com.github.Blatzar:NiceHttp:0.4.11") // HTTP Lib
-        compileOnly("com.squareup.okhttp3:okhttp:4.12.0") // OkHttp for Cookie and CookieJar
+        implementation("com.squareup.okhttp3:okhttp:4.12.0") // OkHttp for Cookie and CookieJar
         implementation("org.jsoup:jsoup:1.18.3") // HTML Parser
         // IMPORTANT: Do not bump Jackson above 2.13.1, as newer versions will
         // break compatibility on older Android devices.
