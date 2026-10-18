@@ -36,6 +36,9 @@ import com.lagradost.nicehttp.NiceResponse
 import com.lagradost.nicehttp.Requests
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Interceptor
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 import java.util.concurrent.CountDownLatch
@@ -118,14 +121,45 @@ class AnimePaheProvider : MainAPI() {
             return headers
         }
 
+        private val KEY_REGEX = Regex("""^#EXT-X-KEY:METHOD=AES-128,URI="([^"]+)"(?:\s*)$""")
+        private val SEGMENT_REGEX = Regex("""segment-(\d+)-""")
+
+        fun fixHlsAesSequenceIvs(m3u8: String): String {
+            var currentKeyUri: String? = null
+            val sb = java.lang.StringBuilder(m3u8.length)
+
+            for (line in m3u8.lines()) {
+                val trimmed = line.trim()
+                val keyMatch = KEY_REGEX.find(trimmed)
+                if (keyMatch != null) {
+                    currentKeyUri = keyMatch.groupValues[1]
+                    continue
+                }
+                if (currentKeyUri != null && !trimmed.startsWith("#") && trimmed.isNotBlank()) {
+                    val segMatch = SEGMENT_REGEX.find(trimmed)
+                    val segNum = segMatch?.groupValues?.getOrNull(1)?.toLongOrNull()
+                    if (segNum != null) {
+                        val ivHex = segNum.toString(16).padStart(32, '0')
+                        sb.append("""#EXT-X-KEY:METHOD=AES-128,URI="$currentKeyUri",IV=0x$ivHex""").append('\n')
+                    }
+                }
+                sb.append(line).append('\n')
+            }
+            return sb.toString().trimEnd()
+        }
+
         fun getImageHeaders(url: String? = null): Map<String, String> {
             val ua = cfUserAgent ?: USER_AGENT
             val host = url?.toHttpUrlOrNull()?.host ?: "animepahe.pw"
             val headers = mutableMapOf(
                 "User-Agent" to ua,
                 "Referer" to "$MAIN_URL/",
+                "Accept" to "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
                 "sec-ch-ua-mobile" to "?1",
-                "sec-ch-ua-platform" to "\"Android\""
+                "sec-ch-ua-platform" to "\"Android\"",
+                "Sec-Fetch-Dest" to "image",
+                "Sec-Fetch-Mode" to "no-cors",
+                "Sec-Fetch-Site" to "same-site"
             )
             val cookies = cfCookies ?: runCatching {
                 CookieManager.getInstance().getCookie("https://$host")
@@ -575,7 +609,7 @@ class AnimePaheProvider : MainAPI() {
     }
 
     override val mainPage = listOf(
-        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", false)
+        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", true)
     )
 
     // ── Data Models ──────────────────────────────────────────────────
@@ -689,7 +723,7 @@ class AnimePaheProvider : MainAPI() {
             HomePageList(
                 name = request.name,
                 list = items,
-                isHorizontalImages = false
+                isHorizontalImages = true
             ),
             hasNext = items.isNotEmpty()
         )
@@ -1007,4 +1041,36 @@ class AnimePaheProvider : MainAPI() {
 
         return true
     }
+
+    // ── Video Interceptor for HLS AES-128 Stream Decryption ───────────
+    override fun getVideoInterceptor(extractorLink: ExtractorLink): Interceptor? {
+        if (extractorLink.type != ExtractorLinkType.M3U8 && !extractorLink.url.contains(".m3u8")) {
+            return null
+        }
+        return Interceptor { chain ->
+            val request = chain.request()
+            val reqBuilder = request.newBuilder()
+            if (request.header("Referer").isNullOrBlank()) {
+                reqBuilder.header("Referer", "https://kwik.cx/")
+            }
+            val response = chain.proceed(reqBuilder.build())
+            if (!request.url.encodedPath.endsWith(".m3u8")) {
+                return@Interceptor response
+            }
+            val body = response.body ?: return@Interceptor response
+            val contentType = body.contentType()
+            val bodyStr = body.string()
+            if (bodyStr.contains("#EXT-X-KEY:METHOD=AES-128") && !bodyStr.contains(",IV=0x")) {
+                val fixed = fixHlsAesSequenceIvs(bodyStr)
+                response.newBuilder()
+                    .body(fixed.toByteArray(Charsets.UTF_8).toResponseBody(contentType))
+                    .build()
+            } else {
+                response.newBuilder()
+                    .body(bodyStr.toByteArray(Charsets.UTF_8).toResponseBody(contentType))
+                    .build()
+            }
+        }
+    }
 }
+
