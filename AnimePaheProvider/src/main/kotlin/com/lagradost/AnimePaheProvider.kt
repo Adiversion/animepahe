@@ -52,17 +52,9 @@ class AnimePaheProvider : MainAPI() {
         const val USER_AGENT =
             "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36"
 
-        val MIRRORS = listOf(
-            "https://animepahe.pw",
-            "https://animepahe.org",
-            "https://animepahe.com",
-            "https://animepahe.ru"
-        )
-
         var cfCookies: String? = null
         var cfUserAgent: String? = null
 
-        private val cfLock = Any()
         private var lastCfDialogAtMs = 0L
         private val isDialogShowing = AtomicBoolean(false)
 
@@ -173,12 +165,11 @@ class AnimePaheProvider : MainAPI() {
 
         fun fixImageUrl(url: String?, base: String = MAIN_URL): String? {
             if (url.isNullOrBlank()) return null
-            val fullUrl = when {
+            return when {
                 url.startsWith("//") -> "https:$url"
                 url.startsWith("/") -> "$base$url"
                 else -> url
             }
-            return fullUrl.replace(Regex("""\.sm(\.[a-zA-Z0-9]+)$"""), "$1")
         }
 
         fun syncCookiesToApp(appInstance: Requests, base: String = MAIN_URL) {
@@ -532,20 +523,8 @@ class AnimePaheProvider : MainAPI() {
             }
         }
 
-        val YTSM = Regex("ysmm = '([^']+)")
-        val KWIK_PARAMS_RE = Regex("""\("(\w+)",\d+,"(\w+)",(\d+),(\d+),\d+\)""")
-        val KWIK_D_URL = Regex("""action="([^"]+)"""")
-        val KWIK_D_TOKEN = Regex("""value="([^"]+)"""")
         val YOUTUBE_VIDEO_LINK =
             Regex("""(^(?:https?:)?(?://)?(?:www\.)?(?:youtu\.be/|youtube(?:-nocookie)?\.(?:[A-Za-z]{2,4}|[A-Za-z]{2,3}\.[A-Za-z]{2})/)(?:watch|embed/|vi?/)*(?:\?[\w=&]*vi?=)?[^#&?/]{11}.*$)""")
-
-        fun decodeBase64Safe(str: String): String {
-            return try {
-                String(Base64.decode(str, Base64.DEFAULT), Charsets.UTF_8)
-            } catch (e: Exception) {
-                str
-            }
-        }
     }
 
     override var mainUrl = MAIN_URL
@@ -621,6 +600,25 @@ class AnimePaheProvider : MainAPI() {
 
     data class MetaAnimeData(
         @JsonProperty("images") val images: List<MetaImage>? = null
+    )
+
+    data class AniListCoverImage(
+        @JsonProperty("extraLarge") val extraLarge: String? = null,
+        @JsonProperty("large") val large: String? = null
+    )
+
+    data class AniListMedia(
+        @JsonProperty("id") val id: Int? = null,
+        @JsonProperty("bannerImage") val bannerImage: String? = null,
+        @JsonProperty("coverImage") val coverImage: AniListCoverImage? = null
+    )
+
+    data class AniListData(
+        @JsonProperty("Media") val Media: AniListMedia? = null
+    )
+
+    data class AniListResponse(
+        @JsonProperty("data") val data: AniListData? = null
     )
 
     data class AiringItem(
@@ -896,13 +894,36 @@ class AnimePaheProvider : MainAPI() {
                 }
             }
 
+            if (fanartUrl == null || highResPosterUrl == null) {
+                runCatching {
+                    val cleanTitle = animeTitle.replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "").trim()
+                    val escapedTitle = cleanTitle.replace("\\", "\\\\").replace("\"", "\\\"")
+                    val query = """{"query":"query{Media(search:\"$escapedTitle\",type:ANIME){id bannerImage coverImage{extraLarge large}}}"}"""
+                    val resp = app.post(
+                        "https://graphql.anilist.co",
+                        data = query,
+                        headers = mapOf("Content-Type" to "application/json")
+                    ).parsedSafe<AniListResponse>()
+                    val media = resp?.data?.Media
+                    if (anilistId == null && media?.id != null) {
+                        anilistId = media.id
+                    }
+                    if (fanartUrl == null && !media?.bannerImage.isNullOrBlank()) {
+                        fanartUrl = media?.bannerImage
+                    }
+                    if (highResPosterUrl == null) {
+                        highResPosterUrl = media?.coverImage?.extraLarge ?: media?.coverImage?.large
+                    }
+                }
+            }
+
             val genres = doc.select(".anime-genre > ul a").map { it.text() }
 
             newAnimeLoadResponse(animeTitle, url, tvType) {
                 engName = animeTitle
                 japName = japTitle
                 this.posterUrl = highResPosterUrl ?: fixImageUrl(poster)
-                this.backgroundPosterUrl = fanartUrl ?: fixImageUrl(episodes.firstOrNull()?.posterUrl ?: poster)
+                this.backgroundPosterUrl = fanartUrl
                 this.posterHeaders = getImageHeaders(this.posterUrl)
                 this.year = year
                 addEpisodes(DubStatus.Subbed, episodes)
@@ -921,7 +942,7 @@ class AnimePaheProvider : MainAPI() {
         }
     }
 
-    // ── Kwik Stream Unpacker & Pahe Decryptor ──────────────────────────
+    // ── Kwik Stream Unpacker ──────────────────────────────────────────
     private suspend fun getStreamUrlFromKwik(kwikUrl: String): String? {
         val response = app.get(
             kwikUrl,
@@ -934,28 +955,6 @@ class AnimePaheProvider : MainAPI() {
         val unpacked = getAndUnpack(response)
         return Regex("""source='(.*?)'""").find(unpacked)?.groupValues?.get(1)
             ?: Regex("""(?:https?://[^\s'"<>]+\.(?:mp4|m3u8)[^\s'"<>]*)""").find(unpacked)?.value
-    }
-
-    private fun paheDecrypt(fullString: String, key: String, v1: Int, v2: Int): String? {
-        if (key.isEmpty() || v2 !in 2..36) return null
-        val keyIndexMap = key.withIndex().associate { it.value to it.index }
-        val toFind = key.getOrNull(v2) ?: return null
-        val sb = StringBuilder()
-        var i = 0
-        return runCatching {
-            while (i < fullString.length) {
-                val nextIndex = fullString.indexOf(toFind, i)
-                if (nextIndex == -1) break
-                var decodedCharStr = ""
-                for (j in i until nextIndex) {
-                    decodedCharStr += keyIndexMap[fullString[j]] ?: return null
-                }
-                if (decodedCharStr.isEmpty()) return null
-                sb.append((decodedCharStr.toInt(v2) - v1).toChar())
-                i = nextIndex + 1
-            }
-            sb.toString()
-        }.getOrNull()
     }
 
     // ── Load Links ────────────────────────────────────────────────────
