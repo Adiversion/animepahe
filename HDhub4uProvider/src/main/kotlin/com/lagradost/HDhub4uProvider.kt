@@ -18,6 +18,12 @@ class HDhub4uProvider : MainAPI() {
 
     companion object {
         const val DEFAULT_DOMAIN = "https://new8.hdhub4u.cl"
+        val OFFICIAL_HOST_ENDPOINTS = listOf(
+            "https://h4.suncdn.org/host/",
+            "https://points.topapii.com/host/",
+            "https://ml.theapii.org/host/",
+            "https://cdn.hub4u.cloud/host/"
+        )
         const val DOMAIN_SOURCE = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json"
         const val TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49"
         const val USER_AGENT =
@@ -39,10 +45,31 @@ class HDhub4uProvider : MainAPI() {
     )
 
     /**
-     * Synchronize with remote domain registry to survive frequent domain blocks/migrations.
+     * Synchronize with HDHub4u's official multi-CDN host discovery broadcaster
+     * with secondary fallback to remote domain registry.
      */
     private suspend fun syncDomain() {
         if (System.currentTimeMillis() - lastSyncTime < 3600000 && mainUrl != DEFAULT_DOMAIN) return
+
+        // 1. Query official HDHub4u live host endpoints
+        for (endpoint in OFFICIAL_HOST_ENDPOINTS) {
+            try {
+                val res = app.get(endpoint, timeout = 4).parsedSafe<HostResponse>()
+                val encodedDomain = res?.c
+                if (!encodedDomain.isNullOrBlank()) {
+                    val decoded = base64Decode(encodedDomain).substringBefore("?").removeSuffix("/")
+                    if (decoded.startsWith("http")) {
+                        mainUrl = decoded
+                        lastSyncTime = System.currentTimeMillis()
+                        return
+                    }
+                }
+            } catch (_: Throwable) {
+                // Try next endpoint in cluster
+            }
+        }
+
+        // 2. Secondary fallback: remote domain registry
         try {
             val res = app.get(DOMAIN_SOURCE, timeout = 5).parsedSafe<Map<String, String>>()
             res?.get("HDHUB4u")?.let { fresh ->
@@ -571,4 +598,11 @@ class HDhub4uProvider : MainAPI() {
         @JsonProperty("overview") val overview: String? = null,
         @JsonProperty("vote_average") val voteAverage: Double? = null
     )
+
+    data class HostResponse(
+        @JsonProperty("h") val h: String? = null,
+        @JsonProperty("c") val c: String? = null,
+        @JsonProperty("t") val t: Long? = null
+    )
 }
+
