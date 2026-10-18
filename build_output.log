@@ -30,10 +30,10 @@ Fetching JAR: cloudstream.jar
 > Task :HDhub4uProvider:generateDebugResValues
 > Task :HDhub4uProvider:generateDebugResources
 > Task :HDhub4uProvider:packageDebugResources
-> Task :HDhub4uProvider:parseDebugLocalResources
 > Task :AnimePaheProvider:parseDebugLocalResources
-> Task :HDhub4uProvider:generateDebugRFile
+> Task :HDhub4uProvider:parseDebugLocalResources
 > Task :AnimePaheProvider:generateDebugRFile
+> Task :HDhub4uProvider:generateDebugRFile
 
 > Task :HDhub4uProvider:compileDebugKotlin
 w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:500:25 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
@@ -1043,5 +1043,5 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/AnimePaheP
 > Task :makePluginsJson
 Created /home/runner/work/animepahe/animepahe/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 34s
+BUILD SUCCESSFUL in 1m 33s
 21 actionable tasks: 21 executed
