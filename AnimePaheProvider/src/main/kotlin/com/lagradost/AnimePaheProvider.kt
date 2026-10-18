@@ -96,6 +96,7 @@ class AnimePaheProvider : MainAPI() {
                 android.util.Log.e("AnimePahe", "No active Activity found for Cloudflare verification")
                 return null
             }
+            cfCookies = null
             val latch = CountDownLatch(1)
             var solvedCookies: String? = null
             val handler = Handler(Looper.getMainLooper())
@@ -195,7 +196,22 @@ class AnimePaheProvider : MainAPI() {
                     webView.settings.userAgentString = sanitizedUa
                     cfUserAgent = sanitizedUa
 
+                    fun isChallenge(title: String?): Boolean {
+                        if (title.isNullOrBlank()) return true
+                        val lower = title.lowercase()
+                        return lower.contains("just a moment") ||
+                               lower.contains("attention required") ||
+                               lower.contains("cloudflare") ||
+                               lower.contains("security check")
+                    }
+
                     fun checkForClearance(url: String?) {
+                        val title = webView.title ?: ""
+                        // While Cloudflare challenge is active ("Just a moment..."), do NOT dismiss! Wait for user to complete it.
+                        if (isChallenge(title)) {
+                            return
+                        }
+
                         val domains = listOf(
                             url ?: targetUrl,
                             "https://animepahe.pw/",
@@ -236,11 +252,6 @@ class AnimePaheProvider : MainAPI() {
                             super.onPageFinished(view, url)
                             checkForClearance(url)
                         }
-
-                        override fun onLoadResource(view: WebView?, url: String?) {
-                            super.onLoadResource(view, url)
-                            checkForClearance(url)
-                        }
                     }
 
                     val checkRunnable = object : Runnable {
@@ -257,11 +268,14 @@ class AnimePaheProvider : MainAPI() {
                     dialog.setOnDismissListener {
                         handler.removeCallbacks(checkRunnable)
                         if (latch.count > 0) {
-                            val finalCookies = cookieManager.getCookie(targetUrl)
-                            if (finalCookies?.contains("cf_clearance") == true) {
-                                cfCookies = finalCookies
-                                solvedCookies = finalCookies
-                                cfUserAgent = webView.settings.userAgentString
+                            val title = webView.title ?: ""
+                            if (!isChallenge(title)) {
+                                val finalCookies = cookieManager.getCookie(targetUrl)
+                                if (finalCookies?.contains("cf_clearance") == true) {
+                                    cfCookies = finalCookies
+                                    solvedCookies = finalCookies
+                                    cfUserAgent = webView.settings.userAgentString
+                                }
                             }
                             latch.countDown()
                         }
