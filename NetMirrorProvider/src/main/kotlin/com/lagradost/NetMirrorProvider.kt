@@ -257,6 +257,7 @@ class NetMirrorProvider : MainAPI() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override suspend fun loadLinks(
         data: String,
         isCasting: Boolean,
@@ -311,7 +312,8 @@ class NetMirrorProvider : MainAPI() {
                                 name = "NetMirror [${resP}p Direct]",
                                 url = stUrl,
                                 referer = "$gw/",
-                                quality = qual
+                                quality = qual,
+                                type = ExtractorLinkType.VIDEO
                             )
                         )
                     }
