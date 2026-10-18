@@ -542,10 +542,19 @@ class AnimePaheProvider : MainAPI() {
     }
 
     override val mainPage = listOf(
-        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", true)
+        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", false)
     )
 
     // ── Data Models ──────────────────────────────────────────────────
+    data class MetaImage(
+        @JsonProperty("coverType") val coverType: String?,
+        @JsonProperty("url") val url: String?
+    )
+
+    data class MetaAnimeData(
+        @JsonProperty("images") val images: List<MetaImage>? = null
+    )
+
     data class AiringItem(
         @JsonProperty("anime_title") val animeTitle: String,
         @JsonProperty("episode") val episode: Int?,
@@ -646,7 +655,7 @@ class AnimePaheProvider : MainAPI() {
             HomePageList(
                 name = request.name,
                 list = items,
-                isHorizontalImages = true
+                isHorizontalImages = false
             ),
             hasNext = items.isNotEmpty()
         )
@@ -794,13 +803,36 @@ class AnimePaheProvider : MainAPI() {
                 }
             }
 
+            var fanartUrl: String? = null
+            var highResPosterUrl: String? = null
+
+            val aniZipUrl = when {
+                anilistId != null -> "https://api.ani.zip/mappings?anilist_id=$anilistId"
+                malId != null -> "https://api.ani.zip/mappings?mal_id=$malId"
+                else -> null
+            }
+
+            if (aniZipUrl != null) {
+                runCatching {
+                    val meta = app.get(aniZipUrl).parsedSafe<MetaAnimeData>()
+                    fanartUrl = meta?.images?.firstOrNull { 
+                        it.coverType.equals("Fanart", ignoreCase = true) || 
+                        it.coverType.equals("Banner", ignoreCase = true) ||
+                        it.coverType.equals("Background", ignoreCase = true)
+                    }?.url
+                    highResPosterUrl = meta?.images?.firstOrNull { 
+                        it.coverType.equals("Poster", ignoreCase = true) 
+                    }?.url
+                }
+            }
+
             val genres = doc.select(".anime-genre > ul a").map { it.text() }
 
             newAnimeLoadResponse(animeTitle, url, tvType) {
                 engName = animeTitle
                 japName = japTitle
-                this.posterUrl = fixImageUrl(poster)
-                this.backgroundPosterUrl = fixImageUrl(episodes.firstOrNull()?.posterUrl ?: poster)
+                this.posterUrl = highResPosterUrl ?: fixImageUrl(poster)
+                this.backgroundPosterUrl = fanartUrl ?: fixImageUrl(episodes.firstOrNull()?.posterUrl ?: poster)
                 this.posterHeaders = getImageHeaders()
                 this.year = year
                 addEpisodes(DubStatus.Subbed, episodes)
