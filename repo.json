@@ -1,0 +1,9 @@
+{
+  "name": "AnimePahe",
+  "iconUrl": "https://animepahe.pw/favicon.ico",
+  "description": "AnimePahe anime provider with Kwik and Pahe stream resolvers.",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/Adiversion/animepahe/builds/plugins.json"
+  ]
+}
