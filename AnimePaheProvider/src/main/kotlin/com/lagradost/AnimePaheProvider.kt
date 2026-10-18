@@ -3,7 +3,6 @@ package com.lagradost
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
@@ -21,7 +20,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -36,18 +34,13 @@ import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import com.lagradost.nicehttp.NiceResponse
 import com.lagradost.nicehttp.Requests
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.Jsoup
 import java.net.URLEncoder
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.coroutines.resume
 
 class AnimePaheProvider : MainAPI() {
 
@@ -66,8 +59,8 @@ class AnimePaheProvider : MainAPI() {
         var cfCookies: String? = null
         var cfUserAgent: String? = null
 
-        private val cfMutex = Mutex()
-        private var lastCfDialogAtMs: Long = 0L
+        private val cfLock = Any()
+        private var lastCfDialogAtMs = 0L
         private val isDialogShowing = AtomicBoolean(false)
 
         val CHALLENGE_TITLES = listOf(
@@ -261,29 +254,25 @@ class AnimePaheProvider : MainAPI() {
         }
 
         @SuppressLint("SetJavaScriptEnabled")
-        suspend fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/api?m=airing&page=1"): Boolean = withContext(Dispatchers.Main) {
+        fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/api?m=airing&page=1"): Boolean {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                return false
+            }
             val activity = CommonActivity.activity ?: getActivity()
             if (activity == null || activity.isFinishing || activity.isDestroyed) {
                 Log.e("AnimePahe", "No active Activity found for Cloudflare verification")
-                return@withContext false
+                return false
             }
 
             if (!isDialogShowing.compareAndSet(false, true)) {
                 Log.d("AnimePahe", "Verification dialog already in progress")
-                return@withContext false
+                return false
             }
 
-            suspendCancellableCoroutine { continuation ->
-                val resumed = AtomicBoolean(false)
-                fun safeResume(success: Boolean) {
-                    if (resumed.compareAndSet(false, true)) {
-                        isDialogShowing.set(false)
-                        if (continuation.isActive) {
-                            continuation.resume(success)
-                        }
-                    }
-                }
+            val latch = CountDownLatch(1)
+            var success = false
 
+            activity.runOnUiThread {
                 try {
                     val density = activity.resources.displayMetrics.density
 
@@ -418,7 +407,8 @@ class AnimePaheProvider : MainAPI() {
                         statusText.setTextColor(Color.parseColor("#4CAF50"))
                         progressBar.visibility = View.GONE
 
-                        safeResume(true)
+                        success = true
+                        latch.countDown()
 
                         handler.postDelayed({
                             runCatching {
@@ -447,7 +437,7 @@ class AnimePaheProvider : MainAPI() {
 
                             if (pollElapsedMs >= 60_000L) {
                                 Log.w("AnimePahe", "Turnstile verification timed out after 60s")
-                                safeResume(false)
+                                latch.countDown()
                                 runCatching { if (dialog.isShowing) dialog.dismiss() }
                                 return
                             }
@@ -479,21 +469,14 @@ class AnimePaheProvider : MainAPI() {
 
                     dialog.setOnDismissListener {
                         handler.removeCallbacks(cookiePollRunnable)
+                        isDialogShowing.set(false)
                         if (!cookiesSaved) {
                             val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
                             val finalTitle = webView.title ?: ""
                             if (hasClearance(finalCookies) && !isChallengeTitle(finalTitle)) {
                                 saveCookiesAndDismiss(finalCookies)
                             } else {
-                                safeResume(false)
-                            }
-                        }
-                    }
-
-                    continuation.invokeOnCancellation {
-                        runCatching {
-                            if (dialog.isShowing) {
-                                dialog.dismiss()
+                                latch.countDown()
                             }
                         }
                     }
@@ -504,9 +487,16 @@ class AnimePaheProvider : MainAPI() {
 
                 } catch (e: Throwable) {
                     Log.e("AnimePahe", "Failed to display verification dialog: ${e.message}")
-                    safeResume(false)
+                    isDialogShowing.set(false)
+                    latch.countDown()
                 }
             }
+
+            try {
+                latch.await(65, TimeUnit.SECONDS)
+            } catch (_: InterruptedException) {}
+
+            return success
         }
 
         private fun getType(t: String): TvType {
@@ -547,7 +537,7 @@ class AnimePaheProvider : MainAPI() {
 
     private suspend fun fetchWithCloudflare(url: String): String {
         Log.d("AnimePahe", "fetchWithCloudflare: GET $url")
-        // 1. Fast path: direct attempt with active cookies
+        // 1. Fast check with active cookies
         val initial = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
         if (initial != null && !isBlocked(initial)) {
             return initial.text
@@ -555,23 +545,26 @@ class AnimePaheProvider : MainAPI() {
 
         Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Acquiring lock for verification...")
 
-        // 2. Thread synchronization: only ONE coroutine shows the verification dialog
-        return cfMutex.withLock {
-            // Re-check inside lock: previous thread might have already solved Cloudflare
-            val recheck = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
-            if (recheck != null && !isBlocked(recheck)) {
-                Log.d("AnimePahe", "Verification already resolved by previous task (200 OK)")
-                return@withLock recheck.text
+        // 2. Synchronized lock to prevent concurrent dialogs
+        synchronized(cfLock) {
+            // Re-check: did previous thread already solve it?
+            val cookies = cfCookies ?: CookieManager.getInstance().getCookie(MAIN_URL)
+            if (hasClearance(cookies)) {
+                val recheck = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
+                if (recheck != null && !isBlocked(recheck)) {
+                    Log.d("AnimePahe", "Verification already resolved by previous thread (200 OK)")
+                    return recheck.text
+                }
             }
 
-            // Throttling: avoid rapid dialog restarts within 5 seconds
+            // Throttle
             val now = System.currentTimeMillis()
-            if (now - lastCfDialogAtMs < 5000L) {
-                Log.d("AnimePahe", "Dialog recently shown, throttling retry...")
-                delay(1500L)
+            if (now - lastCfDialogAtMs < 4000L) {
+                Log.d("AnimePahe", "Throttling rapid dialog creation")
+                try { Thread.sleep(1500L) } catch (_: InterruptedException) {}
                 val throttledRetry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
                 if (throttledRetry != null && !isBlocked(throttledRetry)) {
-                    return@withLock throttledRetry.text
+                    return throttledRetry.text
                 }
             }
             lastCfDialogAtMs = now
@@ -585,7 +578,7 @@ class AnimePaheProvider : MainAPI() {
             val retry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
             if (retry != null && !isBlocked(retry)) {
                 CommonActivity.showToast("Verification successful!")
-                return@withLock retry.text
+                return retry.text
             }
 
             throw ErrorLoadingException("Cloudflare challenge encountered. Please complete the verification checkmark.")
