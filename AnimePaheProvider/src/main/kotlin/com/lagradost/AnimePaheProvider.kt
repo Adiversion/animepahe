@@ -74,9 +74,15 @@ class AnimePaheProvider : MainAPI() {
             return CHALLENGE_TITLES.any { t.contains(it) }
         }
 
+        fun extractClearanceToken(cookies: String?): String? {
+            if (cookies.isNullOrBlank()) return null
+            val match = Regex("""cf_clearance=([^;]+)""").find(cookies)
+            val token = match?.groupValues?.get(1)?.trim()
+            return if (!token.isNullOrBlank() && token != ";") token else null
+        }
+
         fun hasClearance(cookies: String?): Boolean {
-            if (cookies.isNullOrBlank()) return false
-            return cookies.contains("cf_clearance=") && !cookies.contains("cf_clearance=;")
+            return extractClearanceToken(cookies) != null
         }
 
         fun isBlocked(response: NiceResponse): Boolean {
@@ -274,7 +280,7 @@ class AnimePaheProvider : MainAPI() {
 
 
         @SuppressLint("SetJavaScriptEnabled")
-        fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/api?m=airing&page=1"): Boolean {
+        fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/"): Boolean {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 return false
             }
@@ -288,6 +294,10 @@ class AnimePaheProvider : MainAPI() {
                 Log.d("AnimePahe", "Verification dialog already in progress")
                 return false
             }
+
+            val initialCookies = extractMergedCookies(targetUrl)
+            val oldClearance = extractClearanceToken(initialCookies)
+            Log.d("AnimePahe", "solveCloudflare start: oldClearance present=${oldClearance != null}")
 
             val latch = CountDownLatch(1)
             var success = false
@@ -440,20 +450,32 @@ class AnimePaheProvider : MainAPI() {
                         }, 500L)
                     }
 
+                    fun checkClearanceAndDismissIfValid(url: String?) {
+                        if (cookiesSaved || !dialog.isShowing) return
+                        val currentCookies = extractMergedCookies(url ?: targetUrl)
+                        val currentClearance = extractClearanceToken(currentCookies)
+                        val currentTitle = webView.title ?: ""
+
+                        val isFreshClearance = when {
+                            oldClearance != null -> currentClearance != null && currentClearance != oldClearance
+                            else -> currentClearance != null
+                        }
+
+                        if (isFreshClearance && !isChallengeTitle(currentTitle)) {
+                            Log.d("AnimePahe", "Fresh clearance confirmed! Dismissing dialog...")
+                            saveCookiesAndDismiss(currentCookies)
+                        }
+                    }
+
                     val cookiePollRunnable = object : Runnable {
                         override fun run() {
                             if (cookiesSaved || !dialog.isShowing) return
                             pollElapsedMs += 800L
-                            val currentCookies = extractMergedCookies(webView.url ?: targetUrl)
                             val currentTitle = webView.title ?: ""
 
                             Log.d("AnimePahe", "Poll [${pollElapsedMs}ms] title='$currentTitle'")
 
-                            if (hasClearance(currentCookies) && !isChallengeTitle(currentTitle)) {
-                                Log.d("AnimePahe", "Clearance confirmed! Saving cookies and dismissing dialog...")
-                                saveCookiesAndDismiss(currentCookies)
-                                return
-                            }
+                            checkClearanceAndDismissIfValid(webView.url)
 
                             if (pollElapsedMs >= 60_000L) {
                                 Log.w("AnimePahe", "Turnstile verification timed out after 60s")
@@ -477,6 +499,7 @@ class AnimePaheProvider : MainAPI() {
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
                             progressBar.visibility = View.GONE
+                            checkClearanceAndDismissIfValid(url)
                         }
                     }
 
@@ -488,8 +511,13 @@ class AnimePaheProvider : MainAPI() {
                         isDialogShowing.set(false)
                         if (!cookiesSaved) {
                             val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
+                            val finalClearance = extractClearanceToken(finalCookies)
                             val finalTitle = webView.title ?: ""
-                            if (hasClearance(finalCookies) && !isChallengeTitle(finalTitle)) {
+                            val isFresh = when {
+                                oldClearance != null -> finalClearance != null && finalClearance != oldClearance
+                                else -> finalClearance != null
+                            }
+                            if (isFresh && !isChallengeTitle(finalTitle)) {
                                 saveCookiesAndDismiss(finalCookies)
                             } else {
                                 latch.countDown()
@@ -499,7 +527,7 @@ class AnimePaheProvider : MainAPI() {
 
                     webView.loadUrl(targetUrl)
                     dialog.show()
-                    handler.postDelayed(cookiePollRunnable, 800L)
+                    handler.postDelayed(cookiePollRunnable, 1500L)
 
                 } catch (e: Throwable) {
                     Log.e("AnimePahe", "Failed to display verification dialog: ${e.message}")
@@ -567,7 +595,7 @@ class AnimePaheProvider : MainAPI() {
             if (now - lastCfDialogAtMs > 3000L) {
                 lastCfDialogAtMs = now
                 CommonActivity.showToast("Opening AnimePahe Verification...")
-                val targetUrl = "$mainUrl/api?m=airing&page=1"
+                val targetUrl = "$mainUrl/"
                 val solved = solveCloudflare(app, targetUrl)
                 Log.d("AnimePahe", "CF bypass dialog completed with result: $solved")
             } else {
