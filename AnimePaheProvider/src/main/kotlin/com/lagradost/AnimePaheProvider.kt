@@ -1,6 +1,20 @@
 package com.lagradost
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Dialog
+import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.util.Base64
+import android.view.Gravity
+import android.view.ViewGroup
+import android.webkit.CookieManager
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.APIHolder.unixTime
@@ -10,8 +24,8 @@ import com.lagradost.cloudstream3.LoadResponse.Companion.addTrailer
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
-import com.lagradost.nicehttp.NiceResponse
-import com.lagradost.cloudstream3.network.WebViewResolver
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeoutOrNull
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 import kotlin.math.pow
@@ -20,6 +34,8 @@ class AnimePaheProvider : MainAPI() {
 
     companion object {
         const val MAIN_URL = "https://animepahe.pw"
+        const val USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36"
 
         val MIRRORS = listOf(
             "https://animepahe.pw",
@@ -28,7 +44,186 @@ class AnimePaheProvider : MainAPI() {
             "https://animepahe.ru"
         )
 
-        var cookies: Map<String, String> = mapOf("__ddg2_" to "1234567890")
+        var cfCookies: String? = null
+
+        fun getHeaders(base: String = MAIN_URL): Map<String, String> {
+            val headers = mutableMapOf(
+                "User-Agent" to USER_AGENT,
+                "Accept" to "application/json, text/javascript, */*; q=0.01",
+                "Accept-Language" to "en-US,en;q=0.9",
+                "Referer" to "$base/",
+                "X-Requested-With" to "XMLHttpRequest"
+            )
+            val cookies = cfCookies ?: runCatching {
+                CookieManager.getInstance().getCookie(base)
+            }.getOrNull()
+            if (!cookies.isNullOrBlank()) {
+                headers["Cookie"] = cookies
+            }
+            return headers
+        }
+
+        private fun getActivity(): Activity? {
+            return CommonActivity.activity ?: runCatching {
+                val activityThreadClass = Class.forName("android.app.ActivityThread")
+                val currentActivityThreadMethod = activityThreadClass.getMethod("currentActivityThread")
+                val activityThread = currentActivityThreadMethod.invoke(null)
+                val mActivitiesField = activityThreadClass.getDeclaredField("mActivities").apply { isAccessible = true }
+                val activities = mActivitiesField.get(activityThread) as? Map<*, *>
+                activities?.values?.firstNotNullOfOrNull { record ->
+                    val pausedField = record.javaClass.getDeclaredField("paused").apply { isAccessible = true }
+                    val isPaused = pausedField.getBoolean(record)
+                    if (!isPaused) {
+                        val activityField = record.javaClass.getDeclaredField("activity").apply { isAccessible = true }
+                        activityField.get(record) as? Activity
+                    } else null
+                }
+            }.getOrNull()
+        }
+
+        @SuppressLint("SetJavaScriptEnabled")
+        suspend fun solveCloudflare(targetUrl: String = MAIN_URL): String? {
+            val activity = getActivity() ?: return null
+            val deferred = CompletableDeferred<String?>()
+            val handler = Handler(Looper.getMainLooper())
+
+            handler.post {
+                try {
+                    val dialog = Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+
+                    val layout = LinearLayout(activity).apply {
+                        orientation = LinearLayout.VERTICAL
+                        setBackgroundColor(Color.parseColor("#121212"))
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                    }
+
+                    // Top Header Bar
+                    val topBar = LinearLayout(activity).apply {
+                        orientation = LinearLayout.HORIZONTAL
+                        setBackgroundColor(Color.parseColor("#1E1E1E"))
+                        setPadding(32, 24, 32, 24)
+                        gravity = Gravity.CENTER_VERTICAL
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                    }
+
+                    val titleText = TextView(activity).apply {
+                        text = "AnimePahe Cloudflare Verification"
+                        setTextColor(Color.WHITE)
+                        textSize = 16f
+                        layoutParams = LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1f
+                        )
+                    }
+
+                    val closeButton = Button(activity).apply {
+                        text = "Close"
+                        setTextColor(Color.LTGRAY)
+                        setBackgroundColor(Color.TRANSPARENT)
+                        setOnClickListener {
+                            dialog.dismiss()
+                        }
+                    }
+
+                    topBar.addView(titleText)
+                    topBar.addView(closeButton)
+                    layout.addView(topBar)
+
+                    val infoText = TextView(activity).apply {
+                        text = "Please complete the verification checkmark below. This window will close automatically."
+                        setTextColor(Color.parseColor("#9E9E9E"))
+                        textSize = 12f
+                        setPadding(32, 16, 32, 16)
+                    }
+                    layout.addView(infoText)
+
+                    val webView = WebView(activity).apply {
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                        )
+                    }
+
+                    val cookieManager = CookieManager.getInstance()
+                    cookieManager.setAcceptCookie(true)
+                    cookieManager.setAcceptThirdPartyCookies(webView, true)
+
+                    fun checkForClearance(url: String?) {
+                        val currentCookies = cookieManager.getCookie(url ?: targetUrl) ?: ""
+                        if (currentCookies.contains("cf_clearance")) {
+                            cfCookies = currentCookies
+                            if (deferred.isActive) {
+                                deferred.complete(currentCookies)
+                            }
+                            handler.post {
+                                runCatching { dialog.dismiss() }
+                            }
+                        }
+                    }
+
+                    webView.settings.apply {
+                        javaScriptEnabled = true
+                        domStorageEnabled = true
+                        databaseEnabled = true
+                        useWideViewPort = true
+                        loadWithOverviewMode = true
+                        userAgentString = USER_AGENT
+                    }
+
+                    webView.webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            super.onPageFinished(view, url)
+                            checkForClearance(url)
+                        }
+
+                        override fun onLoadResource(view: WebView?, url: String?) {
+                            super.onLoadResource(view, url)
+                            checkForClearance(url)
+                        }
+                    }
+
+                    val checkRunnable = object : Runnable {
+                        override fun run() {
+                            if (deferred.isActive) {
+                                checkForClearance(targetUrl)
+                                handler.postDelayed(this, 1000L)
+                            }
+                        }
+                    }
+                    handler.postDelayed(checkRunnable, 1000L)
+
+                    dialog.setContentView(layout)
+                    dialog.setOnDismissListener {
+                        handler.removeCallbacks(checkRunnable)
+                        if (deferred.isActive) {
+                            val finalCookies = cookieManager.getCookie(targetUrl)
+                            if (finalCookies?.contains("cf_clearance") == true) {
+                                cfCookies = finalCookies
+                                deferred.complete(finalCookies)
+                            } else {
+                                deferred.complete(null)
+                            }
+                        }
+                    }
+
+                    webView.loadUrl(targetUrl)
+                    dialog.show()
+                } catch (e: Throwable) {
+                    deferred.complete(null)
+                }
+            }
+
+            return withTimeoutOrNull(75_000L) {
+                deferred.await()
+            }
+        }
 
         private fun getType(t: String): TvType {
             return when {
@@ -67,6 +262,7 @@ class AnimePaheProvider : MainAPI() {
     )
 
     private suspend fun fetchWithCloudflare(url: String): String {
+        // 1. Try direct request with current cookies
         val direct = try {
             app.get(url, headers = getHeaders())
         } catch (e: Throwable) {
@@ -77,25 +273,18 @@ class AnimePaheProvider : MainAPI() {
             return direct.text
         }
 
-        // Resolve Turnstile in-app via CloudStream's internal WebViewResolver
-        val resolver = WebViewResolver(
-            interceptUrl = Regex(""".*animepahe\.pw/api.*"""),
-            useOkhttp = false,
-            timeout = 30_000L
-        )
-
-        val webResponse = app.get(url, headers = getHeaders(), interceptor = resolver)
-        if (webResponse.text.contains("Just a moment...") || webResponse.text.contains("challenges.cloudflare.com")) {
-            throw ErrorLoadingException("Cloudflare challenge encountered. Please retry in a moment.")
+        // 2. If blocked, open in-app visual WebView dialog for interactive Cloudflare verification
+        val solvedCookie = solveCloudflare(MAIN_URL)
+        if (!solvedCookie.isNullOrBlank()) {
+            val retry = app.get(url, headers = getHeaders())
+            if (retry.code == 200 && !retry.text.contains("Just a moment...") && !retry.text.contains("challenges.cloudflare.com")) {
+                return retry.text
+            }
         }
-        return webResponse.text
+
+        throw ErrorLoadingException("Cloudflare challenge encountered. Please complete the verification checkmark.")
     }
 
-    private fun getHeaders(base: String = mainUrl): Map<String, String> = mapOf(
-        "Accept-Language" to "en-US,en;q=0.9",
-        "Referer" to "$base/",
-        "X-Requested-With" to "XMLHttpRequest"
-    )
 
     override val mainPage = listOf(
         MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", true)
@@ -171,7 +360,7 @@ class AnimePaheProvider : MainAPI() {
                 val url = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=$page"
                 val jsonResponse = app.get(
                     url,
-                    headers = mapOf("Referer" to "$mainUrl/", "X-Requested-With" to "XMLHttpRequest")
+                    headers = getHeaders(mainUrl)
                 ).parsedSafe<AnimePaheReleaseResponse>() ?: return null
                 val epSession = jsonResponse.data.firstOrNull { it.episode == episodeNum }?.session
                     ?: return null
@@ -306,7 +495,7 @@ class AnimePaheProvider : MainAPI() {
                 }
             } ?: return null
 
-            val pageHtml = app.get("$mainUrl/anime/$session", headers = getHeaders()).text
+            val pageHtml = fetchWithCloudflare("$mainUrl/anime/$session")
             val doc = Jsoup.parse(pageHtml)
 
             val japTitle = doc.selectFirst("h2.japanese")?.text()
@@ -373,7 +562,10 @@ class AnimePaheProvider : MainAPI() {
     private suspend fun getStreamUrlFromKwik(kwikUrl: String): String? {
         val response = app.get(
             kwikUrl,
-            headers = mapOf("Referer" to "$mainUrl/")
+            headers = mapOf(
+                "User-Agent" to USER_AGENT,
+                "Referer" to "$mainUrl/"
+            )
         ).text
 
         val unpacked = getAndUnpack(response)
@@ -413,7 +605,7 @@ class AnimePaheProvider : MainAPI() {
         val parsed = parseJson<LinkLoadData>(data)
         val episodeUrl = parsed.getUrl() ?: return false
 
-        val html = app.get(episodeUrl, headers = getHeaders()).text
+        val html = fetchWithCloudflare(episodeUrl)
         val doc = Jsoup.parse(html)
 
         // 1. Resolution menu buttons (#resolutionMenu button[data-src])
