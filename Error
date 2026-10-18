@@ -1,375 +1,915 @@
 --------- beginning of main
-10-18 19:50:21.958 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:21.958 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:23.041 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22383984, downTime=22383984, phoneEventTime=19:50:23.036 } moveCount:0
+10-18 20:05:46.708 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:46.708 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:48.302 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23309245, downTime=23309245, phoneEventTime=20:05:48.297 } moveCount:0
 --------- beginning of system
-10-18 19:50:23.041 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:23.128 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22384073, downTime=22383984, phoneEventTime=19:50:23.125 } moveCount:0
-10-18 19:50:23.141 13655 13655 I ImeTracker: com.lagradost.cloudstream3:f086f916: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 19:50:23.174 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:23.180 13655 20857 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
-10-18 19:50:23.183 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:23.192 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:23.193 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:23.200 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:23.201 13655 13655 D AutofillManager: view not autofillable - not passing ime action check
-10-18 19:50:23.361 13655 20857 W AnimePahe: Request blocked (code=403). Purging stale cookies and acquiring lock...
-10-18 19:50:23.362 13655 13655 I COMPACT : showToast = Opening AnimePahe Verification...
-10-18 19:50:23.365 13655 13655 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
-10-18 19:50:23.406 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:23.416 13655 13655 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
-10-18 19:50:23.422 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 19:50:23.422 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 19:50:23.419 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10562): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:23.419 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10563): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:23.422 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 19:50:23.422 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 19:50:23.422 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 19:50:23.423 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:23.423 13655 21198 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 19:50:23.424 13655 13655 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 19:50:23.424 13655 13655 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#18
-10-18 19:50:23.435 13655 13655 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 19:50:23.444 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:23.452 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:23.463 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10564): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:23.463 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10565): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:23.467 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 19:50:23.467 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 19:50:23.467 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 19:50:23.467 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 19:50:23.467 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 19:50:23.468 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:23.468 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 19:50:23.469 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#20
-10-18 19:50:23.469 13655 21199 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 19:50:23.471 13655 13655 D VRI[Toast]: vri.reportDrawFinished
-10-18 19:50:23.496 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
-10-18 19:50:23.498 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:23.498 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:23.504 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#22
-10-18 19:50:23.507 13655 13655 D VRI[Toast]: vri.reportDrawFinished
-10-18 19:50:23.527 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.534 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.544 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.551 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.601 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.610 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.618 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.627 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.635 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.644 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.652 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.659 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.669 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.676 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.685 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.693 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.702 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.709 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.718 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.727 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.735 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.744 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.752 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.762 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.769 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.818 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.827 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.835 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.843 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.851 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.861 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.868 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.877 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.885 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.894 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.902 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.910 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.919 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.927 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.936 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.944 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.952 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.960 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:23.968 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.018 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.027 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.034 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.043 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.052 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.060 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.067 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.075 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.084 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.093 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.100 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.109 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.118 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.126 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.134 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.142 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.151 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.160 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.167 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.218 13655 13655 D AnimePahe: Poll [800ms] title='animepahe.pw/api?m=airing&page=1'
-10-18 19:50:24.218 13655 13655 D AnimePahe: Clearance confirmed! Saving cookies and dismissing dialog...
-10-18 19:50:24.274 13655 20857 D AnimePahe: CF bypass dialog completed with result: true
-10-18 19:50:24.294 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.302 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.310 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.317 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.326 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.334 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.342 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.351 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.360 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.369 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.427 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.435 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.442 13655 20857 D ApiError: -------------------------------------------------------------------
-10-18 19:50:24.442 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
-10-18 19:50:24.442 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
-10-18 19:50:24.442 13655 20857 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
-10-18 19:50:24.442 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:588)
-10-18 19:50:24.442 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:48)
-10-18 19:50:24.442 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-10-18 19:50:24.442 13655 20857 D ApiError: -------------------------------------------------------------------
-10-18 19:50:24.444 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.452 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.460 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.468 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.476 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.485 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.493 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.502 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.510 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.518 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.526 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.535 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.544 13655 20808 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.552 13655 20988 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:24.775 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@9929ea4
-10-18 19:50:24.788 13655 13655 D DecorViewImmersiveImpl: onDetachedFromWindow
-10-18 19:50:24.823 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:24.823 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:25.373 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@dc22a3b
-10-18 19:50:25.973 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22386918, downTime=22386918, phoneEventTime=19:50:25.970 } moveCount:0
-10-18 19:50:25.973 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:26.040 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22386986, downTime=22386918, phoneEventTime=19:50:26.038 } moveCount:0
-10-18 19:50:26.047 13655 13655 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
-10-18 19:50:26.048 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:26.070 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:26.077 13655 13655 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
-10-18 19:50:26.077 13655 13655 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
-10-18 19:50:26.077 13655 13655 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
-10-18 19:50:26.083 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10566): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:26.087 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10567): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:26.088 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 19:50:26.088 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 19:50:26.088 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 19:50:26.088 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 19:50:26.088 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 19:50:26.089 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:26.089 13655 21213 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 19:50:26.092 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:26.099 13655 13655 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 19:50:26.099 13655 13655 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#24
-10-18 19:50:26.106 13655 13655 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 19:50:26.145 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:26.145 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:26.913 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22387858, downTime=22387858, phoneEventTime=19:50:26.910 } moveCount:0
-10-18 19:50:26.913 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:26.977 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22387923, downTime=22387858, phoneEventTime=19:50:26.975 } moveCount:0
-10-18 19:50:26.981 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@a99b751
-10-18 19:50:26.982 13655 20857 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
-10-18 19:50:26.983 13655 13655 D DecorViewImmersiveImpl: onDetachedFromWindow
-10-18 19:50:26.995 13655 13655 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
-10-18 19:50:27.012 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:27.012 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:27.205 13655 20857 W AnimePahe: Request blocked (code=403). Purging stale cookies and acquiring lock...
-10-18 19:50:27.205 13655 13655 I COMPACT : showToast = Opening AnimePahe Verification...
-10-18 19:50:27.208 13655 13655 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
-10-18 19:50:27.232 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:27.241 13655 13655 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
-10-18 19:50:27.247 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10568): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:27.247 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10569): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:27.249 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 19:50:27.249 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 19:50:27.249 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 19:50:27.249 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 19:50:27.249 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 19:50:27.250 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:27.250 13655 21231 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 19:50:27.251 13655 13655 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 19:50:27.251 13655 13655 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#26
-10-18 19:50:27.261 13655 13655 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 19:50:27.265 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:27.273 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:27.279 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10570): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:27.279 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10571): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 19:50:27.282 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 19:50:27.282 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 19:50:27.282 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 19:50:27.282 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 19:50:27.282 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 19:50:27.283 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 19:50:27.283 13655 21233 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 19:50:27.284 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 19:50:27.284 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#28
-10-18 19:50:27.286 13655 13655 D VRI[Toast]: vri.reportDrawFinished
-10-18 19:50:27.294 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
-10-18 19:50:27.295 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:27.295 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:27.298 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#30
-10-18 19:50:27.300 13655 13655 D VRI[Toast]: vri.reportDrawFinished
-10-18 19:50:27.343 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.352 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.360 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.368 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.378 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.385 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.393 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.402 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.411 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.420 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.428 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.435 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.485 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.494 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.502 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.510 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.519 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.527 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.535 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.544 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.552 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.560 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.568 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.577 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.586 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.595 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.603 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.611 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.619 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.628 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.635 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.686 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.694 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.703 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.711 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.718 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.727 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.735 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.744 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.752 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.762 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.770 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.779 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.788 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.794 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.804 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.810 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.820 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.827 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.836 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.885 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.893 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.902 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.911 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.918 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.928 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.936 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.945 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.953 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.960 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.968 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.977 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.985 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:27.993 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.002 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.010 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.019 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.027 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.035 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.046 13655 13655 D AnimePahe: Poll [800ms] title='animepahe.pw/api?m=airing&page=1'
-10-18 19:50:28.046 13655 13655 D AnimePahe: Clearance confirmed! Saving cookies and dismissing dialog...
-10-18 19:50:28.105 13655 20857 D AnimePahe: CF bypass dialog completed with result: true
-10-18 19:50:28.143 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.153 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.161 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.168 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.177 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.185 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.194 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.202 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.211 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.219 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.228 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.235 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.286 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.294 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.302 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.311 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.319 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.326 13655 20857 D ApiError: -------------------------------------------------------------------
-10-18 19:50:28.326 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
-10-18 19:50:28.326 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
-10-18 19:50:28.326 13655 20857 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
-10-18 19:50:28.326 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:588)
-10-18 19:50:28.326 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:48)
-10-18 19:50:28.326 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-10-18 19:50:28.326 13655 20857 D ApiError: -------------------------------------------------------------------
-10-18 19:50:28.327 13655 20943 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.337 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.345 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.353 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.361 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.369 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.377 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.386 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.394 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.402 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.411 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.419 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.428 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.436 13655 20803 E FrameEvents: addRelease: Did not find frame.
-10-18 19:50:28.607 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@70daab9
-10-18 19:50:28.621 13655 13655 D DecorViewImmersiveImpl: onDetachedFromWindow
-10-18 19:50:28.649 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 19:50:28.649 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 19:50:29.216 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@311b429
-10-18 19:50:29.601 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22390547, downTime=22390547, phoneEventTime=19:50:29.599 } moveCount:0
-10-18 19:50:29.601 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:29.625 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22390570, downTime=22390547, phoneEventTime=19:50:29.622 } moveCount:0
-10-18 19:50:29.638 13655 13655 I ImeTracker: com.lagradost.cloudstream3:d00efd42: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 19:50:29.651 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:29.802 13655 13655 D AutofillManager: view not autofillable - not passing ime action check
-10-18 19:50:29.803 13655 13655 D AutofillManager: view not autofillable - not passing ime action check
-10-18 19:50:30.359 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22391304, downTime=22391304, phoneEventTime=19:50:30.356 } moveCount:0
-10-18 19:50:30.359 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:30.675 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22391621, downTime=22391304, phoneEventTime=19:50:30.673 } moveCount:34
-10-18 19:50:31.028 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22391972, downTime=22391972, phoneEventTime=19:50:31.025 } moveCount:0
-10-18 19:50:31.029 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 19:50:31.075 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22392021, downTime=22391972, phoneEventTime=19:50:31.073 } moveCount:0
-10-18 19:50:31.082 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:31.082 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:31.093 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:31.095 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 19:50:31.100 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:48.302 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:48.305 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23309248, downTime=23309245, phoneEventTime=20:05:48.301 } moveCount:0
+10-18 20:05:48.317 25879 25879 I ImeTracker: com.lagradost.cloudstream3:35282971: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 20:05:48.356 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:48.363 25879  6145 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
+10-18 20:05:48.367 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:48.380 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:48.380 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:48.387 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:48.388 25879 25879 D AutofillManager: view not autofillable - not passing ime action check
+10-18 20:05:48.562 25879  6145 W AnimePahe: Request blocked (code=403). Purging stale cookies and acquiring lock...
+10-18 20:05:48.563 25879 25879 I COMPACT : showToast = Opening AnimePahe Verification...
+10-18 20:05:48.565 25879 25879 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-18 20:05:48.569 25879  6145 D AnimePahe: solveCloudflare start: oldClearance present=true
+10-18 20:05:48.600 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:48.610 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:48.616 25879 25879 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 20:05:48.624 25879 25879 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 20:05:48.619 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10862): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:48.623 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10863): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:48.624 25879 25879 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 20:05:48.624 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 20:05:48.624 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 20:05:48.624 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 20:05:48.625 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:48.625 25879  7992 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 20:05:48.626 25879 25879 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 20:05:48.626 25879 25879 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#26
+10-18 20:05:48.635 25879 25879 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 20:05:48.646 25879 25879 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 20:05:48.643 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10864): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:48.646 25879 25879 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 20:05:48.646 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 20:05:48.646 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 20:05:48.646 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 20:05:48.643 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10865): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:48.647 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:48.649 25879  7996 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 20:05:48.649 25879 25879 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 20:05:48.650 25879 25879 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#28
+10-18 20:05:48.652 25879 25879 D VRI[Toast]: vri.reportDrawFinished
+10-18 20:05:48.660 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:48.665 25879 25879 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-18 20:05:48.667 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:48.667 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:48.668 25879 25879 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#30
+10-18 20:05:48.670 25879 25879 D VRI[Toast]: vri.reportDrawFinished
+10-18 20:05:48.727 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.736 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.743 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.752 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.762 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.769 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.777 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.786 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.795 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.803 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.812 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.821 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.828 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.836 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.844 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.852 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.903 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.911 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.919 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.928 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.936 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.945 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.953 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.961 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.969 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.978 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.986 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:48.995 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.004 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.011 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.028 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.037 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.045 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.054 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.061 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.069 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.078 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.127 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.137 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.144 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.154 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.164 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.170 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.177 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.188 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.194 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.203 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.211 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.220 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.227 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.236 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.244 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.251 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.261 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.269 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.277 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.328 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.336 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.343 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.353 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.361 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.369 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.378 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.387 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.395 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.403 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.412 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.420 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.429 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.437 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.445 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.453 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.461 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.471 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.478 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.528 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.537 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.545 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.554 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.562 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.571 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.579 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.587 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.596 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.604 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.613 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.621 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.628 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.636 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.645 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.653 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.662 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.669 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.679 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.729 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.736 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.745 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.754 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.763 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.771 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.778 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.786 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.795 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.804 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.813 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.821 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.829 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.837 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.846 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.854 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.862 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.870 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.879 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.929 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.937 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.946 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.954 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.963 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.971 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.979 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.989 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:49.996 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.004 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.012 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.021 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.029 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.037 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.045 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.054 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.062 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.070 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.079 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.117 25879 25879 D AnimePahe: Poll [800ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:50.130 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.139 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.147 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.155 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.164 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.172 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.180 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.187 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.197 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.204 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.216 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.222 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.230 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.240 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.250 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.255 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.263 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.272 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.281 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.330 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.340 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.348 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.356 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.364 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.373 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.381 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.389 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.398 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.406 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.415 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.423 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.431 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.439 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.448 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.456 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.464 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.473 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.481 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.530 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.538 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.547 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.556 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.564 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.573 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.576 25879 25879 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@335f731
+10-18 20:05:50.582 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.590 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.598 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.607 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.615 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.624 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.632 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.640 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.648 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.657 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.666 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.675 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.683 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.692 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.700 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.708 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.716 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.726 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.733 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.741 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.749 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.807 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.815 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.824 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.833 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.841 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.849 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.857 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.866 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.874 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.883 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.891 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.899 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.911 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.917 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.923 25879 25879 D AnimePahe: Poll [1600ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:50.925 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.930 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.947 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:50.998 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.007 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.014 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.023 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.031 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.039 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.048 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.057 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.066 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.074 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.081 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.090 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.098 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.106 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.115 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.123 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.132 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.142 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.150 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.157 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.207 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.215 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.224 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.231 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.240 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.248 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.257 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.268 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.274 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.282 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.293 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.299 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.308 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.315 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.323 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.332 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.340 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.349 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.357 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.407 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.415 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.424 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.431 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.440 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.449 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.458 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.465 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.473 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.483 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.491 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.499 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.509 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.517 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.524 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.533 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.541 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.549 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.559 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.607 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.616 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.625 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.633 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.641 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.650 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.658 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.666 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.675 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.682 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.690 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.699 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.708 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.716 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.725 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.732 25879 25879 D AnimePahe: Poll [2400ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:51.733 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.741 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.751 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.758 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.808 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.819 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.824 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.833 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.842 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.853 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.859 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.866 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.874 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.884 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.892 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.901 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.909 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.916 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.925 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.934 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.942 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.950 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:51.960 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.008 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.016 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.026 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.033 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.041 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.051 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.061 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.067 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.076 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.085 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.094 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.102 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.108 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.118 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.125 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.133 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.142 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.152 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.161 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.209 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.217 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.225 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.234 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.244 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.253 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.260 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.267 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.275 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.284 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.293 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.301 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.309 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.320 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.326 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.334 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.345 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.352 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.359 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.369 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.425 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.433 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.444 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.453 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.459 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.467 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.478 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.484 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.493 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.501 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.509 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.518 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.526 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.535 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.540 25879 25879 D AnimePahe: Poll [3200ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:52.543 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.551 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.559 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.569 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.627 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.635 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.643 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.651 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.660 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.668 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.677 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.685 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.693 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.701 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.709 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.718 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.726 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.734 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.743 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.751 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.760 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.769 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.835 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.845 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.851 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.860 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.872 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.878 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.887 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.895 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.903 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.911 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.919 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.927 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.935 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.944 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.952 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.960 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:52.969 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.027 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.035 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.044 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.052 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.061 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.069 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.078 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.086 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.095 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.103 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.111 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.120 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.129 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.137 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.145 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.155 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.162 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.170 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.229 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.236 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.245 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.255 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.262 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.271 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.279 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.289 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.297 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.303 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.311 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.320 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.329 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.339 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.346 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.353 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.354 25879 25879 D AnimePahe: Poll [4000ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:53.361 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.428 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.437 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.445 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.453 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.462 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.470 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.478 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.487 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.495 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.503 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.511 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.521 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.531 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.539 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.546 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.554 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.562 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.570 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.630 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.637 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.645 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.653 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.662 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.670 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.679 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.687 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.695 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.704 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.713 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.722 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.730 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.739 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.747 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.754 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.762 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.770 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.829 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.838 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.846 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.854 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.862 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.871 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.880 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.890 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.900 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.904 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.913 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.923 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.929 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.938 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.948 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.956 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.964 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:53.972 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.031 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.038 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.046 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.057 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.063 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.070 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.080 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.090 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.097 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.105 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.113 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.122 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.131 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.139 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.147 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.155 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.165 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.167 25879 25879 D AnimePahe: Poll [4800ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:54.172 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.231 25879 25879 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=23315178000000, downTime=23315178000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=20:05:54.230
+10-18 20:05:54.231 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.231 25879 25879 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=23315179000000, downTime=23315179000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=20:05:54.231
+10-18 20:05:54.234 25879 25879 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@17c939a
+10-18 20:05:54.239 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.245 25879 25879 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 20:05:54.247 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.263 25879  6145 D AnimePahe: CF bypass dialog completed with result: false
+10-18 20:05:54.276 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:54.278 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:54.278 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:54.488 25879  6145 D ApiError: -------------------------------------------------------------------
+10-18 20:05:54.488 25879  6145 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 20:05:54.488 25879  6145 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 20:05:54.488 25879  6145 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 20:05:54.488 25879  6145 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:616)
+10-18 20:05:54.488 25879  6145 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:48)
+10-18 20:05:54.489 25879  6145 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
+10-18 20:05:54.489 25879  6145 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-18 20:05:54.489 25879  6145 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-18 20:05:54.489 25879  6145 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+10-18 20:05:54.489 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+10-18 20:05:54.489 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+10-18 20:05:54.490 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+10-18 20:05:54.490 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+10-18 20:05:54.490 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+10-18 20:05:54.490 25879  6145 D ApiError: -------------------------------------------------------------------
+10-18 20:05:55.222 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23316165, downTime=23316165, phoneEventTime=20:05:55.217 } moveCount:0
+10-18 20:05:55.222 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:55.306 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23316250, downTime=23316165, phoneEventTime=20:05:55.303 } moveCount:0
+10-18 20:05:55.315 25879 25879 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
+10-18 20:05:55.317 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:55.351 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:55.360 25879 25879 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-18 20:05:55.360 25879 25879 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-18 20:05:55.360 25879 25879 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 20:05:55.373 25879 25879 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 20:05:55.371 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10866): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:55.373 25879 25879 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 20:05:55.373 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 20:05:55.373 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 20:05:55.373 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 20:05:55.371 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10867): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:55.374 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:55.374 25879  8099 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 20:05:55.378 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:55.385 25879 25879 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 20:05:55.385 25879 25879 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#32
+10-18 20:05:55.391 25879 25879 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 20:05:55.423 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:55.423 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:56.224 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23317166, downTime=23317166, phoneEventTime=20:05:56.218 } moveCount:0
+10-18 20:05:56.224 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:56.326 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23317269, downTime=23317166, phoneEventTime=20:05:56.321 } moveCount:0
+10-18 20:05:56.332 25879 25879 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@7f32e28
+10-18 20:05:56.334 25879 25879 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 20:05:56.335 25879  6145 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
+10-18 20:05:56.351 25879 25879 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
+10-18 20:05:56.374 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:56.374 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:56.523 25879  6145 W AnimePahe: Request blocked (code=403). Purging stale cookies and acquiring lock...
+10-18 20:05:56.524 25879 25879 I COMPACT : showToast = Opening AnimePahe Verification...
+10-18 20:05:56.527 25879 25879 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-18 20:05:56.530 25879  6145 D AnimePahe: solveCloudflare start: oldClearance present=true
+10-18 20:05:56.551 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:56.563 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:56.572 25879 25879 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 20:05:56.581 25879 25879 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 20:05:56.579 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10868): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:56.579 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10869): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:56.581 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 20:05:56.581 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 20:05:56.581 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 20:05:56.582 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:56.582 25879  8125 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 20:05:56.583 25879 25879 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 20:05:56.583 25879 25879 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#34
+10-18 20:05:56.591 25879 25879 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 20:05:56.605 25879 25879 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 20:05:56.603 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10870): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:56.605 25879 25879 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 20:05:56.605 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 20:05:56.603 25879 25879 W st.cloudstream3: type=1400 audit(0.0:10871): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 20:05:56.605 25879 25879 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 20:05:56.606 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 20:05:56.607 25879  8127 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 20:05:56.607 25879 25879 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 20:05:56.607 25879 25879 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#36
+10-18 20:05:56.611 25879 25879 D VRI[Toast]: vri.reportDrawFinished
+10-18 20:05:56.621 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:56.625 25879 25879 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-18 20:05:56.630 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:56.630 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:56.632 25879 25879 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#38
+10-18 20:05:56.635 25879 25879 D VRI[Toast]: vri.reportDrawFinished
+10-18 20:05:56.706 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.715 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.723 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.731 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.739 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.748 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.756 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.765 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.773 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.781 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.788 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.796 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.856 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.863 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.872 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.880 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.889 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.897 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.906 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.913 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.922 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.931 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.939 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.947 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.956 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.964 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.973 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.981 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.989 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:56.997 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.006 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.014 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.023 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.031 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.039 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.048 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.057 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.065 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.073 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.081 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.089 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.147 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.156 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.165 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.173 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.182 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.190 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.199 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.204 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.213 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.222 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.229 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.240 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.246 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.255 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.263 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.271 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.281 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.289 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.348 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.357 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.365 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.372 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.381 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.389 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.397 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.405 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.415 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.422 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.430 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.440 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.448 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.457 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.465 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.472 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.481 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.490 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.548 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.555 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.563 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.572 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.583 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.590 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.598 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.609 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.615 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.622 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.630 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.640 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.647 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.656 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.665 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.672 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.680 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.689 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.747 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.756 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.765 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.773 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.780 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.789 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.798 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.806 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.815 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.823 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.831 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.839 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.848 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.856 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.866 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.873 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.881 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.889 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.948 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.957 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.965 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.973 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.982 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.990 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:57.998 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.007 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.016 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.024 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.032 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.039 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.049 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.057 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.060 25879 25879 D AnimePahe: Poll [800ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:58.066 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.073 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.082 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.090 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.149 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.157 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.165 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.175 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.183 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.191 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.200 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.211 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.217 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.224 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.232 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.242 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.249 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.258 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.266 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.275 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.283 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.292 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.350 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.359 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.367 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.375 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.384 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.393 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.401 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.409 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.418 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.425 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.434 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.442 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.451 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.458 25879  6099 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.467 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.475 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.482 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.491 25879  6312 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.533 25879 25879 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@b80978c
+10-18 20:05:58.570 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.577 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.585 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.593 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.601 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.610 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.617 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.627 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.636 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.642 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.651 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.661 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.668 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.676 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.685 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.694 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.702 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.709 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.718 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.726 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.734 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.794 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.803 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.811 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.820 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.828 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.836 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.843 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.851 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.862 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.867 25879 25879 D AnimePahe: Poll [1600ms] title='animepahe :: okay-ish anime website'
+10-18 20:05:58.868 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.877 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.883 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.890 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23319835, downTime=23319835, phoneEventTime=20:05:58.887 } moveCount:0
+10-18 20:05:58.891 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:58.891 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.901 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.909 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.916 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.925 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.933 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:58.970 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23319915, downTime=23319835, phoneEventTime=20:05:58.967 } moveCount:0
+10-18 20:05:58.973 25879 25879 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@83063eb
+10-18 20:05:58.991 25879 25879 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 20:05:59.017 25879  6145 D AnimePahe: CF bypass dialog completed with result: false
+10-18 20:05:59.022 25879  6094 E FrameEvents: addRelease: Did not find frame.
+10-18 20:05:59.025 25879 25879 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 20:05:59.025 25879 25879 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 20:05:59.222 25879  6145 D ApiError: -------------------------------------------------------------------
+10-18 20:05:59.223 25879  6145 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 20:05:59.223 25879  6145 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 20:05:59.223 25879  6145 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 20:05:59.223 25879  6145 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:616)
+10-18 20:05:59.223 25879  6145 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:48)
+10-18 20:05:59.223 25879  6145 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+10-18 20:05:59.223 25879  6145 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+10-18 20:05:59.223 25879  6145 D ApiError: -------------------------------------------------------------------
+10-18 20:05:59.756 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23320699, downTime=23320699, phoneEventTime=20:05:59.751 } moveCount:0
+10-18 20:05:59.756 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:05:59.759 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23320705, downTime=23320699, phoneEventTime=20:05:59.757 } moveCount:0
+10-18 20:05:59.768 25879 25879 I ImeTracker: com.lagradost.cloudstream3:687ec04c: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 20:05:59.784 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:05:59.940 25879 25879 D AutofillManager: view not autofillable - not passing ime action check
+10-18 20:05:59.941 25879 25879 D AutofillManager: view not autofillable - not passing ime action check
+10-18 20:06:00.342 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23321286, downTime=23321286, phoneEventTime=20:06:00.338 } moveCount:0
+10-18 20:06:00.343 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:06:00.420 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23321365, downTime=23321286, phoneEventTime=20:06:00.417 } moveCount:7
+10-18 20:06:00.975 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=23321920, downTime=23321920, phoneEventTime=20:06:00.972 } moveCount:0
+10-18 20:06:00.975 25879 25879 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 20:06:01.039 25879 25879 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=23321985, downTime=23321920, phoneEventTime=20:06:01.037 } moveCount:0
+10-18 20:06:01.044 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:06:01.044 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:06:01.056 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:06:01.057 25879 25879 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 20:06:01.062 25879 25879 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
