@@ -45,9 +45,8 @@ jobs:
           set -o pipefail
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
-          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml" -o /dev/null || true
-          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom" -o /dev/null || true
-          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.jar" -o /dev/null || true
+          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-32895aedb6-1/gradle-master-32895aedb6-1.pom" -o /dev/null || true
+          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-32895aedb6-1/gradle-master-32895aedb6-1.jar" -o /dev/null || true
           for attempt in 1 2 3 4; do
             echo "Gradle build attempt $attempt of 4..."
             BUILD_STATUS=0
@@ -57,8 +56,7 @@ jobs:
               break
             fi
             echo "Attempt $attempt failed with code $BUILD_STATUS, waiting 15s before retry..."
-            curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml" -o /dev/null || true
-            curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom" -o /dev/null || true
+            curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-32895aedb6-1/gradle-master-32895aedb6-1.pom" -o /dev/null || true
             sleep 15
           done
           
