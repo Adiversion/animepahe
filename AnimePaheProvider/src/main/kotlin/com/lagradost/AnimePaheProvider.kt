@@ -9,9 +9,12 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Base64
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowManager
 import android.webkit.CookieManager
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -105,7 +108,7 @@ class AnimePaheProvider : MainAPI() {
 
             activity.runOnUiThread {
                 try {
-                    val dialog = Dialog(activity)
+                    val dialog = Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                     dialog.window?.apply {
                         setLayout(
@@ -113,6 +116,12 @@ class AnimePaheProvider : MainAPI() {
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
                         setBackgroundDrawable(ColorDrawable(Color.parseColor("#121212")))
+                        decorView.setPadding(0, 0, 0, 0)
+                        setFlags(
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN
+                        )
+                        clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                     }
 
                     val layout = LinearLayout(activity).apply {
@@ -172,6 +181,7 @@ class AnimePaheProvider : MainAPI() {
                         isFocusable = true
                         isFocusableInTouchMode = true
                         requestFocus()
+                        setLayerType(View.LAYER_TYPE_HARDWARE, null)
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT
@@ -190,6 +200,9 @@ class AnimePaheProvider : MainAPI() {
                         javaScriptEnabled = true
                         domStorageEnabled = true
                         databaseEnabled = true
+                        allowContentAccess = true
+                        allowFileAccess = true
+                        mediaPlaybackRequiresUserGesture = false
                         cacheMode = WebSettings.LOAD_NO_CACHE
                         useWideViewPort = true
                         loadWithOverviewMode = true
@@ -274,18 +287,55 @@ class AnimePaheProvider : MainAPI() {
                         return map.entries.joinToString("; ") { "${it.key}=${it.value}" }
                     }
 
+                    val autoCheckScript = """
+                        (function() {
+                            try {
+                                var selectors = [
+                                    'input[type="checkbox"]',
+                                    '.ctp-checkbox-label',
+                                    '#challenge-stage input',
+                                    '#cf-turnstile input',
+                                    '.cf-turnstile input',
+                                    '#turnstile-wrapper input'
+                                ];
+                                for (var i = 0; i < selectors.length; i++) {
+                                    var el = document.querySelector(selectors[i]);
+                                    if (el && !el.checked) {
+                                        el.click();
+                                        return;
+                                    }
+                                }
+                                var frames = document.querySelectorAll('iframe');
+                                for (var f = 0; f < frames.length; f++) {
+                                    try {
+                                        var doc = frames[f].contentDocument || frames[f].contentWindow.document;
+                                        if (doc) {
+                                            for (var j = 0; j < selectors.length; j++) {
+                                                var cel = doc.querySelector(selectors[j]);
+                                                if (cel && !cel.checked) {
+                                                    cel.click();
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch(err) {}
+                                }
+                            } catch(e) {}
+                        })();
+                    """.trimIndent()
+
+                    fun tryAutoCheck() {
+                        runCatching {
+                            webView.evaluateJavascript(autoCheckScript, null)
+                        }
+                    }
+
                     fun checkForClearance(url: String?) {
                         val title = webView.title ?: ""
                         val currentUrl = webView.url ?: url ?: ""
 
-                        // While Cloudflare challenge is active, wait for user to tick checkmark
-                        if (isChallenge(title, currentUrl)) {
-                            android.util.Log.d("AnimePahe", "Challenge active: title='$title', url='$currentUrl'")
-                            return
-                        }
-
+                        // 1. Immediately check if cf_clearance has been issued
                         val cookies = extractMergedCookies(currentUrl)
-
                         if (cookies.contains("cf_clearance")) {
                             android.util.Log.d("AnimePahe", "Clearance verified! Title='$title', saving cookies and dismissing dialog.")
                             cookieManager.flush()
@@ -305,13 +355,32 @@ class AnimePaheProvider : MainAPI() {
                                         dialog.dismiss()
                                     }
                                 }
-                            }, 1000L)
+                            }, 800L)
+                            return
+                        }
+
+                        // 2. While Cloudflare challenge is active, attempt auto-trigger
+                        if (isChallenge(title, currentUrl)) {
+                            android.util.Log.d("AnimePahe", "Challenge active: title='$title', url='$currentUrl'")
+                            tryAutoCheck()
+                            return
+                        }
+                    }
+
+                    webView.webChromeClient = object : WebChromeClient() {
+                        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                            super.onProgressChanged(view, newProgress)
+                            if (newProgress > 50) {
+                                tryAutoCheck()
+                                checkForClearance(view?.url)
+                            }
                         }
                     }
 
                     webView.webViewClient = object : WebViewClient() {
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
+                            tryAutoCheck()
                             checkForClearance(url)
                         }
                     }
@@ -319,27 +388,25 @@ class AnimePaheProvider : MainAPI() {
                     val checkRunnable = object : Runnable {
                         override fun run() {
                             if (latch.count > 0) {
+                                tryAutoCheck()
                                 checkForClearance(webView.url ?: targetUrl)
-                                handler.postDelayed(this, 1000L)
+                                handler.postDelayed(this, 800L)
                             }
                         }
                     }
-                    handler.postDelayed(checkRunnable, 1000L)
+                    handler.postDelayed(checkRunnable, 800L)
 
                     dialog.setContentView(layout)
                     dialog.setOnDismissListener {
                         handler.removeCallbacks(checkRunnable)
                         if (latch.count > 0) {
-                            val title = webView.title ?: ""
                             val currentUrl = webView.url ?: targetUrl
-                            if (!isChallenge(title, currentUrl)) {
-                                val finalCookies = extractMergedCookies(currentUrl)
-                                if (finalCookies.contains("cf_clearance")) {
-                                    cookieManager.flush()
-                                    cfCookies = finalCookies
-                                    solvedCookies = finalCookies
-                                    cfUserAgent = webView.settings.userAgentString
-                                }
+                            val finalCookies = extractMergedCookies(currentUrl)
+                            if (finalCookies.contains("cf_clearance")) {
+                                cookieManager.flush()
+                                cfCookies = finalCookies
+                                solvedCookies = finalCookies
+                                cfUserAgent = webView.settings.userAgentString
                             }
                             latch.countDown()
                         }
