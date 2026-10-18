@@ -47,11 +47,13 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
-          ./gradlew make makePluginsJson --stacktrace 2>&1 | tee build_output.log
+          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log
 
           echo "Searching and copying compiled artifacts..."
           find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
+          echo "Builds contents:"
+          ls -la $GITHUB_WORKSPACE/builds/
 
       - name: Push Builds
         if: success()
