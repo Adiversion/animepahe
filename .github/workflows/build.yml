@@ -49,19 +49,20 @@ jobs:
           chmod +x gradlew
           ./gradlew make makePluginsJson --stacktrace 2>&1 | tee build_output.log
 
-          cp **/build/*.cs3 $GITHUB_WORKSPACE/builds/ || echo "No .cs3 files found"
-          cp build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
+          echo "Searching and copying compiled artifacts..."
+          find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
+          find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
 
       - name: Push Builds
         if: success()
         run: |
           cd $GITHUB_WORKSPACE/builds
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add .
-
+          git add -A
           if [[ -n $(git status -s) ]]; then
-            git commit -m "Build $GITHUB_SHA" || true
+            git commit -m "Build $GITHUB_SHA"
             git push origin builds --force
           else
             echo "No changes to push"
