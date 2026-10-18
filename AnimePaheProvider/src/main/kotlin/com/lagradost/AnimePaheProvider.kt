@@ -174,7 +174,7 @@ class AnimePaheProvider : MainAPI() {
         return newHomePageResponse(
             name = request.name,
             list = items,
-            isHorizontal = request.horizontalImages
+            hasNext = items.isNotEmpty()
         )
     }
 
@@ -397,6 +397,7 @@ class AnimePaheProvider : MainAPI() {
             getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
                 callback(
                     newExtractorLink(
+                        source = "AnimePahe",
                         name = "AnimePahe - $qualityText",
                         url = streamUrl,
                         type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
@@ -416,6 +417,7 @@ class AnimePaheProvider : MainAPI() {
                 getStreamUrlFromKwik(embed)?.let { link ->
                     callback(
                         newExtractorLink(
+                            source = "AnimePahe",
                             name = "Kwik",
                             url = link,
                             type = if (link.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
@@ -440,6 +442,7 @@ class AnimePaheProvider : MainAPI() {
                 getStreamUrlFromKwik(href)?.let { directUrl ->
                     callback(
                         newExtractorLink(
+                            source = "AnimePahe",
                             name = "Download - $label",
                             url = directUrl,
                             type = ExtractorLinkType.VIDEO
