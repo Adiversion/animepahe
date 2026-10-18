@@ -30,8 +30,8 @@ Fetching JAR: cloudstream.jar
 > Task :HDhub4uProvider:generateDebugResValues
 > Task :HDhub4uProvider:generateDebugResources
 > Task :HDhub4uProvider:packageDebugResources
-> Task :HDhub4uProvider:parseDebugLocalResources
 > Task :AnimePaheProvider:parseDebugLocalResources
+> Task :HDhub4uProvider:parseDebugLocalResources
 > Task :AnimePaheProvider:generateDebugRFile
 > Task :HDhub4uProvider:generateDebugRFile
 
@@ -192,7 +192,7 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/HDhub4uPro
 > Task :HDhub4uProvider:writeCacheEntry
 
 > Task :AnimePaheProvider:compileDebugKotlin
-exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:432:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
+exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:440:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
 exception:                         databaseEnabled = true
 exception:                         ^^^^^^^^^^^^^^^
 
@@ -1043,5 +1043,5 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/AnimePaheP
 > Task :makePluginsJson
 Created /home/runner/work/animepahe/animepahe/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 32s
+BUILD SUCCESSFUL in 1m 16s
 21 actionable tasks: 21 executed
