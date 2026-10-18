@@ -23,10 +23,10 @@
   },
   {
     "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4u_icon.png",
-    "fileHash": "sha256-84ba781888957d2e2ec7ac08bf357accd4064b3027b0231ad42b917f35082757",
+    "fileHash": "sha256-55683159e71b7d13614f9274600674f87b047527e91e59f94660698a2acb06c1",
     "apiVersion": 1,
     "repositoryUrl": "https://github.com/Adiversion/animepahe",
-    "fileSize": 30395,
+    "fileSize": 46047,
     "status": 1,
     "language": "hi",
     "authors": [
@@ -38,9 +38,9 @@
       "Anime",
       "AsianDrama"
     ],
-    "version": 2,
+    "version": 3,
     "internalName": "HDhub4uProvider",
-    "description": "HDHub4u Bollywood, Hollywood, and Web Series provider with dynamic domain rotation, parallel stream resolution, and HD TMDB backdrops.",
+    "description": "HDHub4u & Indian OTT Hub: JioHotstar, Netflix, Prime Video, Sony LIV, Zee5 with NetMirror direct streams & HubCloud 10Gbps fallback.",
     "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4uProvider.cs3",
     "name": "HDhub4uProvider"
   },

@@ -35,13 +35,6 @@ Fetching JAR: cloudstream.jar
 > Task :AnimePaheProvider:generateDebugRFile
 > Task :HDhub4uProvider:generateDebugRFile
 
-> Task :HDhub4uProvider:compileDebugKotlin
-w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:500:25 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
-w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:513:25 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
-w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:538:33 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
-w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:560:13 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
-w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:577:17 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
-
 > Task :AnimePaheProvider:compileDebugKotlin
 e: Daemon compilation failed: null
 java.lang.Exception
@@ -180,6 +173,14 @@ Caused by: java.lang.AssertionError: Couldn't load KotlinClass from /home/runner
 Using fallback strategy: Compile without Kotlin daemon
 Try ./gradlew --stop if this issue persists
 If it does not look related to your configuration, please file an issue with logs to https://kotl.in/issue
+
+> Task :HDhub4uProvider:compileDebugKotlin
+w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:468:45 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
+w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:728:25 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
+w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:741:25 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
+w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:766:33 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
+w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:788:13 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
+w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:805:17 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
 
 > Task :HDhub4uProvider:compileDex
 Compiled dex to /home/runner/work/animepahe/animepahe/src/HDhub4uProvider/build/intermediates/classes.dex
@@ -1043,5 +1044,5 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/AnimePaheP
 > Task :makePluginsJson
 Created /home/runner/work/animepahe/animepahe/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 33s
+BUILD SUCCESSFUL in 1m 32s
 21 actionable tasks: 21 executed
