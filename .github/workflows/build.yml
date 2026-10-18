@@ -50,7 +50,7 @@ jobs:
           for attempt in 1 2 3 4; do
             echo "Gradle build attempt $attempt of 4..."
             BUILD_STATUS=0
-            ./gradlew :AnimePaheProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
+            ./gradlew :AnimePaheProvider:make :HDhub4uProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
             echo "Attempt $attempt failed with code $BUILD_STATUS, waiting 15s before retry..."
             curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml" -o /dev/null || true
             curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom" -o /dev/null || true
@@ -75,6 +75,7 @@ jobs:
           rm -f $GITHUB_WORKSPACE/builds/*.cs3 || true
           find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           cp $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3 || true
+          cp $GITHUB_WORKSPACE/builds/HDhub4uProvider.cs3 $GITHUB_WORKSPACE/builds/HDhub4u.cs3 || true
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
           cp icon.png $GITHUB_WORKSPACE/builds/icon.png || true
