@@ -52,6 +52,7 @@ jobs:
           echo "Searching and copying compiled artifacts..."
           find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
+          cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
           echo "Builds contents:"
           ls -la $GITHUB_WORKSPACE/builds/
 
