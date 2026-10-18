@@ -172,8 +172,9 @@ class AnimePaheProvider : MainAPI() {
         }
 
         return newHomePageResponse(
-            listOf(HomePageList(request.name, items, request.horizontalImages)),
-            items.isNotEmpty()
+            name = request.name,
+            list = items,
+            isHorizontal = request.horizontalImages
         )
     }
 
@@ -396,10 +397,9 @@ class AnimePaheProvider : MainAPI() {
             getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
                 callback(
                     newExtractorLink(
-                        source = "AnimePahe",
                         name = "AnimePahe - $qualityText",
                         url = streamUrl,
-                        type = ExtractorLinkType.VIDEO
+                        type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                     ) {
                         this.referer = "https://kwik.cx/"
                         this.quality = quality
@@ -416,10 +416,9 @@ class AnimePaheProvider : MainAPI() {
                 getStreamUrlFromKwik(embed)?.let { link ->
                     callback(
                         newExtractorLink(
-                            source = "AnimePahe",
                             name = "Kwik",
                             url = link,
-                            type = ExtractorLinkType.VIDEO
+                            type = if (link.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                         ) {
                             this.referer = "https://kwik.cx/"
                             this.quality = Qualities.Unknown.value
@@ -441,7 +440,6 @@ class AnimePaheProvider : MainAPI() {
                 getStreamUrlFromKwik(href)?.let { directUrl ->
                     callback(
                         newExtractorLink(
-                            source = "AnimePahe (Direct)",
                             name = "Download - $label",
                             url = directUrl,
                             type = ExtractorLinkType.VIDEO

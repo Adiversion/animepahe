@@ -47,6 +47,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
+          set -o pipefail
           ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log
 
           echo "Searching and copying compiled artifacts..."
