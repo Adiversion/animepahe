@@ -173,11 +173,12 @@ class AnimePaheProvider : MainAPI() {
 
         fun fixImageUrl(url: String?, base: String = MAIN_URL): String? {
             if (url.isNullOrBlank()) return null
-            return when {
+            val fullUrl = when {
                 url.startsWith("//") -> "https:$url"
                 url.startsWith("/") -> "$base$url"
                 else -> url
             }
+            return fullUrl.replace(Regex("""\.sm(\.[a-zA-Z0-9]+)$"""), "$1")
         }
 
         fun syncCookiesToApp(appInstance: Requests, base: String = MAIN_URL) {
