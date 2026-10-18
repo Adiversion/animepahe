@@ -1,0 +1,557 @@
+Downloading https://services.gradle.org/distributions/gradle-8.12-bin.zip
+..................................................................................................................................
+Unzipping /home/runner/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12-bin.zip to /home/runner/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv
+Set executable permissions for: /home/runner/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12/bin/gradle
+
+Welcome to Gradle 8.12!
+
+Here are the highlights of this release:
+ - Enhanced error and warning reporting with the Problems API
+ - File-system watching support on Alpine Linux
+ - Build and test Swift 6 libraries and apps
+
+For more details see https://docs.gradle.org/8.12/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+> Configure project :AnimePaheProvider
+Fetching JAR: cloudstream.jar
+
+> Task :AnimePaheProvider:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :AnimePaheProvider:preBuild UP-TO-DATE
+> Task :AnimePaheProvider:preDebugBuild UP-TO-DATE
+> Task :AnimePaheProvider:generateDebugResValues
+> Task :AnimePaheProvider:generateDebugResources
+> Task :AnimePaheProvider:packageDebugResources
+> Task :AnimePaheProvider:parseDebugLocalResources
+> Task :AnimePaheProvider:generateDebugRFile
+
+> Task :AnimePaheProvider:compileDebugKotlin FAILED
+e: Incompatible classes were found in dependencies. Remove them from the classpath or use '-Xskip-metadata-version-check' to suppress errors
+e: file:///home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/META-INF/CloudStream_library.kotlin_module Module was compiled with an incompatible version of Kotlin. The binary version of its metadata is 2.4.0, expected version is 2.1.0.
+e: file:///home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/META-INF/app.kotlin_module Module was compiled with an incompatible version of Kotlin. The binary version of its metadata is 2.4.0, expected version is 2.1.0.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePahePlugin.kt:7:2 Class 'com.lagradost.cloudstream3.plugins.CloudstreamPlugin' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/plugins/CloudstreamPlugin.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePahePlugin.kt:8:25 Class 'com.lagradost.cloudstream3.plugins.Plugin' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/plugins/Plugin.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePahePlugin.kt:11:9 Class 'com.lagradost.cloudstream3.MainAPI' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainAPI.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePahePlugin.kt:11:9 Class 'com.lagradost.cloudstream3.plugins.BasePlugin' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/plugins/BasePlugin.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:10:40 Unresolved reference 'suspendSafeApiCall'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:19:27 Class 'com.lagradost.cloudstream3.MainAPI' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainAPI.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:33:41 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:35:101 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:36:59 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:37:25 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:63:35 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:64:9 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:65:9 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:66:9 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:77:29 Class 'com.lagradost.cloudstream3.MainPageData' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageData.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:78:9 Class 'com.lagradost.cloudstream3.MainPageData' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageData.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:149:40 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:151:65 Unresolved reference 'it'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:151:93 Unresolved reference 'session'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:159:58 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:159:76 Class 'com.lagradost.cloudstream3.HomePageResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/HomePageResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:160:22 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:160:22 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:161:28 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:162:22 Cannot inline bytecode built with JVM target 11 into bytecode that is being built with JVM target 1.8. Please specify proper '-jvm-target' option.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:162:22 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:164:33 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:165:13 Unresolved reference 'newAnimeSearchResponse'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:167:17 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:167:45 Class 'com.lagradost.cloudstream3.APIHolder' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/APIHolder.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:170:22 Unresolved reference 'posterUrl'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:171:17 Unresolved reference 'addDubStatus'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:171:30 Class 'com.lagradost.cloudstream3.DubStatus' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/DubStatus.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:175:16 'constructor(items: List<HomePageList>, hasNext: Boolean = ...): HomePageResponse' is deprecated. Use newHomePageResponse method.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:175:16 Class 'com.lagradost.cloudstream3.HomePageResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/HomePageResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:176:13 Class 'com.lagradost.cloudstream3.HomePageList' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/HomePageList.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:176:20 Class 'com.lagradost.cloudstream3.HomePageList' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/HomePageList.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:176:33 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:176:33 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:176:54 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:176:54 Class 'com.lagradost.cloudstream3.MainPageRequest' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/MainPageRequest.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:177:19 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:177:19 Not enough information to infer type argument for 'T'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:182:54 Class 'com.lagradost.cloudstream3.SearchResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SearchResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:185:28 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:186:22 Cannot inline bytecode built with JVM target 11 into bytecode that is being built with JVM target 1.8. Please specify proper '-jvm-target' option.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:186:22 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:188:28 Class 'com.lagradost.cloudstream3.SearchResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SearchResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:188:32 Class 'com.lagradost.cloudstream3.SearchResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SearchResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:189:13 Unresolved reference 'newAnimeSearchResponse'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:191:17 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:191:40 Class 'com.lagradost.cloudstream3.APIHolder' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/APIHolder.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:194:22 Unresolved reference 'posterUrl'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:195:17 Unresolved reference 'addDubStatus'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:195:30 Class 'com.lagradost.cloudstream3.DubStatus' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/DubStatus.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:201:71 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:204:36 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:205:24 Cannot inline bytecode built with JVM target 11 into bytecode that is being built with JVM target 1.8. Please specify proper '-jvm-target' option.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:205:24 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:210:38 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:219:21 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:220:25 Unresolved reference 'newEpisode'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:221:29 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:230:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:230:49 Unresolved reference 'addDate'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:232:34 Unresolved reference 'posterUrl'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:233:34 Unresolved reference 'episode'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:242:29 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:243:33 'constructor(data: String, name: String? = ..., season: Int? = ..., episode: Int? = ..., posterUrl: String? = ..., score: Score? = ..., description: String? = ..., date: Long? = ..., runTime: Int? = ...): Episode' is deprecated. Use newEpisode method.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:243:33 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:243:33 Class 'com.lagradost.cloudstream3.Score' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Score.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:244:37 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:252:35 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:252:41 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:253:37 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:254:37 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:264:13 Class 'com.lagradost.cloudstream3.Episode' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/Episode.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:269:45 Class 'com.lagradost.cloudstream3.LoadResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/LoadResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:270:16 Unresolved reference 'suspendSafeApiCall'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:271:27 Cannot inline bytecode built with JVM target 11 into bytecode that is being built with JVM target 1.8. Please specify proper '-jvm-target' option.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:271:27 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:273:50 Class 'com.lagradost.cloudstream3.APIHolder' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/APIHolder.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:274:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:274:51 Class 'com.lagradost.cloudstream3.SearchResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SearchResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:275:21 Cannot inline bytecode built with JVM target 11 into bytecode that is being built with JVM target 1.8. Please specify proper '-jvm-target' option.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:275:21 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:275:41 Class 'com.lagradost.cloudstream3.SearchResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SearchResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:275:41 Class 'com.lagradost.cloudstream3.SearchResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SearchResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:281:32 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:284:32 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:285:34 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:286:24 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:287:30 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:289:33 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:290:26 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:296:28 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:301:21 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:301:71 Class 'com.lagradost.cloudstream3.ShowStatus' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/ShowStatus.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:302:21 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:302:74 Class 'com.lagradost.cloudstream3.ShowStatus' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/ShowStatus.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:306:32 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:311:17 Unresolved reference 'select'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:311:57 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:312:33 Unresolved reference 'attr'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:321:30 Unresolved reference 'select'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:321:66 Unresolved reference 'it'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:323:13 Unresolved reference 'newAnimeLoadResponse'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:323:51 Class 'com.lagradost.cloudstream3.TvType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/TvType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:324:17 Unresolved reference 'engName'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:325:17 Unresolved reference 'japName'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:326:22 Unresolved reference 'posterUrl'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:327:22 Unresolved reference 'year'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:328:17 Unresolved reference 'addEpisodes'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:328:29 Class 'com.lagradost.cloudstream3.DubStatus' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/DubStatus.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:329:22 Unresolved reference 'showStatus'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:329:35 Class 'com.lagradost.cloudstream3.ShowStatus' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/ShowStatus.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:330:22 Unresolved reference 'plot'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:331:22 Unresolved reference 'tags'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:333:17 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun LoadResponse.addMalId(id: Int?): Unit
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:333:17 Class 'com.lagradost.cloudstream3.LoadResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/LoadResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:333:17 Class 'com.lagradost.cloudstream3.LoadResponse.Companion' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/LoadResponse$Companion.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:334:17 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun LoadResponse.addAniListId(id: Int?): Unit
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:334:17 Class 'com.lagradost.cloudstream3.LoadResponse' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/LoadResponse.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:334:17 Class 'com.lagradost.cloudstream3.LoadResponse.Companion' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/LoadResponse$Companion.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:335:17 None of the following candidates is applicable:
+suspend fun LoadResponse.addTrailer(trailerUrl: String?, referer: String? = ..., addRaw: Boolean = ...): Unit
+suspend fun LoadResponse.addTrailer(trailerUrl: String?, referer: String? = ..., addRaw: Boolean = ..., headers: Map<String, String> = ...): Unit
+suspend fun LoadResponse.addTrailer(trailerUrls: List<String>?, referer: String? = ..., addRaw: Boolean = ...): Unit
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:342:28 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:347:24 Unresolved reference 'getAndUnpack'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:378:28 Class 'com.lagradost.cloudstream3.SubtitleFile' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/SubtitleFile.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:379:20 Class 'com.lagradost.cloudstream3.utils.ExtractorLink' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/ExtractorLink.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:381:22 Cannot inline bytecode built with JVM target 11 into bytecode that is being built with JVM target 1.8. Please specify proper '-jvm-target' option.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:381:22 Class 'com.lagradost.cloudstream3.utils.AppUtils' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/AppUtils.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:384:24 Unresolved reference 'get'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:388:27 Unresolved reference 'select'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:389:21 Method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:390:27 Argument type mismatch: actual type is 'T?', but 'K?' was expected.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:390:48 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:390:55 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:390:78 Argument type mismatch: actual type is 'kotlin.Nothing', but 'K' was expected.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:393:20 Class 'com.lagradost.cloudstream3.utils.Qualities' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/Qualities.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:393:20 Class 'com.lagradost.cloudstream3.utils.Qualities' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/Qualities.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:396:17 Class 'com.lagradost.cloudstream3.utils.ExtractorLink' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/ExtractorLink.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:397:21 Unresolved reference 'newExtractorLink'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:401:32 Unresolved reference 'INFER_TYPE'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:403:30 Unresolved reference 'referer'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:404:30 Unresolved reference 'quality'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:405:30 Unresolved reference 'headers'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:417:21 Class 'com.lagradost.cloudstream3.utils.ExtractorLink' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/ExtractorLink.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:418:25 Unresolved reference 'newExtractorLink'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:422:36 Unresolved reference 'INFER_TYPE'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:424:34 Unresolved reference 'referer'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:425:34 Unresolved reference 'headers'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:433:35 Unresolved reference 'select'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:434:19 Method 'iterator()' is ambiguous for this expression. Applicable candidates:
+fun <T> Enumeration<T>.iterator(): Iterator<T>
+fun <T> Iterator<T>.iterator(): Iterator<T>
+fun <K, V> Map<out K, V>.iterator(): Iterator<Map.Entry<K, V>>
+fun <K, V> MutableMap<K, V>.iterator(): MutableIterator<MutableMap.MutableEntry<K, V>>
+fun CharSequence.iterator(): CharIterator
+fun BufferedInputStream.iterator(): ByteIterator
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:435:24 Argument type mismatch: actual type is 'T?', but 'K?' was expected.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:435:39 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:435:46 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:435:69 Argument type mismatch: actual type is 'kotlin.Nothing', but 'K' was expected.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:438:20 Class 'com.lagradost.cloudstream3.utils.Qualities' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/Qualities.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:438:20 Class 'com.lagradost.cloudstream3.utils.Qualities' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/Qualities.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:442:21 Class 'com.lagradost.cloudstream3.utils.ExtractorLink' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/ExtractorLink.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:443:25 Unresolved reference 'newExtractorLink'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:447:36 Class 'com.lagradost.cloudstream3.utils.ExtractorLinkType' was compiled with an incompatible version of Kotlin. The actual metadata version is 2.4.0, but the compiler version 2.1.0 can read versions up to 2.2.0.
+The class is loaded from /home/runner/.gradle/caches/8.12/transforms/e5e6eda307268bf5b30e869897f60762/transformed/jetified-cloudstream.jar!/com/lagradost/cloudstream3/utils/ExtractorLinkType.class
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:449:34 Unresolved reference 'referer'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:450:34 Unresolved reference 'quality'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':AnimePaheProvider:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':AnimePaheProvider:compileDebugKotlin'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:130)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:293)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:128)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:116)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:40)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:42)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:331)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:318)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
+Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionException: A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+	at org.gradle.workers.internal.DefaultWorkerExecutor$WorkItemExecution.waitForCompletion(DefaultWorkerExecutor.java:287)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.lambda$waitForItemsAndGatherFailures$2(DefaultAsyncWorkTracker.java:130)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLocks(DefaultWorkerLeaseService.java:335)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLocks(DefaultWorkerLeaseService.java:318)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLock(DefaultWorkerLeaseService.java:323)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(DefaultAsyncWorkTracker.java:126)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(DefaultAsyncWorkTracker.java:92)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForAll(DefaultAsyncWorkTracker.java:78)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForCompletion(DefaultAsyncWorkTracker.java:66)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:229)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:212)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:195)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:162)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:67)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:37)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:40)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:29)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:175)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:65)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:36)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:107)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:56)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:64)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:43)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:125)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:36)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:289)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:48)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:35)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:61)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:127)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:116)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:40)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:42)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:331)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:318)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
+Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilation error. See log for more details
+	at org.jetbrains.kotlin.gradle.tasks.TasksUtilsKt.throwExceptionIfCompilationFailed(tasksUtils.kt:21)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:119)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:76)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:194)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:127)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:169)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:132)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:164)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:133)
+	... 2 more
+
+
+BUILD FAILED in 1m 14s
+6 actionable tasks: 6 executed
