@@ -52,11 +52,7 @@ jobs:
           for attempt in 1 2 3 4; do
             echo "Gradle build attempt $attempt of 4..."
             BUILD_STATUS=0
-            if [ $attempt -eq 1 ]; then
-              ./gradlew :AnimePaheProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
-            else
-              ./gradlew :AnimePaheProvider:make makePluginsJson --no-daemon --refresh-dependencies --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
-            fi
+            ./gradlew :AnimePaheProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
             echo "Attempt $attempt failed with code $BUILD_STATUS, waiting 10s before retry..."
             sleep 10
           done
