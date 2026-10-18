@@ -545,44 +545,42 @@ class AnimePaheProvider : MainAPI() {
 
         Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Acquiring lock for verification...")
 
-        // 2. Synchronized lock to prevent concurrent dialogs
-        synchronized(cfLock) {
-            // Re-check: did previous thread already solve it?
-            val cookies = cfCookies ?: CookieManager.getInstance().getCookie(MAIN_URL)
-            if (hasClearance(cookies)) {
-                val recheck = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
-                if (recheck != null && !isBlocked(recheck)) {
-                    Log.d("AnimePahe", "Verification already resolved by previous thread (200 OK)")
-                    return recheck.text
+        // 2. Concurrency gate using AtomicBoolean:
+        if (isDialogShowing.get()) {
+            Log.d("AnimePahe", "Verification dialog already active, waiting for leader thread...")
+            var waits = 0
+            while (isDialogShowing.get() && waits < 65) {
+                try {
+                    Thread.sleep(1000L)
+                } catch (_: InterruptedException) {
+                    break
                 }
+                waits++
             }
-
-            // Throttle
+        } else {
             val now = System.currentTimeMillis()
-            if (now - lastCfDialogAtMs < 4000L) {
-                Log.d("AnimePahe", "Throttling rapid dialog creation")
-                try { Thread.sleep(1500L) } catch (_: InterruptedException) {}
-                val throttledRetry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
-                if (throttledRetry != null && !isBlocked(throttledRetry)) {
-                    return throttledRetry.text
-                }
+            if (now - lastCfDialogAtMs > 3000L) {
+                lastCfDialogAtMs = now
+                CommonActivity.showToast("Opening AnimePahe Verification...")
+                val targetUrl = "$mainUrl/api?m=airing&page=1"
+                val solved = solveCloudflare(app, targetUrl)
+                Log.d("AnimePahe", "CF bypass dialog completed with result: $solved")
+            } else {
+                Log.d("AnimePahe", "Dialog recently completed, skipping duplicate invocation")
+                try {
+                    Thread.sleep(1000L)
+                } catch (_: InterruptedException) {}
             }
-            lastCfDialogAtMs = now
-
-            CommonActivity.showToast("Opening AnimePahe Verification...")
-            val targetUrl = "$mainUrl/api?m=airing&page=1"
-            val solved = solveCloudflare(app, targetUrl)
-            Log.d("AnimePahe", "CF bypass dialog completed with result: $solved")
-
-            // Re-attempt request with newly saved cookies
-            val retry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
-            if (retry != null && !isBlocked(retry)) {
-                CommonActivity.showToast("Verification successful!")
-                return retry.text
-            }
-
-            throw ErrorLoadingException("Cloudflare challenge encountered. Please complete the verification checkmark.")
         }
+
+        // 3. Re-attempt request with newly saved cookies
+        val retry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
+        if (retry != null && !isBlocked(retry)) {
+            CommonActivity.showToast("Verification successful!")
+            return retry.text
+        }
+
+        throw ErrorLoadingException("Cloudflare challenge encountered. Please complete the verification checkmark.")
     }
 
     override val mainPage = listOf(

@@ -47,8 +47,9 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
+          set -o pipefail
           BUILD_STATUS=0
-          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log || BUILD_STATUS=${PIPESTATUS[0]}
+          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log || BUILD_STATUS=$?
           
           if [ $BUILD_STATUS -ne 0 ]; then
             echo "::error::Gradle build failed with exit code $BUILD_STATUS"
