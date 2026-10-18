@@ -1,8 +1,8 @@
-version = 4
+version = 50
 
 cloudstream {
     language = "en"
-    description = "AnimePahe anime provider with Kwik and Pahe stream resolvers."
+    description = "AnimePahe anime provider with interactive Cloudflare Turnstile verification and Kwik resolvers."
     authors = listOf("Cloudstream Community")
 
     /**

@@ -46,23 +46,16 @@ jobs:
       - name: Build Plugins
         run: |
           cd $GITHUB_WORKSPACE/src
-          if [ -f prebuilt/AnimePahe.cs3 ]; then
-            echo "Deploying prebuilt AnimePahe.cs3..."
-            cp -v prebuilt/AnimePahe.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3
-            cp -v prebuilt/AnimePahe.cs3 $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3
-            cp -v prebuilt/plugins.json $GITHUB_WORKSPACE/builds/plugins.json
-            cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
-          else
-            chmod +x gradlew
-            set -o pipefail
-            ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log
 
-            echo "Searching and copying compiled artifacts..."
-            find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
-            find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
-            cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
-            cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
-          fi
+          echo "Searching and copying compiled artifacts..."
+          find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
+          cp $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3 || true
+          find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
+          cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
+          cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
           echo "Builds contents:"
           ls -la $GITHUB_WORKSPACE/builds/
 

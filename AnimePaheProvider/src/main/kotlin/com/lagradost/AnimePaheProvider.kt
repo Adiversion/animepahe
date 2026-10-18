@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.Base64
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.Window
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -45,10 +47,12 @@ class AnimePaheProvider : MainAPI() {
         )
 
         var cfCookies: String? = null
+        var cfUserAgent: String? = null
 
         fun getHeaders(base: String = MAIN_URL): Map<String, String> {
+            val ua = cfUserAgent ?: USER_AGENT
             val headers = mutableMapOf(
-                "User-Agent" to USER_AGENT,
+                "User-Agent" to ua,
                 "Accept" to "application/json, text/javascript, */*; q=0.01",
                 "Accept-Language" to "en-US,en;q=0.9",
                 "Referer" to "$base/",
@@ -87,14 +91,26 @@ class AnimePaheProvider : MainAPI() {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 return null
             }
-            val activity = getActivity() ?: return null
+            val activity = getActivity()
+            if (activity == null || activity.isFinishing || activity.isDestroyed) {
+                android.util.Log.e("AnimePahe", "No active Activity found for Cloudflare verification")
+                return null
+            }
             val latch = CountDownLatch(1)
             var solvedCookies: String? = null
             val handler = Handler(Looper.getMainLooper())
 
-            handler.post {
+            activity.runOnUiThread {
                 try {
-                    val dialog = Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+                    val dialog = Dialog(activity)
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog.window?.apply {
+                        setLayout(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                        setBackgroundDrawable(ColorDrawable(Color.parseColor("#121212")))
+                    }
 
                     val layout = LinearLayout(activity).apply {
                         orientation = LinearLayout.VERTICAL
@@ -150,6 +166,9 @@ class AnimePaheProvider : MainAPI() {
                     layout.addView(infoText)
 
                     val webView = WebView(activity).apply {
+                        isFocusable = true
+                        isFocusableInTouchMode = true
+                        requestFocus()
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT
@@ -160,14 +179,45 @@ class AnimePaheProvider : MainAPI() {
                     cookieManager.setAcceptCookie(true)
                     cookieManager.setAcceptThirdPartyCookies(webView, true)
 
+                    // Sanitize User-Agent to avoid WebView bot detection
+                    val baseUa = webView.settings.userAgentString ?: USER_AGENT
+                    val sanitizedUa = baseUa
+                        .replace("; wv", "")
+                        .replace(Regex("Version/[0-9.]+\\s*"), "")
+                        .replace("Android TV", "Android")
+                        .let { ua ->
+                            if (ua.contains("Android") && ua.contains("Safari/") && !ua.contains("Mobile Safari/")) {
+                                ua.replace("Safari/", "Mobile Safari/")
+                            } else {
+                                ua
+                            }
+                        }
+                    webView.settings.userAgentString = sanitizedUa
+                    cfUserAgent = sanitizedUa
+
                     fun checkForClearance(url: String?) {
-                        val currentCookies = cookieManager.getCookie(url ?: targetUrl) ?: ""
-                        if (currentCookies.contains("cf_clearance")) {
-                            cfCookies = currentCookies
-                            solvedCookies = currentCookies
+                        val domains = listOf(
+                            url ?: targetUrl,
+                            "https://animepahe.pw/",
+                            "https://animepahe.org/",
+                            "https://animepahe.com/",
+                            "https://challenges.cloudflare.com/"
+                        )
+                        val cookies = domains.mapNotNull { d ->
+                            cookieManager.getCookie(d)
+                        }.joinToString("; ")
+
+                        if (cookies.contains("cf_clearance")) {
+                            cfCookies = cookies
+                            solvedCookies = cookies
+                            cfUserAgent = webView.settings.userAgentString
                             latch.countDown()
                             handler.post {
-                                runCatching { dialog.dismiss() }
+                                runCatching {
+                                    if (dialog.isShowing) {
+                                        dialog.dismiss()
+                                    }
+                                }
                             }
                         }
                     }
@@ -178,7 +228,7 @@ class AnimePaheProvider : MainAPI() {
                         databaseEnabled = true
                         useWideViewPort = true
                         loadWithOverviewMode = true
-                        userAgentString = USER_AGENT
+                        loadsImagesAutomatically = true
                     }
 
                     webView.webViewClient = object : WebViewClient() {
@@ -211,6 +261,7 @@ class AnimePaheProvider : MainAPI() {
                             if (finalCookies?.contains("cf_clearance") == true) {
                                 cfCookies = finalCookies
                                 solvedCookies = finalCookies
+                                cfUserAgent = webView.settings.userAgentString
                             }
                             latch.countDown()
                         }
@@ -219,11 +270,13 @@ class AnimePaheProvider : MainAPI() {
                     webView.loadUrl(targetUrl)
                     dialog.show()
                 } catch (e: Throwable) {
+                    android.util.Log.e("AnimePahe", "Failed to display verification dialog", e)
+                    CommonActivity.showToast("Verification dialog error: ${e.message}")
                     latch.countDown()
                 }
             }
 
-            latch.await(75, TimeUnit.SECONDS)
+            latch.await(90, TimeUnit.SECONDS)
             return solvedCookies
         }
 
@@ -275,11 +328,13 @@ class AnimePaheProvider : MainAPI() {
             return direct.text
         }
 
-        // 2. If blocked, open in-app visual WebView dialog for interactive Cloudflare verification
+        // 2. If blocked, notify user and open in-app visual WebView dialog for interactive Cloudflare verification
+        CommonActivity.showToast("Opening AnimePahe Verification...")
         val solvedCookie = solveCloudflare(MAIN_URL)
         if (!solvedCookie.isNullOrBlank()) {
             val retry = app.get(url, headers = getHeaders())
             if (retry.code == 200 && !retry.text.contains("Just a moment...") && !retry.text.contains("challenges.cloudflare.com")) {
+                CommonActivity.showToast("Verification successful!")
                 return retry.text
             }
         }
@@ -565,7 +620,7 @@ class AnimePaheProvider : MainAPI() {
         val response = app.get(
             kwikUrl,
             headers = mapOf(
-                "User-Agent" to USER_AGENT,
+                "User-Agent" to (cfUserAgent ?: USER_AGENT),
                 "Referer" to "$mainUrl/"
             )
         ).text
