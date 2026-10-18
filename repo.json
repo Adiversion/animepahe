@@ -1,7 +1,7 @@
 {
-  "name": "AnimePahe",
-  "iconUrl": "https://animepahe.pw/favicon.ico",
-  "description": "AnimePahe anime provider with Kwik and Pahe stream resolvers.",
+  "name": "Adiversion",
+  "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png",
+  "description": "Adiversion's CloudStream repository with clean, open-source extensions.",
   "manifestVersion": 1,
   "pluginLists": [
     "https://raw.githubusercontent.com/Adiversion/animepahe/builds/plugins.json"
