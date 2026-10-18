@@ -1,8 +1,8 @@
-version = 3
+version = 4
 
 cloudstream {
     language = "hi"
-    description = "HDHub4u & Indian OTT Hub: JioHotstar, Netflix, Prime Video, Sony LIV, Zee5 with NetMirror direct streams & HubCloud 10Gbps fallback."
+    description = "Official HDHub4u provider for Bollywood, Hollywood, South Hindi Dubbed, and Web Series with 10Gbps HubCloud & SunCDN resolvers."
     authors = listOf("Adiversion")
 
     /**

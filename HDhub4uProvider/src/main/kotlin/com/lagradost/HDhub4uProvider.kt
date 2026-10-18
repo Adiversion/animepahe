@@ -24,21 +24,12 @@ class HDhub4uProvider : MainAPI() {
             "https://ml.theapii.org/host/",
             "https://cdn.hub4u.cloud/host/"
         )
-        val NETMIRROR_GATEWAYS = listOf(
-            "https://netmirrors.vip",
-            "https://net79.cc",
-            "https://net52.cc"
-        )
-        const val STREMIO_CATALOG_BASE =
-            "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/bmZ4LGRucCxhbXAsYXRwLGhibSxqaHMsemVlLHNvbnlsaXYsY3J1OjpJTjoxNzkyMzQzMDk5OTQ1OjA6MDo%3D/catalog"
         const val DOMAIN_SOURCE = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json"
         const val TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49"
         const val USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
         private var lastSyncTime = 0L
-        private var activeNetMirrorDomain = "https://netmirrors.vip"
-        private var lastNetMirrorSync = 0L
     }
 
     override var mainUrl = DEFAULT_DOMAIN
@@ -92,81 +83,16 @@ class HDhub4uProvider : MainAPI() {
         }
     }
 
-    /**
-     * Synchronize with active NetMirror gateway cluster (netmirrors.vip, net79.cc, net52.cc).
-     */
-    private suspend fun syncNetMirrorDomain() {
-        if (System.currentTimeMillis() - lastNetMirrorSync < 3600000 && activeNetMirrorDomain != "https://netmirrors.vip") return
-
-        for (gateway in NETMIRROR_GATEWAYS) {
-            try {
-                val res = app.get("$gateway/api/catalog/curated/trending", headers = mapOf("User-Agent" to USER_AGENT), timeout = 4)
-                if (res.code == 200 && res.text.contains("ok")) {
-                    activeNetMirrorDomain = gateway
-                    lastNetMirrorSync = System.currentTimeMillis()
-                    return
-                }
-            } catch (_: Throwable) {
-                // Try next gateway in cluster
-            }
-        }
-    }
-
     override val mainPage = mainPageOf(
-        "stremio:series:jhs" to "JioHotstar: Shows",
-        "stremio:movie:jhs" to "JioHotstar: Movies",
-        "stremio:series:nfx" to "Netflix: Shows",
-        "stremio:movie:nfx" to "Netflix: Movies",
-        "stremio:series:amp" to "Prime Video: Shows",
-        "stremio:movie:amp" to "Prime Video: Movies",
-        "stremio:series:sonyliv" to "Sony LIV: Shows",
-        "stremio:movie:sonyliv" to "Sony LIV: Movies",
-        "stremio:movie:zee" to "Zee5: Movies",
-        "" to "HDHub4u: Latest Releases",
-        "category/bollywood-movies/" to "HDHub4u: Bollywood",
-        "category/south-hindi-movies/" to "HDHub4u: South Hindi Dubbed",
-        "category/category/web-series/" to "HDHub4u: Web Series"
+        "" to "Latest Movies & Series",
+        "category/bollywood-movies/" to "Bollywood Movies",
+        "category/hollywood-movies/" to "Hollywood Movies",
+        "category/south-hindi-movies/" to "South Hindi Dubbed",
+        "category/hindi-dubbed/" to "Hindi Dubbed",
+        "category/category/web-series/" to "Web Series"
     )
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        if (request.data.startsWith("stremio:")) {
-            val parts = request.data.split(":")
-            val ctype = parts.getOrNull(1) ?: "series"
-            val cid = parts.getOrNull(2) ?: "jhs"
-
-            val skipParam = if (page > 1) "/skip=${(page - 1) * 100}" else ""
-            val stremioUrl = "$STREMIO_CATALOG_BASE/$ctype/$cid$skipParam.json"
-
-            val res = app.get(stremioUrl, timeout = 10).parsedSafe<StremioCatalogResponse>()
-            val metas = res?.metas ?: emptyList()
-
-            val items = metas.map { meta ->
-                val title = meta.name ?: "Unknown"
-                val poster = meta.poster
-                val imdbId = meta.id ?: ""
-                val loadPayload = "ott:$ctype:$imdbId:$title"
-
-                if (ctype == "series") {
-                    newTvSeriesSearchResponse(title, loadPayload, TvType.TvSeries) {
-                        this.posterUrl = poster
-                    }
-                } else {
-                    newMovieSearchResponse(title, loadPayload, TvType.Movie) {
-                        this.posterUrl = poster
-                    }
-                }
-            }
-
-            return newHomePageResponse(
-                list = HomePageList(
-                    name = request.name,
-                    list = items,
-                    isHorizontalImages = false
-                ),
-                hasNext = items.size >= 50
-            )
-        }
-
         syncDomain()
         val url = if (request.data.isEmpty()) {
             if (page <= 1) "$mainUrl/" else "$mainUrl/page/$page/"
@@ -244,84 +170,6 @@ class HDhub4uProvider : MainAPI() {
     }
 
     override suspend fun load(url: String): LoadResponse {
-        if (url.startsWith("ott:")) {
-            syncNetMirrorDomain()
-            val parts = url.split(":", limit = 4)
-            val ctype = parts.getOrNull(1) ?: "movie"
-            val imdbId = parts.getOrNull(2) ?: ""
-            val title = parts.getOrNull(3) ?: ""
-
-            var tmdbId: Int? = null
-            var tmdbPlot: String? = null
-            var tmdbBackdrop: String? = null
-            var tmdbPoster: String? = null
-            var tmdbYear: Int? = null
-
-            if (imdbId.startsWith("tt")) {
-                try {
-                    val findUrl = "https://api.themoviedb.org/3/find/$imdbId?api_key=$TMDB_API_KEY&external_source=imdb_id"
-                    val tmdbRes = app.get(findUrl, timeout = 5).parsedSafe<TmdbFindResponse>()
-                    val movie = tmdbRes?.movieResults?.firstOrNull()
-                    val tv = tmdbRes?.tvResults?.firstOrNull()
-
-                    if (ctype == "series" || tv != null) {
-                        tmdbId = tv?.id ?: movie?.id
-                        tmdbPlot = tv?.overview ?: movie?.overview
-                        tmdbBackdrop = (tv?.backdropPath ?: movie?.backdropPath)?.let { "https://image.tmdb.org/t/p/original$it" }
-                        tmdbPoster = (tv?.posterPath ?: movie?.posterPath)?.let { "https://image.tmdb.org/t/p/w500$it" }
-                        tmdbYear = tv?.firstAirDate?.take(4)?.toIntOrNull()
-                    } else {
-                        tmdbId = movie?.id
-                        tmdbPlot = movie?.overview
-                        tmdbBackdrop = movie?.backdropPath?.let { "https://image.tmdb.org/t/p/original$it" }
-                        tmdbPoster = movie?.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
-                        tmdbYear = movie?.releaseDate?.take(4)?.toIntOrNull()
-                    }
-                } catch (_: Throwable) {}
-            }
-
-            if (ctype == "series" && tmdbId != null) {
-                try {
-                    val tvDetails = app.get("https://api.themoviedb.org/3/tv/$tmdbId?api_key=$TMDB_API_KEY", timeout = 5)
-                        .parsedSafe<TmdbTvDetails>()
-                    val episodes = mutableListOf<Episode>()
-                    tvDetails?.seasons?.filter { (it.seasonNumber ?: 0) > 0 }?.forEach { season ->
-                        val sNum = season.seasonNumber ?: 1
-                        val epCount = season.episodeCount ?: 1
-                        for (ep in 1..epCount) {
-                            val epData = "stream:tv:$tmdbId:$sNum:$ep:$imdbId:$title"
-                            episodes.add(
-                                newEpisode(epData) {
-                                    this.name = "Episode $ep"
-                                    this.season = sNum
-                                    this.episode = ep
-                                    this.posterUrl = tmdbPoster
-                                }
-                            )
-                        }
-                    }
-                    if (episodes.isNotEmpty()) {
-                        return newTvSeriesLoadResponse(title, url, TvType.TvSeries, episodes) {
-                            this.posterUrl = tmdbPoster
-                            this.backgroundPosterUrl = tmdbBackdrop ?: tmdbPoster
-                            this.plot = tmdbPlot
-                            this.year = tmdbYear
-                            if (imdbId.isNotBlank()) addImdbId(imdbId)
-                        }
-                    }
-                } catch (_: Throwable) {}
-            }
-
-            val movieData = "stream:movie:${tmdbId ?: 0}:1:1:$imdbId:$title"
-            return newMovieLoadResponse(title, url, TvType.Movie, movieData) {
-                this.posterUrl = tmdbPoster
-                this.backgroundPosterUrl = tmdbBackdrop ?: tmdbPoster
-                this.plot = tmdbPlot
-                this.year = tmdbYear
-                if (imdbId.isNotBlank()) addImdbId(imdbId)
-            }
-        }
-
         syncDomain()
         val doc = app.get(url, headers = mapOf("User-Agent" to USER_AGENT)).document
 
@@ -434,82 +282,6 @@ class HDhub4uProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
-        if (data.startsWith("stream:")) {
-            syncNetMirrorDomain()
-            val parts = data.split(":", limit = 7)
-            val ctype = parts.getOrNull(1) ?: "movie"
-            val tmdbId = parts.getOrNull(2)?.toIntOrNull() ?: 0
-            val season = parts.getOrNull(3)?.toIntOrNull() ?: 1
-            val episode = parts.getOrNull(4)?.toIntOrNull() ?: 1
-            val imdbId = parts.getOrNull(5) ?: ""
-            val title = parts.getOrNull(6) ?: ""
-
-            coroutineScope {
-                // Stream Engine 1: NetMirror Direct API via active gateway cluster
-                val netmirrorJob = async {
-                    if (tmdbId > 0) {
-                        val candidateGateways = listOf(activeNetMirrorDomain) + NETMIRROR_GATEWAYS.filter { it != activeNetMirrorDomain }
-                        for (gateway in candidateGateways) {
-                            try {
-                                val apiUrl = "$gateway/api/embed-tmdb/$tmdbId?type=$ctype&se=$season&ep=$episode"
-                                val res = app.get(apiUrl, headers = mapOf("Referer" to "$gateway/"), timeout = 6)
-                                    .parsedSafe<NetMirrorEmbedResponse>()
-                                if (res?.ok == true && !res.streams.isNullOrEmpty()) {
-                                    res.streams.forEach { st ->
-                                        val stUrl = st.url ?: return@forEach
-                                        val resP = st.resolution ?: 720
-                                        val qual = when {
-                                            resP >= 1080 -> Qualities.P1080.value
-                                            resP >= 720 -> Qualities.P720.value
-                                            resP >= 480 -> Qualities.P480.value
-                                            else -> Qualities.P360.value
-                                        }
-                                        callback(
-                                            ExtractorLink(
-                                                source = "NetMirror",
-                                                name = "NetMirror [${resP}p Direct]",
-                                                url = stUrl,
-                                                referer = "$gateway/",
-                                                quality = qual,
-                                                type = ExtractorLinkType.VIDEO
-                                            )
-                                        )
-                                    }
-                                    break
-                                }
-                            } catch (_: Throwable) {}
-                        }
-                    }
-                }
-
-                // Stream Engine 2: Search HDHub4u by title for 10Gbps HubCloud / SunCDN fallback
-                val hdhubJob = async {
-                    if (title.isNotBlank()) {
-                        try {
-                            val searchResults = search(title)
-                            val bestMatch = searchResults.firstOrNull()
-                            if (bestMatch != null) {
-                                val hdhubLoaded = load(bestMatch.url)
-                                if (hdhubLoaded is MovieLoadResponse) {
-                                    loadLinks(hdhubLoaded.dataUrl, isCasting, subtitleCallback, callback)
-                                } else if (hdhubLoaded is TvSeriesLoadResponse) {
-                                    val epTarget = hdhubLoaded.episodes.find { it.season == season && it.episode == episode }
-                                        ?: hdhubLoaded.episodes.find { it.episode == episode }
-                                        ?: hdhubLoaded.episodes.firstOrNull()
-                                    if (epTarget != null) {
-                                        loadLinks(epTarget.data, isCasting, subtitleCallback, callback)
-                                    }
-                                }
-                            }
-                        } catch (_: Throwable) {}
-                    }
-                }
-
-                awaitAll(netmirrorJob, hdhubJob)
-            }
-            return true
-        }
-
         val rawLinks = if (data.contains("||")) {
             data.split("||").map { it.trim() }.filter { it.isNotBlank() }
         } else if (data.startsWith("http")) {
@@ -824,51 +596,13 @@ class HDhub4uProvider : MainAPI() {
         @JsonProperty("backdrop_path") val backdropPath: String? = null,
         @JsonProperty("poster_path") val posterPath: String? = null,
         @JsonProperty("overview") val overview: String? = null,
-        @JsonProperty("vote_average") val voteAverage: Double? = null,
-        @JsonProperty("first_air_date") val firstAirDate: String? = null,
-        @JsonProperty("release_date") val releaseDate: String? = null
+        @JsonProperty("vote_average") val voteAverage: Double? = null
     )
 
     data class HostResponse(
         @JsonProperty("h") val h: String? = null,
         @JsonProperty("c") val c: String? = null,
         @JsonProperty("t") val t: Long? = null
-    )
-
-    data class StremioCatalogResponse(
-        @JsonProperty("metas") val metas: List<StremioMeta>? = null
-    )
-
-    data class StremioMeta(
-        @JsonProperty("id") val id: String? = null,
-        @JsonProperty("name") val name: String? = null,
-        @JsonProperty("type") val type: String? = null,
-        @JsonProperty("poster") val poster: String? = null,
-        @JsonProperty("description") val description: String? = null,
-        @JsonProperty("releaseInfo") val releaseInfo: String? = null,
-        @JsonProperty("imdbRating") val imdbRating: String? = null
-    )
-
-    data class TmdbTvDetails(
-        @JsonProperty("seasons") val seasons: List<TmdbSeason>? = null
-    )
-
-    data class TmdbSeason(
-        @JsonProperty("season_number") val seasonNumber: Int? = null,
-        @JsonProperty("episode_count") val episodeCount: Int? = null,
-        @JsonProperty("name") val name: String? = null
-    )
-
-    data class NetMirrorEmbedResponse(
-        @JsonProperty("ok") val ok: Boolean? = null,
-        @JsonProperty("title") val title: String? = null,
-        @JsonProperty("streams") val streams: List<NetMirrorStream>? = null
-    )
-
-    data class NetMirrorStream(
-        @JsonProperty("url") val url: String? = null,
-        @JsonProperty("resolution") val resolution: Int? = null,
-        @JsonProperty("size") val size: Long? = null
     )
 }
 

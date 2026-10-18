@@ -1,5 +1,6 @@
 rootProject.name = "CloudstreamPlugins"
 
-// Explicitly include AnimePaheProvider and HDhub4uProvider plugin modules
+// Explicitly include AnimePaheProvider, HDhub4uProvider, and NetMirrorProvider plugin modules
 include("AnimePaheProvider")
-include("HDhub4uProvider")
+include("HDhub4uProvider")
+include("NetMirrorProvider")
