@@ -344,7 +344,7 @@ class AnimePaheProvider : MainAPI() {
 
 
     override val mainPage = listOf(
-        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", true)
+        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", false)
     )
 
     // ── Data Models ──────────────────────────────────────────────────

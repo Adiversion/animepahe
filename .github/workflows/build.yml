@@ -55,6 +55,7 @@ jobs:
           cp $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3 || true
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
+          cp icon.png $GITHUB_WORKSPACE/builds/icon.png || true
           cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
           echo "Builds contents:"
           ls -la $GITHUB_WORKSPACE/builds/
