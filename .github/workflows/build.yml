@@ -47,12 +47,13 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
-          ./gradlew make makePluginsJson
+          ./gradlew make makePluginsJson --stacktrace 2>&1 | tee build_output.log
 
           cp **/build/*.cs3 $GITHUB_WORKSPACE/builds/ || echo "No .cs3 files found"
           cp build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
 
-      - name: Push builds
+      - name: Push Builds
+        if: success()
         run: |
           cd $GITHUB_WORKSPACE/builds
           git config --local user.email "actions@github.com"
@@ -65,3 +66,14 @@ jobs:
           else
             echo "No changes to push"
           fi
+
+      - name: Push Build Failure Log
+        if: failure()
+        run: |
+          cd $GITHUB_WORKSPACE/builds
+          cp $GITHUB_WORKSPACE/src/build_output.log ./build_output.log || true
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add build_output.log
+          git commit -m "ci: record build failure log" || true
+          git push origin builds --force

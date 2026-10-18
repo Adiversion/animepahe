@@ -70,6 +70,7 @@ class AnimePaheProvider : MainAPI() {
         "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
         "Accept-Language" to "en-US,en;q=0.9",
         "Referer" to "$base/",
+        "X-Requested-With" to "XMLHttpRequest",
         "Cookie" to "__ddg2_=1234567890"
     )
 
