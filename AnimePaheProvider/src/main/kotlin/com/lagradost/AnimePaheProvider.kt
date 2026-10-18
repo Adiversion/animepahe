@@ -61,16 +61,20 @@ class AnimePaheProvider : MainAPI() {
         val CHALLENGE_TITLES = listOf(
             "one more step",
             "just a moment",
-            "just a moment...",
             "checking your browser",
             "attention required",
             "ddos-guard",
             "cloudflare",
-            "security check"
+            "security check",
+            "5 seconds",
+            "turnstile",
+            "wait a moment",
+            "verifying"
         )
 
         fun isChallengeTitle(title: String?): Boolean {
             val t = (title ?: "").lowercase().trim()
+            if (t.isEmpty() || t == "about:blank") return true
             return CHALLENGE_TITLES.any { t.contains(it) }
         }
 
@@ -101,6 +105,27 @@ class AnimePaheProvider : MainAPI() {
         }
 
         fun getHeaders(base: String = MAIN_URL): Map<String, String> {
+            if (cfUserAgent == null) {
+                val act = CommonActivity.activity ?: getActivity()
+                if (act != null) {
+                    runCatching {
+                        val defaultUa = WebSettings.getDefaultUserAgent(act)
+                        if (!defaultUa.isNullOrBlank()) {
+                            cfUserAgent = defaultUa
+                                .replace("; wv", "")
+                                .replace(Regex("Version/[0-9.]+\\s*"), "")
+                                .replace("Android TV", "Android")
+                                .let { ua ->
+                                    if (ua.contains("Android") && ua.contains("Safari/") && !ua.contains("Mobile Safari/")) {
+                                        ua.replace("Safari/", "Mobile Safari/")
+                                    } else {
+                                        ua
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
             val ua = cfUserAgent ?: USER_AGENT
             val headers = mutableMapOf(
                 "User-Agent" to ua,
@@ -249,6 +274,7 @@ class AnimePaheProvider : MainAPI() {
 
         private fun extractMergedCookies(currentUrl: String?): String {
             val cookieManager = CookieManager.getInstance()
+            runCatching { cookieManager.flush() }
             val map = LinkedHashMap<String, String>()
             val domains = listOfNotNull(
                 currentUrl,
@@ -405,7 +431,7 @@ class AnimePaheProvider : MainAPI() {
                         loadsImagesAutomatically = true
                         mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
 
-                        val baseUa = userAgentString ?: USER_AGENT
+                        val baseUa = userAgentString ?: cfUserAgent ?: USER_AGENT
                         val sanitizedUa = baseUa
                             .replace("; wv", "")
                             .replace(Regex("Version/[0-9.]+\\s*"), "")
@@ -418,6 +444,7 @@ class AnimePaheProvider : MainAPI() {
                                 }
                             }
                         userAgentString = sanitizedUa
+                        cfUserAgent = sanitizedUa
                     }
 
                     var cookiesSaved = false
@@ -456,13 +483,13 @@ class AnimePaheProvider : MainAPI() {
                         val currentClearance = extractClearanceToken(currentCookies)
                         val currentTitle = webView.title ?: ""
 
-                        val isFreshClearance = when {
-                            oldClearance != null -> currentClearance != null && currentClearance != oldClearance
-                            else -> currentClearance != null
-                        }
+                        val isChallenge = isChallengeTitle(currentTitle)
+                        val isSiteLoaded = !isChallenge && currentTitle.contains("animepahe", ignoreCase = true)
+                        val isNewClearance = oldClearance != null && currentClearance != null && currentClearance != oldClearance
+                        val hasClearanceOnLoadedSite = currentClearance != null && !isChallenge
 
-                        if (isFreshClearance && !isChallengeTitle(currentTitle)) {
-                            Log.d("AnimePahe", "Fresh clearance confirmed! Dismissing dialog...")
+                        if (isSiteLoaded || isNewClearance || hasClearanceOnLoadedSite) {
+                            Log.d("AnimePahe", "Verification confirmed (siteLoaded=$isSiteLoaded, newClearance=$isNewClearance, hasClearance=$hasClearanceOnLoadedSite, title='$currentTitle')! Dismissing dialog...")
                             saveCookiesAndDismiss(currentCookies)
                         }
                     }
@@ -513,13 +540,16 @@ class AnimePaheProvider : MainAPI() {
                             val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
                             val finalClearance = extractClearanceToken(finalCookies)
                             val finalTitle = webView.title ?: ""
-                            val isFresh = when {
-                                oldClearance != null -> finalClearance != null && finalClearance != oldClearance
-                                else -> finalClearance != null
-                            }
-                            if (isFresh && !isChallengeTitle(finalTitle)) {
+                            val isChallenge = isChallengeTitle(finalTitle)
+                            val isSiteLoaded = !isChallenge && finalTitle.contains("animepahe", ignoreCase = true)
+                            val isNewClearance = oldClearance != null && finalClearance != null && finalClearance != oldClearance
+                            val hasClearanceOnLoadedSite = finalClearance != null && !isChallenge
+
+                            if (isSiteLoaded || isNewClearance || hasClearanceOnLoadedSite) {
+                                Log.d("AnimePahe", "Dismissed with valid session (siteLoaded=$isSiteLoaded, title='$finalTitle'). Saving cookies...")
                                 saveCookiesAndDismiss(finalCookies)
                             } else {
+                                Log.w("AnimePahe", "Dismissed without completing verification (title='$finalTitle')")
                                 latch.countDown()
                             }
                         }
