@@ -1,10 +1,11 @@
 name: Build
 
-concurrency: 
-  group: "build"
+concurrency:
+  group: build-${{ github.ref }}
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -26,40 +27,41 @@ jobs:
 
       - name: Checkout Builds Branch
         uses: actions/checkout@v4
-        continue-on-error: true
         with:
           ref: "builds"
           path: "builds"
 
+      - name: Clean old builds
+        run: rm -f $GITHUB_WORKSPACE/builds/*.cs3 || true
+
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 17
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Build Plugins
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
           ./gradlew make makePluginsJson
-          mkdir -p $GITHUB_WORKSPACE/builds
-          rm -f $GITHUB_WORKSPACE/builds/*.cs3
-          cp **/build/*.cs3 $GITHUB_WORKSPACE/builds/ || true
-          cp build/plugins.json $GITHUB_WORKSPACE/builds/
 
-      - name: Push Builds
+          cp **/build/*.cs3 $GITHUB_WORKSPACE/builds/ || echo "No .cs3 files found"
+          cp build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
+
+      - name: Push builds
         run: |
           cd $GITHUB_WORKSPACE/builds
-          if [ ! -d .git ]; then
-            git init
-            git checkout -b builds
-            git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          fi
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "Build $GITHUB_SHA" || exit 0
-          git push origin builds --force
+
+          if [[ -n $(git status -s) ]]; then
+            git commit -m "Build $GITHUB_SHA" || true
+            git push origin builds --force
+          else
+            echo "No changes to push"
+          fi
