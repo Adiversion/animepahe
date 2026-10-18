@@ -47,8 +47,22 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
-          set -o pipefail
-          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log
+          BUILD_STATUS=0
+          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log || BUILD_STATUS=${PIPESTATUS[0]}
+          
+          if [ $BUILD_STATUS -ne 0 ]; then
+            echo "::error::Gradle build failed with exit code $BUILD_STATUS"
+            cat build_output.log | tail -n 80
+            cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
+            cd $GITHUB_WORKSPACE/builds
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add build_output.log
+            git commit -m "Build failure log $GITHUB_SHA" || true
+            git push origin builds --force || true
+            exit $BUILD_STATUS
+          fi
 
           echo "Searching and copying compiled artifacts..."
           find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
