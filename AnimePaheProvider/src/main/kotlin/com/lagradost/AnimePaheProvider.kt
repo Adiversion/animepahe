@@ -898,11 +898,9 @@ class AnimePaheProvider : MainAPI() {
                 runCatching {
                     val cleanTitle = animeTitle.replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "").trim()
                     val escapedTitle = cleanTitle.replace("\\", "\\\\").replace("\"", "\\\"")
-                    val query = """{"query":"query{Media(search:\"$escapedTitle\",type:ANIME){id bannerImage coverImage{extraLarge large}}}"}"""
                     val resp = app.post(
                         "https://graphql.anilist.co",
-                        data = query,
-                        headers = mapOf("Content-Type" to "application/json")
+                        json = mapOf("query" to "query{Media(search:\"$escapedTitle\",type:ANIME){id bannerImage coverImage{extraLarge large}}}")
                     ).parsedSafe<AniListResponse>()
                     val media = resp?.data?.Media
                     if (anilistId == null && media?.id != null) {
