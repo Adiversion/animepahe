@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.Window
 import android.webkit.CookieManager
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
@@ -180,18 +181,21 @@ class AnimePaheProvider : MainAPI() {
                     val cookieManager = CookieManager.getInstance()
                     cookieManager.setAcceptCookie(true)
                     cookieManager.setAcceptThirdPartyCookies(webView, true)
-
-                    // Purge stale cf_clearance tokens so old expired cookies cannot cause false positives
-                    listOf(
-                        "https://animepahe.pw",
-                        "https://animepahe.org",
-                        "https://animepahe.com",
-                        "https://challenges.cloudflare.com"
-                    ).forEach { d ->
-                        cookieManager.setCookie(d, "cf_clearance=; Max-Age=0; path=/")
-                        cookieManager.setCookie(d, "__cf_bm=; Max-Age=0; path=/")
-                    }
+                    cookieManager.removeAllCookies(null)
                     cookieManager.flush()
+
+                    webView.clearCache(true)
+                    webView.clearHistory()
+                    webView.settings.apply {
+                        javaScriptEnabled = true
+                        domStorageEnabled = true
+                        databaseEnabled = true
+                        cacheMode = WebSettings.LOAD_NO_CACHE
+                        useWideViewPort = true
+                        loadWithOverviewMode = true
+                        loadsImagesAutomatically = true
+                        mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    }
 
                     // Sanitize User-Agent to avoid WebView bot detection
                     val baseUa = webView.settings.userAgentString ?: USER_AGENT
@@ -218,43 +222,32 @@ class AnimePaheProvider : MainAPI() {
                             return true
                         }
 
-                        // 2. Title indicates challenge
-                        if (t.contains("just a moment") ||
-                            t.contains("one more step") ||
-                            t.contains("checking your browser") ||
-                            t.contains("attention required") ||
-                            t.contains("ddos-guard") ||
-                            t.contains("cloudflare") ||
-                            t.contains("security check") ||
-                            t.contains("challenge")) {
+                        // 2. Challenge title keywords (reverse-engineered from Phisher)
+                        val challengeTitles = listOf(
+                            "just a moment",
+                            "one more step",
+                            "checking your browser",
+                            "attention required",
+                            "ddos-guard",
+                            "cloudflare",
+                            "security check",
+                            "challenge"
+                        )
+                        if (challengeTitles.any { t.contains(it) }) {
                             return true
                         }
 
-                        // 3. Still on empty title, raw URL, or intermediate domain load
-                        if (t.isEmpty() || t == "about:blank" || t.startsWith("http://") || t.startsWith("https://") ||
-                            t == "animepahe.pw" || t == "animepahe.org" || t == "animepahe.com") {
+                        // 3. Initial loading state
+                        if (t.isEmpty() && (u.isEmpty() || u == "about:blank")) {
                             return true
                         }
 
                         return false
                     }
 
-                    fun isVerifiedAnimepahe(title: String?): Boolean {
-                        val t = (title ?: "").lowercase().trim()
-                        return t.contains("animepahe ::") || t.contains("okay-ish") || (t.contains("animepahe") && !t.contains("cloudflare"))
-                    }
-
-                    fun checkForClearance(url: String?) {
-                        val title = webView.title ?: ""
-                        val currentUrl = webView.url ?: url ?: ""
-
-                        // While Cloudflare challenge or intermediate loading is active, do NOT dismiss! Wait for user to complete it.
-                        if (isChallenge(title, currentUrl)) {
-                            android.util.Log.d("AnimePahe", "Challenge active: title='$title', url='$currentUrl'")
-                            return
-                        }
-
-                        val domains = listOf(
+                    fun extractMergedCookies(currentUrl: String?): String {
+                        val map = LinkedHashMap<String, String>()
+                        val domains = listOfNotNull(
                             currentUrl,
                             "https://animepahe.pw/",
                             "https://animepahe.org/",
@@ -262,12 +255,40 @@ class AnimePaheProvider : MainAPI() {
                             "https://challenges.cloudflare.com/",
                             "https://cloudflare.com/"
                         )
-                        val cookies = domains.mapNotNull { d ->
-                            cookieManager.getCookie(d)
-                        }.joinToString("; ")
+                        domains.forEach { d ->
+                            val cookieStr = cookieManager.getCookie(d)
+                            if (!cookieStr.isNullOrBlank()) {
+                                cookieStr.split(";").forEach { part ->
+                                    val trimmed = part.trim()
+                                    val eq = trimmed.indexOf("=")
+                                    if (eq > 0) {
+                                        val k = trimmed.substring(0, eq).trim()
+                                        val v = trimmed.substring(eq + 1).trim()
+                                        if (k.isNotEmpty() && v.isNotEmpty()) {
+                                            map[k] = v
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return map.entries.joinToString("; ") { "${it.key}=${it.value}" }
+                    }
 
-                        if (cookies.contains("cf_clearance") && isVerifiedAnimepahe(title)) {
+                    fun checkForClearance(url: String?) {
+                        val title = webView.title ?: ""
+                        val currentUrl = webView.url ?: url ?: ""
+
+                        // While Cloudflare challenge is active, wait for user to tick checkmark
+                        if (isChallenge(title, currentUrl)) {
+                            android.util.Log.d("AnimePahe", "Challenge active: title='$title', url='$currentUrl'")
+                            return
+                        }
+
+                        val cookies = extractMergedCookies(currentUrl)
+
+                        if (cookies.contains("cf_clearance")) {
                             android.util.Log.d("AnimePahe", "Clearance verified! Title='$title', saving cookies and dismissing dialog.")
+                            cookieManager.flush()
                             cfCookies = cookies
                             solvedCookies = cookies
                             cfUserAgent = webView.settings.userAgentString
@@ -284,17 +305,8 @@ class AnimePaheProvider : MainAPI() {
                                         dialog.dismiss()
                                     }
                                 }
-                            }, 600L)
+                            }, 1000L)
                         }
-                    }
-
-                    webView.settings.apply {
-                        javaScriptEnabled = true
-                        domStorageEnabled = true
-                        databaseEnabled = true
-                        useWideViewPort = true
-                        loadWithOverviewMode = true
-                        loadsImagesAutomatically = true
                     }
 
                     webView.webViewClient = object : WebViewClient() {
@@ -320,9 +332,10 @@ class AnimePaheProvider : MainAPI() {
                         if (latch.count > 0) {
                             val title = webView.title ?: ""
                             val currentUrl = webView.url ?: targetUrl
-                            if (!isChallenge(title, currentUrl) && isVerifiedAnimepahe(title)) {
-                                val finalCookies = cookieManager.getCookie(targetUrl)
-                                if (finalCookies?.contains("cf_clearance") == true) {
+                            if (!isChallenge(title, currentUrl)) {
+                                val finalCookies = extractMergedCookies(currentUrl)
+                                if (finalCookies.contains("cf_clearance")) {
+                                    cookieManager.flush()
                                     cfCookies = finalCookies
                                     solvedCookies = finalCookies
                                     cfUserAgent = webView.settings.userAgentString
@@ -399,7 +412,7 @@ class AnimePaheProvider : MainAPI() {
         android.util.Log.w("AnimePahe", "Direct request blocked (code=${direct?.code}). Launching Turnstile solver...")
         // 2. If blocked, notify user and open in-app visual WebView dialog for interactive Cloudflare verification
         CommonActivity.showToast("Opening AnimePahe Verification...")
-        val solvedCookie = solveCloudflare(MAIN_URL)
+        val solvedCookie = solveCloudflare(url)
         if (!solvedCookie.isNullOrBlank()) {
             android.util.Log.d("AnimePahe", "Retrying request to $url with solved cookies...")
             val retry = app.get(url, headers = getHeaders())
