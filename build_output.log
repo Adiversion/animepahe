@@ -164,13 +164,13 @@ Caused by: java.lang.AssertionError: Couldn't load KotlinClass from /home/runner
 Using fallback strategy: Compile without Kotlin daemon
 Try ./gradlew --stop if this issue persists
 If it does not look related to your configuration, please file an issue with logs to https://kotl.in/issue
-exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:121:56: warning: 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:147:56: warning: 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
 exception:                             WindowManager.LayoutParams.FLAG_FULLSCREEN,
 exception:                                                        ^^^^^^^^^^^^^^^
-exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:122:56: warning: 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:148:56: warning: 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
 exception:                             WindowManager.LayoutParams.FLAG_FULLSCREEN
 exception:                                                        ^^^^^^^^^^^^^^^
-exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:202:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
+exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:228:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
 exception:                         databaseEnabled = true
 exception:                         ^^^^^^^^^^^^^^^
 
@@ -1188,5 +1188,5 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/AnimePaheP
 > Task :makePluginsJson
 Created /home/runner/work/animepahe/animepahe/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 25s
+BUILD SUCCESSFUL in 1m 22s
 11 actionable tasks: 11 executed
