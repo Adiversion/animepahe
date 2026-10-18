@@ -31,9 +31,6 @@ jobs:
           ref: "builds"
           path: "builds"
 
-      - name: Clean old builds
-        run: rm -f $GITHUB_WORKSPACE/builds/*.cs3 || true
-
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
@@ -47,6 +44,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
+          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml" -o /dev/null || true
           curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom" -o /dev/null || true
           curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.jar" -o /dev/null || true
           for attempt in 1 2 3 4; do
@@ -54,6 +52,7 @@ jobs:
             BUILD_STATUS=0
             ./gradlew :AnimePaheProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
             echo "Attempt $attempt failed with code $BUILD_STATUS, waiting 15s before retry..."
+            curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml" -o /dev/null || true
             curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom" -o /dev/null || true
             sleep 15
           done
@@ -73,6 +72,7 @@ jobs:
           fi
 
           echo "Searching and copying compiled artifacts..."
+          rm -f $GITHUB_WORKSPACE/builds/*.cs3 || true
           find . -type f -name "*.cs3" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           cp $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3 || true
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
