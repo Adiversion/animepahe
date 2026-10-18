@@ -1,1196 +1,375 @@
 --------- beginning of main
-10-18 18:09:02.673 17194 17194 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 18:09:02.673 17194 17194 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 18:09:04.388 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16634786000000, downTime=16634786000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:04.387
-10-18 18:09:04.388 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16634787000000, downTime=16634787000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:04.388
-10-18 18:09:04.392 17194 17194 I ImeTracker: com.lagradost.cloudstream3:5ee87259: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:04.395 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:04.409 17194 17194 W MIUIInput: Back key is intercepted by the app
-10-18 18:09:05.182 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16635581000000, downTime=16635581000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:05.182
-10-18 18:09:05.182 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16635581000000, downTime=16635581000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:05.182
-10-18 18:09:05.185 17194 17194 I ImeTracker: com.lagradost.cloudstream3:c89fafe7: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:05.208 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:05.216 17194 17194 W MIUIInput: Back key is intercepted by the app
-10-18 18:09:05.218 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:05.227 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:05.228 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:05.234 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:05.235 17194 17194 D AutofillManager: view not autofillable - not passing ime action check
-10-18 18:09:05.249 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:05.324 17194 17194 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:05.324 17194 17194 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/d7a/d7a9683d088fd833f419776cd0e8cc85dcf04c53424fa17bc6a1955a8a7c9304.sm.webp
-10-18 18:09:05.324 17194 17194 E CoilImgLoader:   allowHardware: true
-10-18 18:09:05.324 17194 17194 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:05.983 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=16636377, downTime=16636377, phoneEventTime=18:09:05.978 } moveCount:0
+10-18 19:50:21.958 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:21.958 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:23.041 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22383984, downTime=22383984, phoneEventTime=19:50:23.036 } moveCount:0
 --------- beginning of system
-10-18 18:09:05.984 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:06.044 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=16636439, downTime=16636377, phoneEventTime=18:09:06.040 } moveCount:0
-10-18 18:09:06.059 17194 17194 I NavComponent: Navigating to fragment: 2131362305
-10-18 18:09:06.062 17194 17194 I ImeTracker: com.lagradost.cloudstream3:7d233886: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:06.088 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.101 17194 17194 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
-10-18 18:09:06.114 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.136 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.150 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.151 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.157 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.199 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.201 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.202 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:06.214 17194 17194 W Resources: Drawable com.lagradost.cloudstream3:drawable/go_forward_30 has unresolved theme attributes! Consider using Resources.getDrawable(int, Theme) or Context.getDrawable(int).
-10-18 18:09:06.214 17194 17194 W Resources: java.lang.RuntimeException
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.content.res.Resources.getDrawable(Resources.java:1049)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzd(com.google.android.gms:play-services-cast-framework@@22.1.0:2)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzc(com.google.android.gms:play-services-cast-framework@@22.1.0:1)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.zza(com.google.android.gms:play-services-cast-framework@@22.1.0:41)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.onCreateView(com.google.android.gms:play-services-cast-framework@@22.1.0:30)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.ensureInflatedView(FragmentStateManager.java:418)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:285)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentLayoutInflaterFactory.onCreateView(FragmentLayoutInflaterFactory.java:142)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater$FactoryMerger.onCreateView(LayoutInflater.java:226)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.tryCreateView(LayoutInflater.java:963)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:899)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:863)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1025)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:584)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:469)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.lagradost.cloudstream3.databinding.FragmentResultSwipeBinding.inflate(FragmentResultSwipeBinding.java:140)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragmentHelper$-CC.$default$createBinding(BaseFragment.kt:51)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.createBinding(BaseFragment.kt:124)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.onCreateView(BaseFragment.kt:160)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.createView(FragmentStateManager.java:577)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:286)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.executeOpsTogether(FragmentManager.java:2214)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.removeRedundantOperationsAndExecute(FragmentManager.java:2115)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.execPendingActions(FragmentManager.java:2052)
-10-18 18:09:06.214 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager$5.run(FragmentManager.java:703)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.os.Handler.handleCallback(Handler.java:959)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.os.Handler.dispatchMessage(Handler.java:100)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.os.Looper.loopOnce(Looper.java:249)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.os.Looper.loop(Looper.java:337)
-10-18 18:09:06.214 17194 17194 W Resources: 	at android.app.ActivityThread.main(ActivityThread.java:9682)
-10-18 18:09:06.214 17194 17194 W Resources: 	at java.lang.reflect.Method.invoke(Native Method)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:625)
-10-18 18:09:06.214 17194 17194 W Resources: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:944)
-10-18 18:09:06.220 17194 31283 I st.cloudstream3: Background concurrent mark compact GC freed 19MB AllocSpace bytes, 25(604KB) LOS objects, 34% free, 45MB/69MB, paused 1.156ms,1.418ms total 121.787ms
-10-18 18:09:06.228 17194 17194 I CS3ExoPlayer: SET STYLE = SaveCaptionStyle(foregroundColor=-1, backgroundColor=0, windowColor=0, edgeType=1, edgeColor=-16777216, typeface=2131296262, typefaceFilePath=null, elevation=0, fixedTextSize=20.0, edgeSize=null, removeCaptions=false, removeBloat=true, upperCase=false, bold=false, italic=false, backgroundRadius=null, alignment=null)
-10-18 18:09:06.229 17194 17194 I ImeTracker: com.lagradost.cloudstream3:e6144835: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:06.230 17194 12204 I RVM2    : applyMeta
-10-18 18:09:06.231 17194 12205 I SYNCVM  : addFromUrl = {"session":"89020780-9234-cf42-534e-53cb2c4ff91d","sessionDate":1792326158,"name":"Even the Student Council Has Its Holes!"}
-10-18 18:09:06.245 17194 17194 I CS3ExoPlayer: reloadPlayer
-10-18 18:09:06.245 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:06.245 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:06.245 17194 17194 D UserSceneDetector: invoke error.
-10-18 18:09:06.247 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:06.248 17194 17194 W View    : requestLayout() improperly called by android.widget.FrameLayout{4b939b4 I.E..V... ......I. 0,0-0,0 #7f0a0546 app:id/start_panel} during layout: running second layout pass
-10-18 18:09:06.248 17194 17194 W View    : requestLayout() improperly called by android.widget.FrameLayout{7aa99dd I.E..V... ......ID 1080,0-1080,2107 #7f0a0184 app:id/end_panel} during layout: running second layout pass
-10-18 18:09:06.399 17194 17194 D AutofillManager: view not autofillable - not passing ime action check
-10-18 18:09:06.399 17194 17194 D AutofillManager: view not autofillable - not passing ime action check
-10-18 18:09:07.110 17194 17194 W PanelsChildGestureRegionObserver: failed to register view with ID 2131362883. already registered
-10-18 18:09:07.128 17194 17194 I SYNCVM  : addSync mal = 61578
-10-18 18:09:07.128 17194 17194 I SYNCVM  : addSync simkl = {"Mal":"61578","AniList":"191656"}
-10-18 18:09:07.128 17194 17194 I SYNCVM  : addSync anilist = 191656
-10-18 18:09:07.128 17194 17194 I SYNCVM  : addSync kitsu = 49877
-10-18 18:09:07.128 17194 17194 I SYNCVM  : updateMetaAndUser
-10-18 18:09:07.128 17194 17194 I SYNCVM  : updateSynced
-10-18 18:09:07.128 17194  9520 I SYNCVM  : updateMetadata
-10-18 18:09:07.129 17194 12204 I SYNCVM  : updateUserData
-10-18 18:09:07.129 17194  9520 I SYNCVM  : updateMetadata loading anilist
-10-18 18:09:07.179 17194 17194 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{b006e3d V.E..V... ......ID 0,0-1080,550 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
-10-18 18:09:07.179 17194 17194 W View    : requestLayout() improperly called by android.view.View{f3b632 V.ED.V... ......ID 0,0-1080,550 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
-10-18 18:09:07.179 17194 17194 D SurfaceView: UPDATE null, mIsCastMode = false
-10-18 18:09:07.180 17194 17194 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 18:09:07.175 17194 17194 W st.cloudstream3: type=1400 audit(0.0:8549): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:07.181 17194 17194 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 18:09:07.181 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 18:09:07.181 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 18:09:07.181 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 18:09:07.179 17194 17194 W st.cloudstream3: type=1400 audit(0.0:8550): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:07.182 17194 17194 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#7911)/@0x30fe500, mIsProjectionMode = false
-10-18 18:09:07.188 17194 17194 I CS3ExoPlayer: newInstance = {mal=61578, anilist=191656, simkl={"Mal":"61578","AniList":"191656"}, kitsu=49877}
-10-18 18:09:07.188 17194 17194 I NavComponent: Navigating to fragment: 2131362303
-10-18 18:09:07.189 17194 17194 I ImeTracker: com.lagradost.cloudstream3:47483cfd: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:07.204 17194 17194 I CS3ExoPlayer: onStop
-10-18 18:09:07.204 17194 17194 I CS3ExoPlayer: saveData
-10-18 18:09:07.204 17194 17194 I CS3ExoPlayer: handleEvent Pause
-10-18 18:09:07.226 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:07.239 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:07.240 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:07.247 17194 17194 I CS3ExoPlayer: unwrapBundle = null
-10-18 18:09:07.247 17194 17194 I CS3ExoPlayer: unwrapBundle = Bundle[{resumePosition=0, uuid=debf63f1-0bf4-452c-a6d7-3fb555e4cb69, index=1, syncData={mal=61578, anilist=191656, simkl={"Mal":"61578","AniList":"191656"}, kitsu=49877}}]
-10-18 18:09:07.247 17194 17194 I SYNCVM  : addSync mal = 61578
-10-18 18:09:07.247 17194 17194 I SYNCVM  : addSync anilist = 191656
-10-18 18:09:07.247 17194 17194 I SYNCVM  : addSync simkl = {"Mal":"61578","AniList":"191656"}
-10-18 18:09:07.247 17194 17194 I SYNCVM  : addSync kitsu = 49877
-10-18 18:09:07.247 17194 17194 I CS3ExoPlayer: SET STYLE = SaveCaptionStyle(foregroundColor=-1, backgroundColor=0, windowColor=0, edgeType=1, edgeColor=-16777216, typeface=2131296262, typefaceFilePath=null, elevation=0, fixedTextSize=20.0, edgeSize=null, removeCaptions=false, removeBloat=true, upperCase=false, bold=false, italic=false, backgroundRadius=null, alignment=null)
-10-18 18:09:07.250 17194 17194 I PlayViewGen: attachGenerator with generator=com.lagradost.cloudstream3.ui.player.RepoLinkGenerator@6393ef3 and index=1
-10-18 18:09:07.250 17194 17194 I CS3ExoPlayer: unwrapBundle = null
-10-18 18:09:07.250 17194 17194 I CS3ExoPlayer: unwrapBundle = Bundle[{resumePosition=0, uuid=debf63f1-0bf4-452c-a6d7-3fb555e4cb69, index=1, syncData={mal=61578, anilist=191656, simkl={"Mal":"61578","AniList":"191656"}, kitsu=49877}}]
-10-18 18:09:07.250 17194 17194 I PlayViewGen: loadLinks with generator=com.lagradost.cloudstream3.ui.player.RepoLinkGenerator@6393ef3 and index=1
-10-18 18:09:07.250 17194 12686 I SYNCVM  : updateUserData
-10-18 18:09:07.250 17194 12686 D RepoLink: Resumed previous loading from 886s ago
-10-18 18:09:07.252 17194  6117 D InsetsController: default animation onReady types: 3 controller=android.view.InsetsAnimationControlImpl@10a323f
-10-18 18:09:07.252 17194  6117 D ViewRootImplStubImpl: requestedTypes: 519
-10-18 18:09:07.306 17194 17194 I CS3ExoPlayer: reloadPlayer
-10-18 18:09:07.306 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:07.306 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:07.308 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:07.308 17194 17194 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{4bdc37d V.E..V... ......ID 0,0-1080,2400 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
-10-18 18:09:07.309 17194 17194 W View    : requestLayout() improperly called by android.view.View{60a8272 V.ED.V... ......ID 0,0-1080,2400 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
-10-18 18:09:07.309 17194 17194 D SurfaceView: UPDATE null, mIsCastMode = false
-10-18 18:09:07.310 17194 17194 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 18:09:07.310 17194 17194 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 18:09:07.310 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 18:09:07.310 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 18:09:07.310 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 18:09:07.315 17194 17194 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:07.315 17194 17194 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:07.315 17194 17194 E CoilImgLoader:   allowHardware: true
-10-18 18:09:07.315 17194 17194 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:07.315 17194 17194 I CS3ExoPlayer: setActiveSubtitles 0
-10-18 18:09:07.315 17194 17194 I CS3ExoPlayer: autoSelectFromSettings = null
-10-18 18:09:07.315 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:07.315 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:07.307 17194 17194 W st.cloudstream3: type=1400 audit(0.0:8551): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:07.307 17194 17194 W st.cloudstream3: type=1400 audit(0.0:8552): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:07.322 17194 17194 D ActivityThread: Activity = com.lagradost.cloudstream3.MainActivity@f1610b3, onConfigurationChanged = {0.9 405mcc863mnc [en_IN] ldltr sw393dp w873dp h393dp 440dpi nrml long hdr widecg land uimode=12 night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 2400, 1080) mAppBounds=Rect(0, 0 - 2400, 1080) mMaxBounds=Rect(0, 0 - 2400, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_90 mInSplitScreen=false letterBoxed=false foScaled=false isSpecificEmbedded=false} s.9 fontWeightAdjustment=0/d themeChanged=0 themeChangedFlags=0 display=0 extraData = Bundle[{}] screenType=0/0}
-10-18 18:09:07.325 17194 17194 I ImeTracker: com.lagradost.cloudstream3:383b4a53: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:07.326 17194 17194 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 18:09:07.326 17194 17194 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
-10-18 18:09:07.327 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:07.328 17194 17194 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#7917)/@0x51017, mIsProjectionMode = false
-10-18 18:09:07.329 17194 17194 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{4bdc37d V.E..V... ......ID 0,0-2400,1080 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
-10-18 18:09:07.329 17194 17194 W View    : requestLayout() improperly called by android.view.View{60a8272 V.ED.V... ......ID 0,0-1080,2400 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
-10-18 18:09:07.329 17194 17194 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#86
-10-18 18:09:07.342 17194 17194 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 18:09:07.354 17194 17194 I CS3ExoPlayer: loadPlayer
-10-18 18:09:07.354 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:07.354 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:07.354 17194 17194 I CS3ExoPlayer: loadOnlinePlayer ExtractorLink(name=AnimePahe - ADN · 1080p, url=https://vault-99.owocdn.top/stream/99/02/d916b8938b1f98e0f69d313be7ea0d3b606f5f86ba64b3babfb0ceba95a7f61c/uwu.m3u8, referer=https://kwik.cx/, type=M3U8)
-10-18 18:09:07.355 17194 12204 I PreviewImgM3u8: Loading with url = https://vault-99.owocdn.top/stream/99/02/d916b8938b1f98e0f69d313be7ea0d3b606f5f86ba64b3babfb0ceba95a7f61c/uwu.m3u8 headers = {referer=https://kwik.cx/}
-10-18 18:09:07.355 17194 17194 D CS3ExoPlayer: Using CronetDataSource for ExtractorLink(name=AnimePahe - ADN · 1080p, url=https://vault-99.owocdn.top/stream/99/02/d916b8938b1f98e0f69d313be7ea0d3b606f5f86ba64b3babfb0ceba95a7f61c/uwu.m3u8, referer=https://kwik.cx/, type=M3U8)
-10-18 18:09:07.355 17194 17194 I CS3ExoPlayer: loadExo
-10-18 18:09:07.356 17194 17194 I ExoPlayerImpl: Init 193acb8 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35]
-10-18 18:09:07.357 17194 17194 I NextRenderersFactory: Loaded FfmpegVideoRenderer.
-10-18 18:09:07.357 17194 17194 I NextRenderersFactory: Loaded FfmpegAudioRenderer.
-10-18 18:09:07.359 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=androidx.media3.exoplayer.ExoPlayerImpl@193acb8, source=Player)
-10-18 18:09:07.359 17194 17194 I MediaSessionImpl: Init 32dc64 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35]
-10-18 18:09:07.362 17194 17194 I MediaSessionCompat: Couldn't find a unique registered media button receiver in the given context.
-10-18 18:09:07.375 17194 17194 I PlayerView: Handle event: StatusEvent(wasPlaying=IsBuffering, isPlaying=IsBuffering, source=Player)
-10-18 18:09:07.378 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=117285, toMs=117285, durationMs=-9223372036854775807)
-10-18 18:09:07.381 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:07.459 17194 17194 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#7911)/@0x30fe500, mIsCastMode = false
-10-18 18:09:07.460 17194 17194 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#7911)/@0x30fe500, mIsProjectionMode = false
-10-18 18:09:07.465 17194 12204 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:07.465 17194 12204 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:07.465 17194 12204 E CoilImgLoader:   allowHardware: true
-10-18 18:09:07.465 17194 12204 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:07.469 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:07.469 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:07.472 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:07.503 17194 12686 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:07.503 17194 12686 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:07.503 17194 12686 E CoilImgLoader:   allowHardware: true
-10-18 18:09:07.503 17194 12686 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:07.664 17194  6117 D InsetsAnimationCtrlImpl: notifyFinished shown: false, currentAlpha: 1.000000, currentInsets: Insets{left=0, top=0, right=0, bottom=0}
-10-18 18:09:07.665 17194  6117 D InsetsAnimationCtrlImpl: Animation finished abruptly.
-10-18 18:09:07.665 17194  6117 D InsetsController: onAnimationFinish showOnFinish: false
-10-18 18:09:07.665 17194 17194 D InsetsController: cancelAnimation of types:3 animType=1 host:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity invokeCallback=false
-10-18 18:09:07.665 17194 17194 D InsetsController: notifyFinished. shown: false runner=android.view.InsetsAnimationThreadControlRunner@4098643
-10-18 18:09:07.733 17194 12204 I PreviewImgM3u8: m3u8 is encrypted
-10-18 18:09:08.192 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=16638590, downTime=16638590, phoneEventTime=18:09:08.191 } moveCount:0
-10-18 18:09:08.193 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:08.246 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=16638643, downTime=16638590, phoneEventTime=18:09:08.244 } moveCount:0
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal: Playback error
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:   androidx.media3.exoplayer.ExoPlaybackException: Source error
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.ExoPlayerImplInternal.handleIoException(ExoPlayerImplInternal.java:941)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.ExoPlayerImplInternal.handleMessage(ExoPlayerImplInternal.java:911)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at android.os.Handler.dispatchMessage(Handler.java:103)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at android.os.Looper.loopOnce(Looper.java:249)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at android.os.Looper.loop(Looper.java:337)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at android.os.HandlerThread.run(HandlerThread.java:85)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:   Caused by: androidx.media3.common.ParserException: Loading finished before preparation is complete. {contentIsMalformed=true, dataType=1}
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.hls.HlsSampleStreamWrapper.maybeThrowPrepareError(HlsSampleStreamWrapper.java:304)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.hls.HlsMediaPeriod.maybeThrowPrepareError(HlsMediaPeriod.java:199)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.source.MergingMediaPeriod.maybeThrowPrepareError(MergingMediaPeriod.java:95)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.source.MaskingMediaPeriod.maybeThrowPrepareError(MaskingMediaPeriod.java:157)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.ExoPlayerImplInternal.doSomeWork(ExoPlayerImplInternal.java:1403)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       at androidx.media3.exoplayer.ExoPlayerImplInternal.handleMessage(ExoPlayerImplInternal.java:711)
-10-18 18:09:09.815 17194 12697 E ExoPlayerImplInternal:       ... 4 more
-10-18 18:09:09.822 17194 17194 I PlayerView: Handle event: ErrorEvent(error=androidx.media3.exoplayer.ExoPlaybackException: Source error, source=Player)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: playerError: (ExtractorLink(name=AnimePahe - ADN · 1080p, url=https://vault-99.owocdn.top/stream/99/02/d916b8938b1f98e0f69d313be7ea0d3b606f5f86ba64b3babfb0ceba95a7f61c/uwu.m3u8, referer=https://kwik.cx/, type=M3U8), null), type=androidx.media3.exoplayer.ExoPlaybackException, message=Source error, url=https://vault-99.owocdn.top/stream/99/02/d916b8938b1f98e0f69d313be7ea0d3b606f5f86ba64b3babfb0ceba95a7f61c/uwu.m3u8, headers={}, referer=https://kwik.cx/, position=117285, duration=1420048, isPlaying=false
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: androidx.media3.exoplayer.ExoPlaybackException: Source error
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.ExoPlayerImplInternal.handleIoException(ExoPlayerImplInternal.java:941)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.ExoPlayerImplInternal.handleMessage(ExoPlayerImplInternal.java:911)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at android.os.Handler.dispatchMessage(Handler.java:103)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at android.os.Looper.loopOnce(Looper.java:249)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at android.os.Looper.loop(Looper.java:337)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at android.os.HandlerThread.run(HandlerThread.java:85)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: Caused by: androidx.media3.common.ParserException: Loading finished before preparation is complete. {contentIsMalformed=true, dataType=1}
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.hls.HlsSampleStreamWrapper.maybeThrowPrepareError(HlsSampleStreamWrapper.java:304)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.hls.HlsMediaPeriod.maybeThrowPrepareError(HlsMediaPeriod.java:199)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.source.MergingMediaPeriod.maybeThrowPrepareError(MergingMediaPeriod.java:95)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.source.MaskingMediaPeriod.maybeThrowPrepareError(MaskingMediaPeriod.java:157)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.ExoPlayerImplInternal.doSomeWork(ExoPlayerImplInternal.java:1403)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	at androidx.media3.exoplayer.ExoPlayerImplInternal.handleMessage(ExoPlayerImplInternal.java:711)
-10-18 18:09:09.823 17194 17194 E CS3ExoPlayer: 	... 4 more
-10-18 18:09:09.823 17194 17194 I COMPACT : showToast = Encoding error
-10-18 18:09:09.823 17194 17194 I COMPACT : ERROR_CODE_PARSING_CONTAINER_MALFORMED (3001)
-10-18 18:09:09.823 17194 17194 I COMPACT : Source error
-10-18 18:09:09.830 17194 17194 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
-10-18 18:09:09.835 17194 17194 I CS3ExoPlayer: loadPlayer
-10-18 18:09:09.835 17194 17194 I CS3ExoPlayer: saveData
-10-18 18:09:09.836 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=117285, toMs=117285, durationMs=1420048)
-10-18 18:09:09.836 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:09.836 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=117285, toMs=117285, durationMs=1420048)
-10-18 18:09:09.837 17194 17194 I ExoPlayerImpl: Release 193acb8 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35] [media3.common, media3.ui, media3.exoplayer.hls, media3.exoplayer, media3.decoder, media3.database, media3.session, media3.datasource, media3.datasource.cronet, media3.extractor, media3.decoder.ffmpeg]
-10-18 18:09:09.838 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:09.840 17194 17194 I CS3ExoPlayer: loadOnlinePlayer ExtractorLink(name=AnimePahe - ADN · 720p, url=https://vault-99.owocdn.top/stream/99/02/98aba891b94e4daccd4b7dbc8a16120c421ffcb5ae2024c6ccd23c8d629cd117/uwu.m3u8, referer=https://kwik.cx/, type=M3U8)
-10-18 18:09:09.841 17194 10344 I PreviewImgM3u8: Loading with url = https://vault-99.owocdn.top/stream/99/02/98aba891b94e4daccd4b7dbc8a16120c421ffcb5ae2024c6ccd23c8d629cd117/uwu.m3u8 headers = {referer=https://kwik.cx/}
-10-18 18:09:09.841 17194 17194 D CS3ExoPlayer: Using CronetDataSource for ExtractorLink(name=AnimePahe - ADN · 720p, url=https://vault-99.owocdn.top/stream/99/02/98aba891b94e4daccd4b7dbc8a16120c421ffcb5ae2024c6ccd23c8d629cd117/uwu.m3u8, referer=https://kwik.cx/, type=M3U8)
-10-18 18:09:09.841 17194 17194 I CS3ExoPlayer: loadExo
-10-18 18:09:09.842 17194 17194 I ExoPlayerImpl: Init abf8dcf [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35]
-10-18 18:09:09.843 17194 17194 I NextRenderersFactory: Loaded FfmpegVideoRenderer.
-10-18 18:09:09.843 17194 17194 I NextRenderersFactory: Loaded FfmpegAudioRenderer.
-10-18 18:09:09.844 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=androidx.media3.exoplayer.ExoPlayerImpl@abf8dcf, source=Player)
-10-18 18:09:09.845 17194 17194 I MediaSessionImpl: Release 32dc64 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35] [media3.common, media3.ui, media3.exoplayer.hls, media3.exoplayer, media3.decoder, media3.database, media3.session, media3.datasource, media3.datasource.cronet, media3.extractor, media3.decoder.ffmpeg]
-10-18 18:09:09.846 17194 17194 I MediaSessionImpl: Init aaa6f3a [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35]
-10-18 18:09:09.847 17194 17194 I MediaSessionCompat: Couldn't find a unique registered media button receiver in the given context.
-10-18 18:09:09.852 17194 17194 W ExoPlayerImplInternal: Ignoring messages sent after release.
-10-18 18:09:09.857 17194 17194 I PlayerView: Handle event: StatusEvent(wasPlaying=IsBuffering, isPlaying=IsBuffering, source=Player)
-10-18 18:09:09.862 17194 17194 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 18:09:09.868 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:09.880 17194 17194 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 18:09:09.875 17194 17194 W st.cloudstream3: type=1400 audit(0.0:8554): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:09.880 17194 17194 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 18:09:09.880 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 18:09:09.880 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 18:09:09.880 17194 17194 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 18:09:09.875 17194 17194 W st.cloudstream3: type=1400 audit(0.0:8555): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:09.881 17194 17194 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 18:09:09.883 17194 12752 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 18:09:09.883 17194 17194 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 18:09:09.883 17194 17194 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#88
-10-18 18:09:09.885 17194 17194 D VRI[Toast]: vri.reportDrawFinished
-10-18 18:09:09.886 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=117285, toMs=117285, durationMs=-9223372036854775807)
-10-18 18:09:09.895 17194 17194 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
-10-18 18:09:09.901 17194 17194 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#90
-10-18 18:09:09.903 17194 17194 D VRI[Toast]: vri.reportDrawFinished
-10-18 18:09:09.922 17194 10344 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:09.922 17194 10344 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:09.922 17194 10344 E CoilImgLoader:   allowHardware: true
-10-18 18:09:09.922 17194 10344 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:09.974 17194 10345 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:09.974 17194 10345 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:09.974 17194 10345 E CoilImgLoader:   allowHardware: true
-10-18 18:09:09.974 17194 10345 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:10.388 17194 10345 I PreviewImgM3u8: m3u8 is encrypted
-10-18 18:09:11.411 17194 31283 I st.cloudstream3: Background concurrent mark compact GC freed 15MB AllocSpace bytes, 130(8684KB) LOS objects, 34% free, 44MB/68MB, paused 586us,1.224ms total 115.326ms
-10-18 18:09:11.836 17194 17194 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@929fbb6
-10-18 18:09:13.709 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16644108000000, downTime=16644108000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:13.709
-10-18 18:09:13.710 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16644108000000, downTime=16644108000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:13.710
-10-18 18:09:13.713 17194 17194 W MIUIInput: Back key is intercepted by the app
-10-18 18:09:13.714 17194 17194 D popFragment: Destroying Fragment
-10-18 18:09:13.720 17194 17194 I ImeTracker: com.lagradost.cloudstream3:ebf5eae0: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:13.721 17194 17194 I CS3ExoPlayer: onStop
-10-18 18:09:13.721 17194 17194 I CS3ExoPlayer: saveData
-10-18 18:09:13.722 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=117285, toMs=117285, durationMs=1420048)
-10-18 18:09:13.722 17194 17194 I CS3ExoPlayer: handleEvent Pause
-10-18 18:09:13.722 17194 17194 I PlayerView: Handle event: PauseEvent(source=Player)
-10-18 18:09:13.722 17194 17194 I PlayerView: Handle event: StatusEvent(wasPlaying=IsPaused, isPlaying=IsBuffering, source=Player)
-10-18 18:09:13.732 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.741 17194 17194 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
-10-18 18:09:13.755 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.777 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.790 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.791 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.797 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.818 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.818 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.820 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:13.828 17194 17194 W Resources: Drawable com.lagradost.cloudstream3:drawable/go_forward_30 has unresolved theme attributes! Consider using Resources.getDrawable(int, Theme) or Context.getDrawable(int).
-10-18 18:09:13.828 17194 17194 W Resources: java.lang.RuntimeException
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.content.res.Resources.getDrawable(Resources.java:1049)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzd(com.google.android.gms:play-services-cast-framework@@22.1.0:2)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzc(com.google.android.gms:play-services-cast-framework@@22.1.0:1)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.zza(com.google.android.gms:play-services-cast-framework@@22.1.0:41)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.onCreateView(com.google.android.gms:play-services-cast-framework@@22.1.0:30)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.ensureInflatedView(FragmentStateManager.java:418)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:285)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentLayoutInflaterFactory.onCreateView(FragmentLayoutInflaterFactory.java:142)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater$FactoryMerger.onCreateView(LayoutInflater.java:226)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.tryCreateView(LayoutInflater.java:963)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:899)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:863)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1025)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:584)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:469)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.databinding.FragmentResultSwipeBinding.inflate(FragmentResultSwipeBinding.java:140)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragmentHelper$-CC.$default$createBinding(BaseFragment.kt:51)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.createBinding(BaseFragment.kt:124)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.onCreateView(BaseFragment.kt:160)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.createView(FragmentStateManager.java:577)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:286)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.executeOpsTogether(FragmentManager.java:2205)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.removeRedundantOperationsAndExecute(FragmentManager.java:2115)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.popBackStackImmediate(FragmentManager.java:1116)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.popBackStackImmediate(FragmentManager.java:998)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager.handleOnBackPressed(FragmentManager.java:914)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.fragment.app.FragmentManager$1.handleOnBackPressed(FragmentManager.java:572)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.activity.OnBackPressedCallback$OnBackPressedEventHandler.onBackCompleted(OnBackPressedCallback.kt:172)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventHandler.doOnBackCompleted$navigationevent(NavigationEventHandler.kt:242)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventProcessor.dispatchOnCompleted(NavigationEventProcessor.kt:487)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventDispatcher.dispatchOnCompleted$navigationevent(NavigationEventDispatcher.kt:383)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventInput.dispatchOnBackCompleted(NavigationEventInput.kt:227)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.activity.OnBackPressedDispatcher$OnBackPressedEventInput.backCompleted(OnBackPressedDispatcher.kt:303)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.activity.OnBackPressedDispatcher.onBackPressed(OnBackPressedDispatcher.kt:248)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.BackPressedCallbackHelper$CallbackHelper.runDefault(BackPressedCallbackHelper.kt:22)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.MainActivity.onCreate$lambda$25(MainActivity.kt:2049)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.MainActivity$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.BackPressedCallbackHelper$attachBackPressedCallback$newCallback$1.handleOnBackPressed(BackPressedCallbackHelper.kt:40)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.activity.OnBackPressedCallback$OnBackPressedEventHandler.onBackCompleted(OnBackPressedCallback.kt:172)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventHandler.doOnBackCompleted$navigationevent(NavigationEventHandler.kt:242)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventProcessor.dispatchOnCompleted(NavigationEventProcessor.kt:487)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventDispatcher.dispatchOnCompleted$navigationevent(NavigationEventDispatcher.kt:383)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.navigationevent.NavigationEventInput.dispatchOnBackCompleted(NavigationEventInput.kt:227)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.activity.OnBackPressedDispatcher$OnBackPressedEventInput.backCompleted(OnBackPressedDispatcher.kt:303)
-10-18 18:09:13.828 17194 17194 W Resources: 	at androidx.activity.OnBackPressedDispatcher.onBackPressed(OnBackPressedDispatcher.kt:248)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.UIHelper$popCurrentPage$1.invokeSuspend(UIHelper.kt:294)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.UIHelper$popCurrentPage$1.invoke(UIHelper.kt:8)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.UIHelper$popCurrentPage$1.invoke(UIHelper.kt:4)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.Coroutines$main$1.invokeSuspend(Coroutines.kt:20)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.Coroutines$main$1.invoke(Coroutines.kt:8)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.utils.Coroutines$main$1.invoke(Coroutines.kt:4)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.lagradost.cloudstream3.mvvm.ArchComponentExtKt$launchSafe$obj$1.invokeSuspend(ArchComponentExt.kt:156)
-10-18 18:09:13.828 17194 17194 W Resources: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 18:09:13.828 17194 17194 W Resources: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.os.Handler.handleCallback(Handler.java:959)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.os.Handler.dispatchMessage(Handler.java:100)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.os.Looper.loopOnce(Looper.java:249)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.os.Looper.loop(Looper.java:337)
-10-18 18:09:13.828 17194 17194 W Resources: 	at android.app.ActivityThread.main(ActivityThread.java:9682)
-10-18 18:09:13.828 17194 17194 W Resources: 	at java.lang.reflect.Method.invoke(Native Method)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:625)
-10-18 18:09:13.828 17194 17194 W Resources: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:944)
-10-18 18:09:13.838 17194 17194 I CS3ExoPlayer: SET STYLE = SaveCaptionStyle(foregroundColor=-1, backgroundColor=0, windowColor=0, edgeType=1, edgeColor=-16777216, typeface=2131296262, typefaceFilePath=null, elevation=0, fixedTextSize=20.0, edgeSize=null, removeCaptions=false, removeBloat=true, upperCase=false, bold=false, italic=false, backgroundRadius=null, alignment=null)
-10-18 18:09:13.839 17194 17194 I ImeTracker: com.lagradost.cloudstream3:7d2e7685: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:13.840 17194 10345 I SYNCVM  : addFromUrl = {"session":"89020780-9234-cf42-534e-53cb2c4ff91d","sessionDate":1792326158,"name":"Even the Student Council Has Its Holes!"}
-10-18 18:09:13.900 17194  6117 D InsetsController: default animation onReady types: 3 controller=android.view.InsetsAnimationControlImpl@3cca80
-10-18 18:09:13.900 17194  6117 D ViewRootImplStubImpl: requestedTypes: 519
-10-18 18:09:13.908 17194 17194 I CS3ExoPlayer: onPause
-10-18 18:09:13.908 17194 17194 I CS3ExoPlayer: saveData
-10-18 18:09:13.908 17194 17194 I CS3ExoPlayer: handleEvent Pause
-10-18 18:09:13.908 17194 17194 I CS3ExoPlayer: loadPlayer
-10-18 18:09:13.908 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:13.908 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:13.908 17194 17194 I CS3ExoPlayer: loadOnlinePlayer ExtractorLink(name=YouTube H264, url=https://rr2---sn-xamxgpo-g2ge.googlevideo.com/videoplayback?expire=1792348748&ei=673Uat_5PM2D9fwP9tCt-Qo&ip=103.137.175.73&id=o-AJTTLrUjpTZguMpbn0EBxPnWum-QKNrr--OqftnDZC9T&itag=137&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=259&met=1792327148%2C&mh=_Y&mm=31%2C29&mn=sn-xamxgpo-g2ge%2Csn-2ocvhc-50&ms=au%2Crdu&mv=m&mvi=2&pl=24&rms=au%2Cau&gcr=in&initcwndbps=1662875&bui=AWzQHwpti_WPfWuN2SyPbgOsIDKHq43-c0vHvOAKq5UOY9sAuWX4GMyUWuZ15KWqkWzy8_Zf8ZlroH7Q&spc=mpRQ_ySO45kfQcnM4Rxhf10IAkugbTtJlAHesm2q1vOCA3D3mkWfbWcXt127&vprv=1&svpuc=1&mime=video%2Fmp4&rqh=1&gir=yes&clen=6671971&dur=58.391&lmt=1790741421937549&mt=1792326139&fvip=4&epbp=1&keepalive=yes&fexp=51565116&c=VISIONOS&txp=5532234&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AE0s2JYwRQIhAIfeXd_dQUtanjjFRzaB4zSZEnV6DHfAIuLMtC_hj8f4AiAhQZujZfhWpKq3hue1cGZjMvB5JYv1u5UgwltpTXRNIA%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRQIgNRUFVfC3l2nFWXE66kVTN3-hQ6XnrimzvmiPiWDrPFoCIQCjl0QpUoCdWBCUAUOMIrGAYpgnla6oEctTtuA1CE-NHg%3D%3D&cpn=XAJEaMNuU8W6ULFb, referer=, type=VIDEO)
-10-18 18:09:13.908 17194 17194 D CS3ExoPlayer: Using CronetDataSource for ExtractorLink(name=YouTube H264, url=https://rr2---sn-xamxgpo-g2ge.googlevideo.com/videoplayback?expire=1792348748&ei=673Uat_5PM2D9fwP9tCt-Qo&ip=103.137.175.73&id=o-AJTTLrUjpTZguMpbn0EBxPnWum-QKNrr--OqftnDZC9T&itag=137&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=259&met=1792327148%2C&mh=_Y&mm=31%2C29&mn=sn-xamxgpo-g2ge%2Csn-2ocvhc-50&ms=au%2Crdu&mv=m&mvi=2&pl=24&rms=au%2Cau&gcr=in&initcwndbps=1662875&bui=AWzQHwpti_WPfWuN2SyPbgOsIDKHq43-c0vHvOAKq5UOY9sAuWX4GMyUWuZ15KWqkWzy8_Zf8ZlroH7Q&spc=mpRQ_ySO45kfQcnM4Rxhf10IAkugbTtJlAHesm2q1vOCA3D3mkWfbWcXt127&vprv=1&svpuc=1&mime=video%2Fmp4&rqh=1&gir=yes&clen=6671971&dur=58.391&lmt=1790741421937549&mt=1792326139&fvip=4&epbp=1&keepalive=yes&fexp=51565116&c=VISIONOS&txp=5532234&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AE0s2JYwRQIhAIfeXd_dQUtanjjFRzaB4zSZEnV6DHfAIuLMtC_hj8f4AiAhQZujZfhWpKq3hue1cGZjMvB5JYv1u5UgwltpTXRNIA%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRQIgNRUFVfC3l2nFWXE66kVTN3-hQ6XnrimzvmiPiWDrPFoCIQCjl0QpUoCdWBCUAUOMIrGAYpgnla6oEctTtuA1CE-NHg%3D%3D&cpn=XAJEaMNuU8W6ULFb, referer=, type=VIDEO)
-10-18 18:09:13.908 17194 10344 I SYNCVM  : addFromUrl = {"session":"89020780-9234-cf42-534e-53cb2c4ff91d","sessionDate":1792326158,"name":"Even the Student Council Has Its Holes!"}
-10-18 18:09:13.909 17194 17194 I CS3ExoPlayer: loadExo
-10-18 18:09:13.910 17194 17194 I ExoPlayerImpl: Init ee46e3 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35]
-10-18 18:09:13.910 17194 17194 I NextRenderersFactory: Loaded FfmpegVideoRenderer.
-10-18 18:09:13.911 17194 17194 I NextRenderersFactory: Loaded FfmpegAudioRenderer.
-10-18 18:09:13.914 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=androidx.media3.exoplayer.ExoPlayerImpl@ee46e3, source=Player)
-10-18 18:09:13.914 17194 17194 I MediaSessionImpl: Init de1b799 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35]
-10-18 18:09:13.921 17194 17194 I MediaSessionCompat: Couldn't find a unique registered media button receiver in the given context.
-10-18 18:09:13.930 17194 17194 I PlayerView: Handle event: StatusEvent(wasPlaying=IsBuffering, isPlaying=IsBuffering, source=Player)
-10-18 18:09:13.940 17194 17194 I RVM2    : setMeta
-10-18 18:09:13.942 17194 10345 I RVM2    : applyMeta
-10-18 18:09:13.949 17194 17194 D UserSceneDetector: invoke error.
-10-18 18:09:13.954 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:13.962 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:13.971 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:13.979 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:13.987 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:13.995 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.003 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.012 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.020 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.029 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.037 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.045 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.051 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:14.054 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.060 17194 17194 W View    : requestLayout() improperly called by android.widget.FrameLayout{e6f5f57 I.E..V... ......I. 0,0-0,0 #7f0a0546 app:id/start_panel} during layout: running second layout pass
-10-18 18:09:14.060 17194 17194 W View    : requestLayout() improperly called by android.widget.FrameLayout{8c24a44 I.E..V... ......ID 2289,0-2289,787 #7f0a0184 app:id/end_panel} during layout: running second layout pass
-10-18 18:09:14.062 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.070 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.071 17194 11198 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
-10-18 18:09:14.079 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.079 17194  9520 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
-10-18 18:09:14.083 17194 17194 D ActivityThread: Activity = com.lagradost.cloudstream3.MainActivity@f1610b3, onConfigurationChanged = {0.9 405mcc863mnc [en_IN] ldltr sw393dp w393dp h873dp 440dpi nrml long hdr widecg port uimode=12 night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mInSplitScreen=false letterBoxed=false foScaled=false isSpecificEmbedded=false} s.10 fontWeightAdjustment=0/d themeChanged=0 themeChangedFlags=0 display=0 extraData = Bundle[{}] screenType=0/0}
-10-18 18:09:14.086 17194 17194 I ImeTracker: com.lagradost.cloudstream3:b82e8447: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:14.088 17194 17194 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 18:09:14.088 17194 17194 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
-10-18 18:09:14.089 17194 17194 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
-10-18 18:09:14.090 17194  6117 D UserSceneDetector: invoke error.
-10-18 18:09:14.096 17194 12204 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
-10-18 18:09:14.098 17194 17194 D UserSceneDetector: invoke error.
-10-18 18:09:14.099 17194  6010 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
-10-18 18:09:14.104 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.112 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.114 17194 12206 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
-10-18 18:09:14.121 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.129 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.134 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:14.135 17194 12203 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:14.135 17194 12203 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:14.135 17194 12203 E CoilImgLoader:   allowHardware: true
-10-18 18:09:14.136 17194 12203 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:14.137 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.140 17194 17194 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#93
-10-18 18:09:14.146 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.152 17194 17194 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 18:09:14.154 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.163 17194 31289 E FrameEvents: addRelease: Did not find frame.
-10-18 18:09:14.190 17194 17194 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:14.190 17194 17194 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/746/74671d34033e1ee80790d3fffb915000f2b4a23531aeb63bffd858c63e9f6e9e.sm.webp
-10-18 18:09:14.190 17194 17194 E CoilImgLoader:   allowHardware: true
-10-18 18:09:14.190 17194 17194 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:14.191 17194 17194 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#7917)/@0x51017, mIsCastMode = false
-10-18 18:09:14.191 17194 17194 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#7917)/@0x51017, mIsProjectionMode = false
-10-18 18:09:14.199 17194 12206 I SYNCVM  : updateUserData
-10-18 18:09:14.201 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:14.202 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=117285, toMs=117285, durationMs=1420048)
-10-18 18:09:14.204 17194 17194 I ExoPlayerImpl: Release abf8dcf [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35] [media3.common, media3.ui, media3.exoplayer.hls, media3.exoplayer, media3.decoder, media3.database, media3.session, media3.datasource, media3.datasource.cronet, media3.extractor, media3.decoder.ffmpeg, media3.datasource.okhttp]
-10-18 18:09:14.206 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:14.208 17194 17194 I MediaSessionImpl: Release aaa6f3a [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35] [media3.common, media3.ui, media3.exoplayer.hls, media3.exoplayer, media3.decoder, media3.database, media3.session, media3.datasource, media3.datasource.cronet, media3.extractor, media3.decoder.ffmpeg, media3.datasource.okhttp]
-10-18 18:09:14.211 17194 17194 W ExoPlayerImplInternal: Ignoring messages sent after release.
-10-18 18:09:14.213 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:14.365 17194  6117 D InsetsAnimationCtrlImpl: notifyFinished shown: true, currentAlpha: 1.000000, currentInsets: Insets{left=0, top=111, right=0, bottom=44}
-10-18 18:09:14.365 17194  6117 D InsetsAnimationCtrlImpl: Animation finished abruptly.
-10-18 18:09:14.365 17194  6117 D InsetsController: onAnimationFinish showOnFinish: true
-10-18 18:09:14.374 17194 17194 D InsetsController: cancelAnimation of types:3 animType=0 host:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity invokeCallback=false
-10-18 18:09:14.374 17194 17194 D InsetsController: notifyFinished. shown: true runner=android.view.InsetsAnimationThreadControlRunner@d00b983
-10-18 18:09:14.686 17194 17194 W PanelsChildGestureRegionObserver: failed to register view with ID 2131362883. already registered
-10-18 18:09:14.695 17194 12206 I SYNCVM  : addFromUrl = {"session":"89020780-9234-cf42-534e-53cb2c4ff91d","sessionDate":1792326158,"name":"Even the Student Council Has Its Holes!"}
-10-18 18:09:14.921 17194 12828 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 18:09:14.922 17194 12774 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type video
-10-18 18:09:14.919 17194 17194 W ExoPlayer:Place: type=1400 audit(0.0:8557): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:14.922 17194 12774 I MediaCodec: The process name is com.lagradost.cloudstream3 
-10-18 18:09:14.922 17194 12774 D MediaCodec: MediaCodec overwrite invalid pid -1->17194
-10-18 18:09:14.922 17194 12774 D MediaCodec: MediaCodec u-p-n client:10356-17194-com.lagradost.cloudstream3 process:10356-17194-com.lagradost.cloudstream3
-10-18 18:09:14.924 17194 12774 I VideoBox: VideoBox::VideoBox
-10-18 18:09:14.924 17194 12774 I VideoBox: [mId: 6] video-debug initVideobox: return false for videobox is not enabled
-10-18 18:09:14.924 17194 12774 I MediaCodec: init video box disabled for init not supported
-10-18 18:09:14.924 17194 12774 I VideoBox: VideoBox::~VideoBox
-10-18 18:09:14.925 17194 12774 I MiMediaCodecStub: MiMediaCodecStub::MiMediaCodecStub
-10-18 18:09:14.925 17194 12774 D MediaImpl: MediaImpl::sendDeviceState: 0:DEFAULT
-10-18 18:09:14.926 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: INITIALIZING
-10-18 18:09:14.926 17194 12830 D CCodec  : allocate(c2.qti.avc.decoder)
-10-18 18:09:14.926 17194 17194 I PlayerView: Handle event: EmbeddedSubtitlesFetchedEvent(tracks=[], source=Player)
-10-18 18:09:14.926 17194 17194 I PlayerView: Handle event: TracksChangedEvent(source=Player)
-10-18 18:09:14.926 17194 17194 I PlayerView: Handle event: SubtitlesUpdatedEvent(source=Player)
-10-18 18:09:14.928 17194 12830 I CCodec  : setting up 'default' as default (vendor) store
-10-18 18:09:14.931 17194 12830 I CCodec  : Created component [c2.qti.avc.decoder]
-10-18 18:09:14.931 17194 12830 D CCodecConfig: read media type: video/avc
-10-18 18:09:14.932 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-vpp-extradata.extradata-types
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_first_field.misr_dpb_luma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_first_field.misr_dpb_chroma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_first_field.misr_opb_luma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_first_field.misr_opb_chroma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_second_field.misr_dpb_luma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_second_field.misr_dpb_chroma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_second_field.misr_opb_luma
-10-18 18:09:14.934 17194 12830 D ReflectedParamUpdater: extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_second_field.misr_opb_chroma
-10-18 18:09:14.938 17194 12830 D CCodecConfig: ignoring local param raw.size (0xd2001800) as it is already supported
-10-18 18:09:14.938 17194 12830 D CCodecConfig: ignoring local param default.color (0x5200180b) as it is already supported
-10-18 18:09:14.938 17194 12830 D CCodecConfig: ignoring local param raw.hdr-static-info (0xd200180a) as it is already supported
-10-18 18:09:14.938 17194 12830 I CCodecConfig: query failed after returning 17 values (BAD_INDEX)
-10-18 18:09:14.939 17194 12830 D CCodecConfig: c2 config diff is Dict {
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::i32 algo.priority.value = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::float algo.rate.value = 30
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 algo.secure-mode.value = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::float coded.frame-rate.value = 30
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 coded.pl.level = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 coded.pl.profile = 20484
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 255
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 coded.vui.color.range = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 255
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 default.color.matrix = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 default.color.primaries = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 default.color.range = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 default.color.transfer = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 13271040
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 input.delay.value = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   string input.media-type.value = "video/avc"
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 output.delay.value = 7
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   string output.media-type.value = "video/raw"
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 raw.color.matrix = 255
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 raw.color.primaries = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 raw.color.range = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::u32 raw.color.transfer = 255
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::float raw.hdr-static-info.mastering.blue.x = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::float raw.hdr-static-info.mastering.blue.y = 0
-10-18 18:09:14.939 17194 12830 D CCodecConfig:   c2::float raw.hdr-static-info.mastering.gr
-10-18 18:09:14.939 17194 12830 W ColorUtils: expected specified color aspects (0:0:255:255)
-10-18 18:09:14.939 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: INITIALIZED
-10-18 18:09:14.941 17194 12829 I MediaCodec: MediaCodec will operate in async mode
-10-18 18:09:14.942 17194 12774 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 18:09:14.939 17194 17194 W ExoPlayer:Playb: type=1400 audit(0.0:8558): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:14.942 17194 12774 I MediaCodec: [mId: 6] [video-debug-dec] configure: ClientName: com.lagradost.cloudstream3 ComponentName: c2.qti.avc.decoder
-10-18 18:09:14.942 17194 12774 I MediaCodec: [mId: 6] [video-debug-dec] configure: ClientFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t max-height = 1080
-10-18 18:09:14.942 17194 12774 I MediaCodec:   string log-session-id = "0I-nFu4y5NJsSjI1"
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t importance = 1000
-10-18 18:09:14.942 17194 12774 I MediaCodec:   string mime = "video/avc"
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t priority = 0
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t color-standard = 1
-10-18 18:09:14.942 17194 12774 I MediaCodec:   Buffer csd-1 = {
-10-18 18:09:14.942 17194 12774 I MediaCodec:     00000000:  00 00 00 01 68 eb ef 2c                           ....h..,
-10-18 18:09:14.942 17194 12774 I MediaCodec:   }
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t color-transfer = 3
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t max-width = 1920
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t width = 1920
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t color-range = 2
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t rotation-degrees = 0
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t max-input-size = 1566720
-10-18 18:09:14.942 17194 12774 I MediaCodec:   int32_t height = 1080
-10-18 18:09:14.942 17194 12774 I MediaCodec:   Buffer csd-0 = {
-10-18 18:09:14.942 17194 12774 I MediaCodec:     00000000:  00 00 00 01 67 64 00 28  ac d1 00 78 02 27 e5 c0  ....gd.(...x.'..
-10-18 18:09:14.942 17194 12774 I MediaCodec:     00000010:  5a 80 80 80 a0 00 00 7d  20 00 17 70 01 e3 06 22  Z......} ..p..."
-10-18 18:09:14.942 17194 12774 I MediaCodec:     00000020:  40                                                @
-10-18 18:09:14.942 17194 12774 I MediaCodec:   }
-10-18 18:09:14.942 17194 12774 I MediaCodec: }
-10-18 18:09:14.942 17194 12774 W libc    : Access denied finding property "vendor.mm.loading.state"
-10-18 18:09:14.942 17194 12774 I MediaCodec: MediaStub sendDolbyVision
-10-18 18:09:14.942 17194 12774 I MediaCodec: MediaStub sendPackageName
-10-18 18:09:14.942 17194 12774 D MediaImpl: MediaImpl::sendPackageName: com.lagradost.cloudstream3
-10-18 18:09:14.942 17194 12774 D MediaStub: MediaStub::sendPackageName com.lagradost.cloudstream3
-10-18 18:09:14.942 17194 12774 I MediaCodec: MediaStub sendWidth/sendHeight
-10-18 18:09:14.942 17194 12774 I MediaCodec: configure: video box disabled because codec is not video
-10-18 18:09:14.942 17194 12774 I MiMediaCodec: fps video to display enabled
-10-18 18:09:14.942 17194 12774 I MiMediaCodec: The Fps from player is 0.000000  frameRateFloat -1.000000 frameRateInt -1
-10-18 18:09:14.943 17194 12774 E st.cloudstream3: Failed to get interface:vendor.xiaomi.hardware.videoservice.IVideoService/default
-10-18 18:09:14.943 17194 12774 W libc    : Access denied finding property "vendor.video.voipcapture.forceon"
-10-18 18:09:14.943 17194 12774 D st.cloudstream3: VideoServiceClientImpl::reportCodecStatus
-10-18 18:09:14.943 17194 12774 I MediaCodec: MediaStub sendMine
-10-18 18:09:14.943 17194 12774 D MediaImpl: MediaImpl::sendMine: video/avc
-10-18 18:09:14.943 17194 12774 D MediaStub: MediaStub::sendMine video/avc
-10-18 18:09:14.943 17194 12774 D MediaCodec: currery video type video/avc
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo: com.lagradost.cloudstream3 create video codec index: [810496870336954374]
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo: [810496870336954374] componentName: c2.qti.avc.decoder
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo: [810496870336954374] ClientFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t max-height = 1080
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       string log-session-id = "0I-nFu4y5NJsSjI1"
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t importance = 1000
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       string mime = "video/avc"
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t priority = 0
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t color-standard = 1
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       Buffer csd-1 = {
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:         00000000:  00 00 00 01 68 eb ef 2c                           ....h..,
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       }
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t color-transfer = 3
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t max-width = 1920
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t width = 1920
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t color-range = 2
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t rotation-degrees = 0
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t max-input-size = 1566720
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t height = 1080
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       Buffer csd-0 = {
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:         00000000:  00 00 00 01 67 64 00 28  ac d1 00 78 02 27 e5 c0  ....gd.(...x.'..
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:         00000010:  5a 80 80 80 a0 00 00 7d  20 00 17 70 01 e3 06 22  Z......} ..p..."
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:         00000020:  40                                                @
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       }
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:       int32_t vendor.qti-ext-cpu-affinity-set-mask.value = 255
-10-18 18:09:14.943 17194 12774 D VideoCodecInfo:     }
-10-18 18:09:14.943 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] connectToSurface: surface 0xb400007d16376b30, mSurface 0x0
-10-18 18:09:14.943 17194 12829 D SurfaceUtils: connecting to surface 0xb400007d16376b40, reason connectToSurface
-10-18 18:09:14.943 17194 12829 I MediaCodec: [c2.qti.avc.decoder] setting surface generation to 17606664
-10-18 18:09:14.943 17194 12829 D SurfaceUtils: disconnecting from surface 0xb400007d16376b40, reason connectToSurface(reconnect)
-10-18 18:09:14.943 17194 12829 D SurfaceUtils: connecting to surface 0xb400007d16376b30, reason connectToSurface(reconnect-with-listener)
-10-18 18:09:14.943 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: CONFIGURING
-10-18 18:09:14.943 17194 12830 D CCodec  : [c2.qti.avc.decoder] buffers are bound to CCodec for this session
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for log-session-id
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for importance
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for color-standard
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for csd-1
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for native-window
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for native-window-generation
-10-18 18:09:14.943 17194 12830 D CCodecConfig: no c2 equivalents for flags
-10-18 18:09:14.943 17194 12830 D ReflectedParamUpdater: input.size.height found, but param #-771735522 isn't present to update
-10-18 18:09:14.943 17194 12830 D ReflectedParamUpdater: input.size.width found, but param #-771735522 isn't present to update
-10-18 18:09:14.944 17194 12830 D CCodecConfig: c2 config diff is   c2::u32 default.color.matrix = 1
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 default.color.primaries = 1
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 default.color.range = 2
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 default.color.transfer = 3
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 3133440
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 raw.max-size.height = 1080
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 raw.max-size.width = 1920
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 raw.size.height = 1080
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 raw.size.width = 1920
-10-18 18:09:14.944 17194 12830 D CCodecConfig:   c2::u32 vendor.qti-ext-cpu-affinity-set-mask.value = 255
-10-18 18:09:14.944 17194 12830 W Codec2Client: query -- param skipped: index = 1107298332.
-10-18 18:09:14.944 17194 12830 D CCodec  : client requested max input size 1566720, which is smaller than what component recommended (3133440); overriding with component recommendation.
-10-18 18:09:14.944 17194 12830 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
-10-18 18:09:14.944 17194 12830 D CCodec  : encoding statistics level = 0
-10-18 18:09:14.944 17194 12830 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t feature-secure-playback = 0
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t frame-rate = 30
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t height = 1080
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t max-input-size = 3133440
-10-18 18:09:14.944 17194 12830 D CCodec  :   string mime = "video/avc"
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t priority = 0
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t profile = 8
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t width = 1920
-10-18 18:09:14.944 17194 12830 D CCodec  :   Rect crop(0, 0, 1919, 1079)
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t vendor.qti-ext-cpu-affinity-set-mask.value = 255
-10-18 18:09:14.944 17194 12830 D CCodec  : }
-10-18 18:09:14.944 17194 12830 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t android._color-format = 0
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t android._video-scaling = 1
-10-18 18:09:14.944 17194 12830 D CCodec  :   Buffer hdr-static-info = {
-10-18 18:09:14.944 17194 12830 D CCodec  :     00000000:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
-10-18 18:09:14.944 17194 12830 D CCodec  :     00000010:  00 00 00 00 00 00 00 00  00                       .........
-10-18 18:09:14.944 17194 12830 D CCodec  :   }
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t color-standard = 130817
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t color-range = 2
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t color-transfer = 65791
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t rotation-degrees = 0
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t priority = 0
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t sar-height = 1
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t sar-width = 1
-10-18 18:09:14.944 17194 12830 D CCodec  :   Rect crop(0, 0, 1919, 1079)
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t width = 1920
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t feature-secure-playback = 0
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t frame-rate = 30
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t height = 1080
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t max-height = 1080
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t max-width = 1920
-10-18 18:09:14.944 17194 12830 D CCodec  :   string mime = "video/raw"
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t android._dataspace = 260
-10-18 18:09:14.944 17194 12830 D CCodec  :   int32_t color-format = 2130708361
-10-18 18:09:14.944 17194 12830 D CCodec  : }
-10-18 18:09:14.945 17194 12830 I CCodecConfig: query failed after returning 18 values (BAD_INDEX)
-10-18 18:09:14.945 17194 12829 I MediaCodec: SDR disable brighten
-10-18 18:09:14.945 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: CONFIGURED
-10-18 18:09:14.945 17194 12774 D MediaCodec: updateVppSurFpsValue :  0
-10-18 18:09:14.945 17194 12774 D MediaCodec: keep callback message for reclaim
-10-18 18:09:14.945 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: STARTING
-10-18 18:09:14.955 17194  6237 D BufferPoolAccessor2.0: bufferpool2 0xb400007c5635ef88 : 0(0 size) total buffers - 0(0 size) used buffers - 677/683 (recycle/alloc) - 9/676 (fetch/transfer)
-10-18 18:09:14.956 17194  6237 D BufferPoolAccessor2.0: Destruction - bufferpool2 0xb400007c5635ef88 cached: 0/0M, 0/0% in use; allocs: 683, 99% recycled; transfers: 676, 99% unfetched
-10-18 18:09:14.959 17194 12830 W Codec2Client: query -- param skipped: index = 1342179345.
-10-18 18:09:14.959 17194 12830 W Codec2Client: query -- param skipped: index = 2415921170.
-10-18 18:09:14.959 17194 12830 W Codec2Client: query -- param skipped: index = 1610614798.
-10-18 18:09:14.959 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Query input allocators returned 0 params => BAD_INDEX (6)
-10-18 18:09:14.960 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Created input block pool with allocatorID 16 => poolID 23 - OK (0)
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel: [mId: 6] [video-debug-dec] start: inputFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t feature-secure-playback = 0
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t frame-rate = 30
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t height = 1080
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t max-input-size = 3133440
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   string mime = "video/avc"
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t priority = 0
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t profile = 8
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t width = 1920
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   Rect crop(0, 0, 1919, 1079)
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel:   int32_t vendor.qti-ext-cpu-affinity-set-mask.value = 255
-10-18 18:09:14.960 17194 12830 I CCodecBufferChannel: }
-10-18 18:09:14.960 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] start: max output delay 18
-10-18 18:09:14.960 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Query output allocators returned 0 params => BAD_INDEX (6)
-10-18 18:09:14.960 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Query output surface allocator returned 0 params => BAD_INDEX (6)
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel: [c2.qti.avc.decoder#639] Created output block pool with allocatorID 18 => poolID 435 - OK
-10-18 18:09:14.961 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Configured output block pool ids 435 => OK
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel: [mId: 6] [video-debug-dec] start: outputFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t android._color-format = 0
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t android._video-scaling = 1
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   Buffer hdr-static-info = {
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:     00000000:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:     00000010:  00 00 00 00 00 00 00 00  00                       .........
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   }
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t color-standard = 130817
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t color-range = 2
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t color-transfer = 65791
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t rotation-degrees = 0
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t priority = 0
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t sar-height = 1
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t sar-width = 1
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   Rect crop(0, 0, 1919, 1079)
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t width = 1920
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t feature-secure-playback = 0
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t frame-rate = 30
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t height = 1080
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t max-height = 1080
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t max-width = 1920
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   string mime = "video/raw"
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t android._dataspace = 260
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel:   int32_t color-format = 2130708361
-10-18 18:09:14.961 17194 12830 I CCodecBufferChannel: }
-10-18 18:09:14.961 17194 12830 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
-10-18 18:09:14.961 17194 12830 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
-10-18 18:09:14.961 17194 12830 D Codec2Client: setOutputSurface -- generation=17606664 consumer usage=0x900
-10-18 18:09:14.962 17194 12830 D qdgralloc: Falling back to default YUV format - no camera/video specific format defined, usage 0x100
-10-18 18:09:14.963 17194 12830 D Codec2Client: Surface configure completed
-10-18 18:09:14.963 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] start: updating output delay 7
-10-18 18:09:14.965 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: STARTED
-10-18 18:09:14.966 17194 12829 I MiMediaCodec: The CSD is not calculated
-10-18 18:09:14.966 17194 12774 I DMCodecAdapterFactory: Creating an asynchronous MediaCodec adapter for track type audio
-10-18 18:09:14.967 17194 12829 I MiMediaCodec: The CSD is not calculated
-10-18 18:09:14.967 17194 17194 I PlayerView: Handle event: TracksChangedEvent(source=Player)
-10-18 18:09:14.967 17194 12774 I MediaCodec: The process name is com.lagradost.cloudstream3 
-10-18 18:09:14.967 17194 12774 D MediaCodec: MediaCodec overwrite invalid pid -1->17194
-10-18 18:09:14.967 17194 12774 D MediaCodec: MediaCodec u-p-n client:10356-17194-com.lagradost.cloudstream3 process:10356-17194-com.lagradost.cloudstream3
-10-18 18:09:14.969 17194  6237 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Ignoring stale input buffer done callback: last flush index = 0, frameIndex = 0
-10-18 18:09:14.969 17194 12774 I VideoBox: VideoBox::VideoBox
-10-18 18:09:14.969 17194 12774 I VideoBox: [mId: 7] video-debug initVideobox: return false for videobox is not enabled
-10-18 18:09:14.969 17194 12774 I MediaCodec: init video box disabled for init not supported
-10-18 18:09:14.969 17194 12774 I VideoBox: VideoBox::~VideoBox
-10-18 18:09:14.970 17194 12774 D MediaImpl: MediaImpl::sendDeviceState: 0:DEFAULT
-10-18 18:09:14.971 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: INITIALIZING
-10-18 18:09:14.971 17194 12837 D CCodec  : allocate(c2.android.opus.decoder)
-10-18 18:09:14.973 17194 12837 I CCodec  : setting up 'default' as default (vendor) store
-10-18 18:09:15.039 17194  6237 D BufferPoolAccessor2.0: bufferpool2 0xb400007c562f6c38 : 0(0 size) total buffers - 0(0 size) used buffers - 571/577 (recycle/alloc) - 14/567 (fetch/transfer)
-10-18 18:09:15.039 17194  6237 D BufferPoolAccessor2.0: Destruction - bufferpool2 0xb400007c562f6c38 cached: 0/0M, 0/0% in use; allocs: 577, 99% recycled; transfers: 567, 98% unfetched
-10-18 18:09:15.039 17194 12837 I CCodec  : Created component [c2.android.opus.decoder]
-10-18 18:09:15.040 17194 12837 D CCodecConfig: read media type: audio/opus
-10-18 18:09:15.042 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
-10-18 18:09:15.042 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
-10-18 18:09:15.042 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
-10-18 18:09:15.042 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
-10-18 18:09:15.042 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
-10-18 18:09:15.042 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
-10-18 18:09:15.043 17194 12837 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
-10-18 18:09:15.043 17194 12837 I CCodecConfig: query failed after returning 8 values (BAD_INDEX)
-10-18 18:09:15.043 17194 12837 D CCodecConfig: c2 config diff is Dict {
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 coded.bitrate.value = 6000
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 7650
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 input.delay.value = 0
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   string input.media-type.value = "audio/opus"
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 output.large-frame.max-size = 0
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 output.large-frame.threshold-size = 0
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   string output.media-type.value = "audio/raw"
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 raw.channel-count.value = 1
-10-18 18:09:15.043 17194 12837 D CCodecConfig:   c2::u32 raw.sample-rate.value = 48000
-10-18 18:09:15.043 17194 12837 D CCodecConfig: }
-10-18 18:09:15.044 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: INITIALIZED
-10-18 18:09:15.045 17194 12837 I MediaCodec: MediaCodec will operate in async mode
-10-18 18:09:15.046 17194 12774 I MediaCodec: [mId: 7] [audio-debug-dec] configure: ClientName: com.lagradost.cloudstream3 ComponentName: c2.android.opus.decoder
-10-18 18:09:15.046 17194 12774 I MediaCodec: [mId: 7] [audio-debug-dec] configure: ClientFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:15.046 17194 12774 I MediaCodec:   Buffer csd-1 = {
-10-18 18:09:15.046 17194 12774 I MediaCodec:     00000000:  a0 2e 63 00 00 00 00 00                           ..c.....
-10-18 18:09:15.046 17194 12774 I MediaCodec:   }
-10-18 18:09:15.046 17194 12774 I MediaCodec:   float operating-rate = 48000.000000
-10-18 18:09:15.046 17194 12774 I MediaCodec:   Buffer csd-2 = {
-10-18 18:09:15.046 17194 12774 I MediaCodec:     00000000:  00 b4 c4 04 00 00 00 00                           ........
-10-18 18:09:15.046 17194 12774 I MediaCodec:   }
-10-18 18:09:15.046 17194 12774 I MediaCodec:   string log-session-id = "0I-nFu4y5NJsSjI1"
-10-18 18:09:15.046 17194 12774 I MediaCodec:   int32_t sample-rate = 48000
-10-18 18:09:15.046 17194 12774 I MediaCodec:   int32_t importance = 1000
-10-18 18:09:15.046 17194 12774 I MediaCodec:   string mime = "audio/opus"
-10-18 18:09:15.046 17194 12774 I MediaCodec:   int32_t channel-count = 2
-10-18 18:09:15.046 17194 12774 I MediaCodec:   int32_t priority = 0
-10-18 18:09:15.046 17194 12774 I MediaCodec:   int32_t max-output-channel-count = 99
-10-18 18:09:15.046 17194 12774 I MediaCodec:   int32_t max-input-size = 5760
-10-18 18:09:15.046 17194 12774 I MediaCodec:   Buffer csd-0 = {
-10-18 18:09:15.046 17194 12774 I MediaCodec:     00000000:  4f 70 75 73 48 65 61 64  01 02 38 01 80 bb 00 00  OpusHead..8.....
-10-18 18:09:15.046 17194 12774 I MediaCodec:     00000010:  00 00 00                                          ...
-10-18 18:09:15.046 17194 12774 I MediaCodec:   }
-10-18 18:09:15.046 17194 12774 I MediaCodec: }
-10-18 18:09:15.046 17194 12774 D MediaCodec: currery video type audio/opus
-10-18 18:09:15.046 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: CONFIGURING
-10-18 18:09:15.046 17194 12837 D CCodec  : [c2.android.opus.decoder] buffers are bound to CCodec for this session
-10-18 18:09:15.046 17194 12837 D CCodecConfig: no c2 equivalents for csd-1
-10-18 18:09:15.046 17194 12837 D CCodecConfig: no c2 equivalents for csd-2
-10-18 18:09:15.046 17194 12837 D CCodecConfig: no c2 equivalents for log-session-id
-10-18 18:09:15.046 17194 12837 D CCodecConfig: no c2 equivalents for importance
-10-18 18:09:15.046 17194 12837 D CCodecConfig: no c2 equivalents for flags
-10-18 18:09:15.047 17194 12837 D CCodecConfig: config failed => CORRUPTED
-10-18 18:09:15.047 17194 12837 D CCodecConfig: c2 config diff is   c2::u32 raw.channel-count.value = 2
-10-18 18:09:15.047 17194 12837 W Codec2Client: query -- param skipped: index = 1107298332.
-10-18 18:09:15.047 17194 12837 D CCodec  : client requested max input size 5760, which is smaller than what component recommended (7650); overriding with component recommendation.
-10-18 18:09:15.047 17194 12837 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
-10-18 18:09:15.047 17194 12837 D CCodec  : encoding statistics level = 0
-10-18 18:09:15.047 17194 12837 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t bitrate = 6000
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t channel-count = 2
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t max-input-size = 7650
-10-18 18:09:15.047 17194 12837 D CCodec  :   string mime = "audio/opus"
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t sample-rate = 48000
-10-18 18:09:15.047 17194 12837 D CCodec  : }
-10-18 18:09:15.047 17194 12837 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t buffer-batch-max-output-size = 0
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t buffer-batch-threshold-output-size = 0
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t channel-count = 2
-10-18 18:09:15.047 17194 12837 D CCodec  :   string mime = "audio/raw"
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t sample-rate = 48000
-10-18 18:09:15.047 17194 12837 D CCodec  :   int32_t android._config-pcm-encoding = 2
-10-18 18:09:15.047 17194 12837 D CCodec  : }
-10-18 18:09:15.047 17194 12837 I CCodecConfig: query failed after returning 8 values (BAD_INDEX)
-10-18 18:09:15.047 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: CONFIGURED
-10-18 18:09:15.047 17194 12774 D MediaCodec: updateVppSurFpsValue :  48000
-10-18 18:09:15.047 17194 12774 D MediaCodec: keep callback message for reclaim
-10-18 18:09:15.048 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: STARTING
-10-18 18:09:15.048 17194 12837 W Codec2Client: query -- param skipped: index = 1342179345.
-10-18 18:09:15.048 17194 12837 W Codec2Client: query -- param skipped: index = 2415921170.
-10-18 18:09:15.049 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] Created input block pool with allocatorID 16 => poolID 24 - OK (0)
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel: [mId: 7] [audio-debug-dec] start: inputFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t bitrate = 6000
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t channel-count = 2
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t max-input-size = 7650
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   string mime = "audio/opus"
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t sample-rate = 48000
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel: }
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel: [c2.android.opus.decoder#904] Created output block pool with allocatorID 16 => poolID 679 - OK
-10-18 18:09:15.049 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] Configured output block pool ids 679 => OK
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel: [mId: 7] [audio-debug-dec] start: outputFormat: AMessage(what = 0x00000000) = {
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t buffer-batch-max-output-size = 0
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t buffer-batch-threshold-output-size = 0
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t channel-count = 2
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   string mime = "audio/raw"
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t sample-rate = 48000
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel:   int32_t android._config-pcm-encoding = 2
-10-18 18:09:15.049 17194 12837 I CCodecBufferChannel: }
-10-18 18:09:15.050 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] start: updating output delay 0
-10-18 18:09:15.050 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: STARTED
-10-18 18:09:15.052 17194 12774 W LoudnessCodecController: MediaCodec mime type not supported for loudness annotation
-10-18 18:09:15.052 17194 12774 V LoudnessCodecController: Could not extract codec loudness information
-10-18 18:09:15.053 17194 17194 I PlayerView: Handle event: TracksChangedEvent(source=Player)
-10-18 18:09:15.053 17194 12840 I MediaCodec: [mId: 7] [audio-debug-dec] queueInputBuffer: index: 3 pts: 1000000000000 timediff: 0
-10-18 18:09:15.054 17194 12833 I MediaCodec: [mId: 6] [video-debug-dec] queueInputBuffer: index: 2 pts: 1000000000000 timediff: 0
-10-18 18:09:15.054 17194 12829 V xlog_client: xlog_check_permission event name video_none_idr level 1
-10-18 18:09:15.055 17194 12833 I MediaCodec: [mId: 6] [video-debug-dec] queueInputBuffer: index: 3 pts: 1000000083416 timediff: 1
-10-18 18:09:15.056 17194 12833 I MediaCodec: [mId: 6] [video-debug-dec] queueInputBuffer: index: 0 pts: 1000000041708 timediff: 1
-10-18 18:09:15.060 17194 12830 D CCodecConfig: c2 config diff is   c2::u32 output.delay.value = 11
-10-18 18:09:15.061 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] onWorkDone: updating output delay 11
-10-18 18:09:15.061 17194 12830 I CCodecBufferChannel: [c2.qti.avc.decoder#639] onWorkDone: updating max output delay 18
-10-18 18:09:15.061 17194 12830 D Codec2-OutputBufferQueue: set max dequeue count 18 from update
-10-18 18:09:15.066 17194 12830 D CCodecConfig: c2 config diff is   c2::u32 raw.color.matrix = 1
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.color.primaries = 1
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.color.range = 2
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.color.transfer = 3
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.crop.height = 1080
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.crop.left = 0
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.crop.top = 0
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.crop.width = 1920
-10-18 18:09:15.066 17194 12830 D CCodecConfig:   c2::u32 raw.size.height = 1088
-10-18 18:09:15.066 17194 12830 D CCodecBuffers: [c2.qti.avc.decoder#639:2D-Output] popFromStashAndRegister: at 1000000000000us, output format changed to AMessage(what = 0x00000000) = {
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t android._color-format = 0
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t android._video-scaling = 1
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   Buffer hdr-static-info = {
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:     00000000:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:     00000010:  00 00 00 00 00 00 00 00  00                       .........
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   }
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t color-standard = 1
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t color-range = 2
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t color-transfer = 3
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t rotation-degrees = 0
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t priority = 0
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t sar-height = 1
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t sar-width = 1
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   Rect crop(0, 0, 1919, 1079)
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t width = 1920
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t feature-secure-playback = 0
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t frame-rate = 30
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t height = 1088
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t max-height = 1080
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t max-width = 1920
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   string mime = "video/raw"
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t android._dataspace = 260
-10-18 18:09:15.066 17194 12830 D CCodecBuffers:   int32_t color-format = 2130708361
-10-18 18:09:15.066 17194 12830 D CCodecBuffers: }
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo: [810496870336954374] updateOutputFormat format(0xb400007c363b35d0): AMessage(what = 0x00000000) = {
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t android._color-format = 0
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t android._video-scaling = 1
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       Buffer hdr-static-info = {
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:         00000000:  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:         00000010:  00 00 00 00 00 00 00 00  00                       .........
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       }
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t color-standard = 1
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t color-range = 2
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t color-transfer = 3
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t rotation-degrees = 0
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t priority = 0
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t sar-height = 1
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t sar-width = 1
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       Rect crop(0, 0, 1919, 1079)
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t width = 1920
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t feature-secure-playback = 0
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t frame-rate = 30
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t height = 1088
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t max-height = 1080
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t max-width = 1920
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       string mime = "video/raw"
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t android._dataspace = 260
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:       int32_t color-format = 2130708361
-10-18 18:09:15.066 17194 12829 D VideoCodecInfo:     }
-10-18 18:09:15.066 17194 12829 I MediaCodec: SDR disable brighten
-10-18 18:09:15.075 17194 12774 D MediaCodec: updateVppSurFpsValue :  0
-10-18 18:09:15.077 17194 12774 D AudioTrackStub: AudioTrackStub() create
-10-18 18:09:15.077 17194 12774 I AudioTrackImpl: initAudioTrackImpl()
-10-18 18:09:15.077 17194 12774 D AudioTrack: set(): (sessionId=2761), mcallback is 1, streamType -1, sampleRate 48000, format 0x1, channelMask 0x3, frameCount 15376, flags 0, notificationFrames 0,transferType 3, mClientAttributionSource AttributionSourceState{pid: 17194, uid: 10356, deviceId: 0, packageName: com.lagradost.cloudstream3, attributionTag: (null), token: binder:0xb400007c363a1690, renouncedPermissions: [], next: []}
-10-18 18:09:15.077 17194 12774 D AudioTrackImpl: [APM]-AT isSupportChannelMask() channelMask=0x3 result=0
-10-18 18:09:15.087 17194 12774 D android.media.AudioTrack: setStereoVolume setParameters is 1.0, rightVolume is 1.0, isMuted is false, mIsLastMute is false, mNeedNotifyedNative is true
-10-18 18:09:15.087 17194 12774 D AudioTrackImpl: setMediaSetMute(563): Parameter media_set_track_muted is 0 return
-10-18 18:09:15.087 17194 12774 I AudioTrackImpl: before scaleVolumeForVideo L:1.000000 R:1.000000 and the pakage is com.lagradost.cloudstream3
-10-18 18:09:15.087 17194 12774 I AudioTrack: AudioTrack::setVolume L:1.000000 R:1.000000 sessionid=2761
-10-18 18:09:15.088 17194 12840 I MediaCodec: [mId: 7] [audio-debug-dec] queueInputBuffer: index: 0 pts: 1000000021000 timediff: 35
-10-18 18:09:15.089 17194 12840 I MediaCodec: [mId: 7] [audio-debug-dec] queueInputBuffer: index: 1 pts: 1000000041000 timediff: 1
-10-18 18:09:15.928 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16646327000000, downTime=16646327000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:15.928
-10-18 18:09:15.929 17194 17194 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=16646328000000, downTime=16646328000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=18:09:15.929
-10-18 18:09:15.931 17194 17194 I ImeTracker: com.lagradost.cloudstream3:cc453575: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:15.932 17194 17194 I CS3ExoPlayer: onStop
-10-18 18:09:15.932 17194 17194 I CS3ExoPlayer: saveData
-10-18 18:09:15.932 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=0, toMs=0, durationMs=58391)
-10-18 18:09:15.932 17194 17194 I CS3ExoPlayer: handleEvent Pause
-10-18 18:09:15.933 17194 17194 I PlayerView: Handle event: PauseEvent(source=Player)
-10-18 18:09:15.950 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:15.957 17194 17194 W MIUIInput: Back key is intercepted by the app
-10-18 18:09:15.958 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:15.966 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:15.966 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:15.973 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:15.974 17194 17194 D AutofillManager: view not autofillable - not passing ime action check
-10-18 18:09:15.987 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:16.042 17194 17194 E CoilImgLoader: Image load error: HTTP 403
-10-18 18:09:16.042 17194 17194 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/snapshots/d7a/d7a9683d088fd833f419776cd0e8cc85dcf04c53424fa17bc6a1955a8a7c9304.sm.webp
-10-18 18:09:16.042 17194 17194 E CoilImgLoader:   allowHardware: true
-10-18 18:09:16.042 17194 17194 E CoilImgLoader:   hardware: qcom, board: marblein
-10-18 18:09:16.122 17194 17194 I CS3ExoPlayer: releasePlayer
-10-18 18:09:16.122 17194 17194 I PlayerView: Handle event: PositionEvent(source=Player, fromMs=0, toMs=0, durationMs=58391)
-10-18 18:09:16.122 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: FLUSHING
-10-18 18:09:16.123 17194 17194 I ExoPlayerImpl: Release ee46e3 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35] [media3.common, media3.ui, media3.exoplayer.hls, media3.exoplayer, media3.decoder, media3.database, media3.session, media3.datasource, media3.datasource.cronet, media3.extractor, media3.decoder.ffmpeg, media3.datasource.okhttp]
-10-18 18:09:16.127 17194 12830 I CCodecBufferChannel: [mId: 6] [video-debug-dec] flush: flushing 0 works
-10-18 18:09:16.127 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: FLUSHED
-10-18 18:09:16.127 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] flushed work; ignored.
-10-18 18:09:16.127 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Discard frames from previous generation.
-10-18 18:09:16.127 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] flushed work; ignored.
-10-18 18:09:16.127 17194 12830 D CCodecBufferChannel: [c2.qti.avc.decoder#639] Discard frames from previous generation.
-10-18 18:09:16.127 17194 12774 D MediaCodec: keep callback message for reclaim
-10-18 18:09:16.127 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: STARTED
-10-18 18:09:16.127 17194 12829 I CCodecConfig: query failed after returning 18 values (BAD_INDEX)
-10-18 18:09:16.128 17194 12829 W Codec2Client: query -- param skipped: index = 1342179345.
-10-18 18:09:16.128 17194 12829 W Codec2Client: query -- param skipped: index = 2415921170.
-10-18 18:09:16.128 17194 12829 W Codec2Client: query -- param skipped: index = 1610614798.
-10-18 18:09:16.128 17194 12829 D CCodecBufferChannel: [c2.qti.avc.decoder#639] start: updating output delay 11
-10-18 18:09:16.129 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: FLUSHING
-10-18 18:09:16.129 17194 12837 I CCodecBufferChannel: [mId: 7] [audio-debug-dec] flush: flushing 0 works
-10-18 18:09:16.129 17194 12837 D CCodecBuffers: [c2.android.opus.decoder#904:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 0
-10-18 18:09:16.129 17194 12837 D CCodecBuffers: [c2.android.opus.decoder#904:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 1
-10-18 18:09:16.129 17194 12837 D CCodecBuffers: [c2.android.opus.decoder#904:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 2
-10-18 18:09:16.129 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: FLUSHED
-10-18 18:09:16.130 17194 12774 D MediaCodec: keep callback message for reclaim
-10-18 18:09:16.130 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: STARTED
-10-18 18:09:16.130 17194 12837 I CCodecConfig: query failed after returning 8 values (BAD_INDEX)
-10-18 18:09:16.130 17194 12837 W Codec2Client: query -- param skipped: index = 1342179345.
-10-18 18:09:16.130 17194 12837 W Codec2Client: query -- param skipped: index = 2415921170.
-10-18 18:09:16.130 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] start: updating output delay 0
-10-18 18:09:16.127 17194 17194 W MediaCodec_loop: type=1400 audit(0.0:8559): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 18:09:16.131 17194 12829 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 18:09:16.131 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] connectToSurface: surface 0xb400007d16325cd0, mSurface 0xb400007d16376b30
-10-18 18:09:16.131 17194 12829 D SurfaceUtils: connecting to surface 0xb400007d16325ce0, reason connectToSurface
-10-18 18:09:16.131 17194 12829 I MediaCodec: [c2.qti.avc.decoder] setting surface generation to 17606665
-10-18 18:09:16.131 17194 12829 D SurfaceUtils: disconnecting from surface 0xb400007d16325ce0, reason connectToSurface(reconnect)
-10-18 18:09:16.131 17194 12829 D SurfaceUtils: connecting to surface 0xb400007d16325cd0, reason connectToSurface(reconnect-with-listener)
-10-18 18:09:16.131 17194 12829 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
-10-18 18:09:16.131 17194 12829 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
-10-18 18:09:16.131 17194 12829 D Codec2Client: setOutputSurface -- generation=17606665 consumer usage=0x900
-10-18 18:09:16.131 17194 12829 D qdgralloc: Falling back to default YUV format - no camera/video specific format defined, usage 0x100
-10-18 18:09:16.132 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 0 is not owned by the producer (state = FREE)
-10-18 18:09:16.132 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 1 is not owned by the producer (state = FREE)
-10-18 18:09:16.132 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 2 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 3 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 4 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 5 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 6 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 8 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 9 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 13 is not owned by the producer (state = FREE)
-10-18 18:09:16.133 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 15 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 16 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 18 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 19 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 20 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 21 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 22 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 23 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 24 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 25 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 26 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 27 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 28 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 29 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 30 is not owned by the producer (state = FREE)
-10-18 18:09:16.134 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 31 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 32 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 33 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 34 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 35 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 36 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 37 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 38 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 39 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 40 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 41 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 42 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 43 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 44 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 45 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 46 is not owned by the producer (state = FREE)
-10-18 18:09:16.135 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 47 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 48 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 49 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 50 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 51 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 52 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 53 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 54 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 55 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 56 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 57 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 58 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 59 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 60 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 61 is not owned by the producer (state = FREE)
-10-18 18:09:16.136 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 62 is not owned by the producer (state = FREE)
-10-18 18:09:16.137 17194 12829 W BufferQueueProducer: [SurfaceTexture-1-17194-1](id:432a00000020,api:3,p:17194,c:17194) detachBuffer: slot 63 is not owned by the producer (state = FREE)
-10-18 18:09:16.138 17194 12829 D Codec2Client: Surface configure completed
-10-18 18:09:16.138 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] disconnectFromSurface: mSurface 0xb400007d16376b30
-10-18 18:09:16.138 17194 12829 D SurfaceUtils: disconnecting from surface 0xb400007d16376b40, reason disconnectFromSurface
-10-18 18:09:16.139 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: RELEASING
-10-18 18:09:16.139 17194 12829 D CCodecBufferChannel: [c2.qti.avc.decoder#639] MediaCodec discarded an unknown buffer
-10-18 18:09:16.139 17194 12829 D CCodecBufferChannel: [c2.qti.avc.decoder#639] MediaCodec discarded an unknown buffer
-10-18 18:09:16.139 17194 12829 D CCodecBufferChannel: [c2.qti.avc.decoder#639] MediaCodec discarded an unknown buffer
-10-18 18:09:16.139 17194 12829 D CCodecBufferChannel: [c2.qti.avc.decoder#639] MediaCodec discarded an unknown buffer
-10-18 18:09:16.140 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: RELEASING
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 6 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 7 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] MediaCodec discarded an unknown buffer
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 8 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] MediaCodec discarded an unknown buffer
-10-18 18:09:16.140 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] MediaCodec discarded an unknown buffer
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 9 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12837 D CCodecBufferChannel: [c2.android.opus.decoder#904] MediaCodec discarded an unknown buffer
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 10 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 11 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 12 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 13 is not owned by the producer (state = FREE)
-10-18 18:09:16.140 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 14 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 15 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 16 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 17 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12837 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 18 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 19 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 20 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 21 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 22 is not owned by the producer (state = FREE)
-10-18 18:09:16.141 17194 12837 I MediaCodec: [mId: 7] [audio-debug-dec] setState: UNINITIALIZED
-10-18 18:09:16.141 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 23 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 24 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 25 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 26 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 27 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 28 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 29 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 30 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 31 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 32 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 33 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 34 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 35 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 36 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 37 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 38 is not owned by the producer (state = FREE)
-10-18 18:09:16.142 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 39 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 40 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12837 I MediaCodec: MediaStub sendHdrInfo/sendFrameRateFloatCal/updateFrcAieAisState
-10-18 18:09:16.143 17194 12837 D MediaImpl: FRC not support: valueSupport : 
-10-18 18:09:16.143 17194 12837 D MediaImpl: AIE not support: valueSupport : 
-10-18 18:09:16.143 17194 12837 D MediaImpl: AIS not support: valueSupport : 
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 41 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 42 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 43 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 44 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 45 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 46 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 47 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 48 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 49 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 50 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 51 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 52 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 53 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 54 is not owned by the producer (state = FREE)
-10-18 18:09:16.143 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 55 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 56 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 57 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 58 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 59 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 60 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 61 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 62 is not owned by the producer (state = FREE)
-10-18 18:09:16.144 17194 12869 W BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) detachBuffer: slot 63 is not owned by the producer (state = FREE)
-10-18 18:09:16.145 17194 17194 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
-10-18 18:09:16.146 17194  6237 E BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) cancelBuffer: slot 4 is not owned by the producer (state = FREE)
-10-18 18:09:16.146 17194 17194 I MediaSessionImpl: Release de1b799 [AndroidXMedia3/1.9.3] [marblein, 23049PCD8I, Xiaomi, 35] [media3.common, media3.ui, media3.exoplayer.hls, media3.exoplayer, media3.decoder, media3.database, media3.session, media3.datasource, media3.datasource.cronet, media3.extractor, media3.decoder.ffmpeg, media3.datasource.okhttp]
-10-18 18:09:16.146 17194  6237 E BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) cancelBuffer: slot 5 is not owned by the producer (state = FREE)
-10-18 18:09:16.147 17194 17194 W ExoPlayerImplInternal: Ignoring messages sent after release.
-10-18 18:09:16.148 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:16.149 17194 12867 I AudioTrack: stop(sessionID=2761), packageName: com.lagradost.cloudstream3
-10-18 18:09:16.149 17194 12867 D AudioTrack: stop(563): prior state:STATE_FLUSHED
-10-18 18:09:16.150 17194 12867 D AudioTrack: ~AudioTrack(sessionID=2761)
-10-18 18:09:16.150 17194 12867 I AudioTrack: stop(sessionID=2761), packageName: com.lagradost.cloudstream3
-10-18 18:09:16.150 17194 12867 D AudioTrack: stop(563): prior state:STATE_FLUSHED
-10-18 18:09:16.152 17194 12867 D AudioTrackStub: ~AudioTrackStub() destroy
-10-18 18:09:16.153 17194  6237 E BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) cancelBuffer: slot 0 is not owned by the producer (state = FREE)
-10-18 18:09:16.153 17194  6237 E BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) cancelBuffer: slot 1 is not owned by the producer (state = FREE)
-10-18 18:09:16.154 17194  6237 E BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) cancelBuffer: slot 2 is not owned by the producer (state = FREE)
-10-18 18:09:16.154 17194  6237 E BufferQueueProducer: [MediaCodec.release](id:432a00000021,api:3,p:17194,c:17194) cancelBuffer: slot 3 is not owned by the producer (state = FREE)
-10-18 18:09:16.156 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] disconnectFromSurface: mSurface 0xb400007d16325cd0
-10-18 18:09:16.156 17194 12829 D SurfaceUtils: disconnecting from surface 0xb400007d16325ce0, reason disconnectFromSurface
-10-18 18:09:16.156 17194 12830 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
-10-18 18:09:16.156 17194 12829 I MediaCodec: [mId: 6] [video-debug-dec] setState: UNINITIALIZED
-10-18 18:09:16.157 17194 12829 I MediaCodec: MediaStub sendHdrInfo/sendFrameRateFloatCal/updateFrcAieAisState
-10-18 18:09:16.157 17194 12829 D MediaImpl: FRC not support: valueSupport : 
-10-18 18:09:16.157 17194 12829 D MediaImpl: AIE not support: valueSupport : 
-10-18 18:09:16.157 17194 12829 D MediaImpl: AIS not support: valueSupport : 
-10-18 18:09:16.157 17194 12829 D st.cloudstream3: VideoServiceClientImpl::reportCodecStatus
-10-18 18:09:16.158 17194 12829 D VideoCodecInfo: [810496870336954374] ipb: 15 ipd: 44ms ipbd: 581ms maxipi: 12ms
-10-18 18:09:16.158 17194 12829 D VideoCodecInfo: [810496870336954374] opb: 13 opd: 38ms opbd: 492ms maxopi: 9ms
-10-18 18:09:16.158 17194 12829 D VideoCodecInfo: com.lagradost.cloudstream3 destroy video codec index: [810496870336954374] 
-10-18 18:09:17.015 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=16647409, downTime=16647409, phoneEventTime=18:09:17.010 } moveCount:0
-10-18 18:09:17.015 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:17.119 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=16647515, downTime=16647409, phoneEventTime=18:09:17.116 } moveCount:0
-10-18 18:09:17.127 17194 17194 I ImeTracker: com.lagradost.cloudstream3:73df63a8: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:17.135 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:17.299 17194 17194 D AutofillManager: view not autofillable - not passing ime action check
-10-18 18:09:17.299 17194 17194 D AutofillManager: view not autofillable - not passing ime action check
-10-18 18:09:18.077 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=16648472, downTime=16648472, phoneEventTime=18:09:18.073 } moveCount:0
-10-18 18:09:18.078 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:18.134 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=16648530, downTime=16648472, phoneEventTime=18:09:18.131 } moveCount:0
-10-18 18:09:18.144 17194 17194 I NavComponent: Navigating to fragment: 2131361886
-10-18 18:09:18.147 17194 17194 I ImeTracker: com.lagradost.cloudstream3:787999be: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 18:09:18.162 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:18.716 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=16649111, downTime=16649111, phoneEventTime=18:09:18.712 } moveCount:0
-10-18 18:09:18.717 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:18.794 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=16649191, downTime=16649111, phoneEventTime=18:09:18.792 } moveCount:6
-10-18 18:09:18.794 17194 17194 D SplineOverScroller: mFlingDuration: 2539,mFlingDistance: 5447.44140625,mVelocity: 11762
-10-18 18:09:19.192 17194 31320 W RenderInspector: DequeueBuffer time out on com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity, count=1, avg=8 ms, max=8 ms.
-10-18 18:09:19.327 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=16649720, downTime=16649720, phoneEventTime=18:09:19.321 } moveCount:0
-10-18 18:09:19.327 17194 17194 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 18:09:19.427 17194 17194 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=16649818, downTime=16649720, phoneEventTime=18:09:19.419 } moveCount:0
-10-18 18:09:19.437 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:19.437 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:19.450 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:19.451 17194 17194 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 18:09:19.456 17194 17194 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:23.041 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:23.128 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22384073, downTime=22383984, phoneEventTime=19:50:23.125 } moveCount:0
+10-18 19:50:23.141 13655 13655 I ImeTracker: com.lagradost.cloudstream3:f086f916: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 19:50:23.174 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:23.180 13655 20857 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
+10-18 19:50:23.183 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:23.192 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:23.193 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:23.200 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:23.201 13655 13655 D AutofillManager: view not autofillable - not passing ime action check
+10-18 19:50:23.361 13655 20857 W AnimePahe: Request blocked (code=403). Purging stale cookies and acquiring lock...
+10-18 19:50:23.362 13655 13655 I COMPACT : showToast = Opening AnimePahe Verification...
+10-18 19:50:23.365 13655 13655 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-18 19:50:23.406 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:23.416 13655 13655 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 19:50:23.422 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 19:50:23.422 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 19:50:23.419 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10562): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:23.419 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10563): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:23.422 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 19:50:23.422 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 19:50:23.422 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 19:50:23.423 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:23.423 13655 21198 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 19:50:23.424 13655 13655 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 19:50:23.424 13655 13655 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#18
+10-18 19:50:23.435 13655 13655 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 19:50:23.444 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:23.452 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:23.463 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10564): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:23.463 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10565): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:23.467 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 19:50:23.467 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 19:50:23.467 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 19:50:23.467 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 19:50:23.467 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 19:50:23.468 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:23.468 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 19:50:23.469 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#20
+10-18 19:50:23.469 13655 21199 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 19:50:23.471 13655 13655 D VRI[Toast]: vri.reportDrawFinished
+10-18 19:50:23.496 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-18 19:50:23.498 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:23.498 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:23.504 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#22
+10-18 19:50:23.507 13655 13655 D VRI[Toast]: vri.reportDrawFinished
+10-18 19:50:23.527 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.534 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.544 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.551 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.601 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.610 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.618 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.627 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.635 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.644 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.652 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.659 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.669 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.676 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.685 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.693 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.702 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.709 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.718 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.727 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.735 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.744 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.752 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.762 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.769 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.818 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.827 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.835 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.843 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.851 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.861 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.868 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.877 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.885 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.894 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.902 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.910 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.919 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.927 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.936 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.944 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.952 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.960 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:23.968 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.018 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.027 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.034 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.043 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.052 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.060 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.067 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.075 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.084 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.093 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.100 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.109 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.118 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.126 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.134 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.142 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.151 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.160 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.167 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.218 13655 13655 D AnimePahe: Poll [800ms] title='animepahe.pw/api?m=airing&page=1'
+10-18 19:50:24.218 13655 13655 D AnimePahe: Clearance confirmed! Saving cookies and dismissing dialog...
+10-18 19:50:24.274 13655 20857 D AnimePahe: CF bypass dialog completed with result: true
+10-18 19:50:24.294 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.302 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.310 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.317 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.326 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.334 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.342 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.351 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.360 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.369 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.427 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.435 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.442 13655 20857 D ApiError: -------------------------------------------------------------------
+10-18 19:50:24.442 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 19:50:24.442 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 19:50:24.442 13655 20857 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 19:50:24.442 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:588)
+10-18 19:50:24.442 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:48)
+10-18 19:50:24.442 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+10-18 19:50:24.442 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+10-18 19:50:24.442 13655 20857 D ApiError: -------------------------------------------------------------------
+10-18 19:50:24.444 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.452 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.460 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.468 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.476 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.485 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.493 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.502 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.510 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.518 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.526 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.535 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.544 13655 20808 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.552 13655 20988 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:24.775 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@9929ea4
+10-18 19:50:24.788 13655 13655 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 19:50:24.823 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:24.823 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:25.373 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@dc22a3b
+10-18 19:50:25.973 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22386918, downTime=22386918, phoneEventTime=19:50:25.970 } moveCount:0
+10-18 19:50:25.973 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:26.040 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22386986, downTime=22386918, phoneEventTime=19:50:26.038 } moveCount:0
+10-18 19:50:26.047 13655 13655 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
+10-18 19:50:26.048 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:26.070 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:26.077 13655 13655 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-18 19:50:26.077 13655 13655 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-18 19:50:26.077 13655 13655 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 19:50:26.083 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10566): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:26.087 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10567): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:26.088 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 19:50:26.088 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 19:50:26.088 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 19:50:26.088 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 19:50:26.088 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 19:50:26.089 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:26.089 13655 21213 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 19:50:26.092 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:26.099 13655 13655 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 19:50:26.099 13655 13655 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#24
+10-18 19:50:26.106 13655 13655 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 19:50:26.145 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:26.145 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:26.913 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22387858, downTime=22387858, phoneEventTime=19:50:26.910 } moveCount:0
+10-18 19:50:26.913 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:26.977 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22387923, downTime=22387858, phoneEventTime=19:50:26.975 } moveCount:0
+10-18 19:50:26.981 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@a99b751
+10-18 19:50:26.982 13655 20857 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
+10-18 19:50:26.983 13655 13655 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 19:50:26.995 13655 13655 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
+10-18 19:50:27.012 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:27.012 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:27.205 13655 20857 W AnimePahe: Request blocked (code=403). Purging stale cookies and acquiring lock...
+10-18 19:50:27.205 13655 13655 I COMPACT : showToast = Opening AnimePahe Verification...
+10-18 19:50:27.208 13655 13655 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-18 19:50:27.232 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:27.241 13655 13655 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 19:50:27.247 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10568): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:27.247 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10569): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:27.249 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 19:50:27.249 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 19:50:27.249 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 19:50:27.249 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 19:50:27.249 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 19:50:27.250 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:27.250 13655 21231 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 19:50:27.251 13655 13655 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 19:50:27.251 13655 13655 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#26
+10-18 19:50:27.261 13655 13655 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 19:50:27.265 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:27.273 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:27.279 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10570): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:27.279 13655 13655 W st.cloudstream3: type=1400 audit(0.0:10571): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 19:50:27.282 13655 13655 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 19:50:27.282 13655 13655 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 19:50:27.282 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 19:50:27.282 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 19:50:27.282 13655 13655 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 19:50:27.283 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 19:50:27.283 13655 21233 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 19:50:27.284 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 19:50:27.284 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#28
+10-18 19:50:27.286 13655 13655 D VRI[Toast]: vri.reportDrawFinished
+10-18 19:50:27.294 13655 13655 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-18 19:50:27.295 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:27.295 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:27.298 13655 13655 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#30
+10-18 19:50:27.300 13655 13655 D VRI[Toast]: vri.reportDrawFinished
+10-18 19:50:27.343 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.352 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.360 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.368 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.378 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.385 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.393 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.402 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.411 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.420 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.428 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.435 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.485 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.494 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.502 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.510 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.519 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.527 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.535 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.544 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.552 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.560 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.568 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.577 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.586 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.595 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.603 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.611 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.619 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.628 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.635 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.686 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.694 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.703 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.711 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.718 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.727 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.735 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.744 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.752 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.762 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.770 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.779 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.788 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.794 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.804 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.810 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.820 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.827 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.836 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.885 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.893 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.902 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.911 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.918 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.928 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.936 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.945 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.953 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.960 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.968 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.977 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.985 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:27.993 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.002 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.010 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.019 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.027 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.035 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.046 13655 13655 D AnimePahe: Poll [800ms] title='animepahe.pw/api?m=airing&page=1'
+10-18 19:50:28.046 13655 13655 D AnimePahe: Clearance confirmed! Saving cookies and dismissing dialog...
+10-18 19:50:28.105 13655 20857 D AnimePahe: CF bypass dialog completed with result: true
+10-18 19:50:28.143 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.153 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.161 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.168 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.177 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.185 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.194 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.202 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.211 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.219 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.228 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.235 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.286 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.294 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.302 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.311 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.319 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.326 13655 20857 D ApiError: -------------------------------------------------------------------
+10-18 19:50:28.326 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 19:50:28.326 13655 20857 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 19:50:28.326 13655 20857 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 19:50:28.326 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:588)
+10-18 19:50:28.326 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:48)
+10-18 19:50:28.326 13655 20857 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+10-18 19:50:28.326 13655 20857 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+10-18 19:50:28.326 13655 20857 D ApiError: -------------------------------------------------------------------
+10-18 19:50:28.327 13655 20943 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.337 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.345 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.353 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.361 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.369 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.377 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.386 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.394 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.402 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.411 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.419 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.428 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.436 13655 20803 E FrameEvents: addRelease: Did not find frame.
+10-18 19:50:28.607 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@70daab9
+10-18 19:50:28.621 13655 13655 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 19:50:28.649 13655 13655 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 19:50:28.649 13655 13655 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 19:50:29.216 13655 13655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@311b429
+10-18 19:50:29.601 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22390547, downTime=22390547, phoneEventTime=19:50:29.599 } moveCount:0
+10-18 19:50:29.601 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:29.625 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22390570, downTime=22390547, phoneEventTime=19:50:29.622 } moveCount:0
+10-18 19:50:29.638 13655 13655 I ImeTracker: com.lagradost.cloudstream3:d00efd42: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 19:50:29.651 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:29.802 13655 13655 D AutofillManager: view not autofillable - not passing ime action check
+10-18 19:50:29.803 13655 13655 D AutofillManager: view not autofillable - not passing ime action check
+10-18 19:50:30.359 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22391304, downTime=22391304, phoneEventTime=19:50:30.356 } moveCount:0
+10-18 19:50:30.359 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:30.675 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22391621, downTime=22391304, phoneEventTime=19:50:30.673 } moveCount:34
+10-18 19:50:31.028 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=22391972, downTime=22391972, phoneEventTime=19:50:31.025 } moveCount:0
+10-18 19:50:31.029 13655 13655 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 19:50:31.075 13655 13655 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=22392021, downTime=22391972, phoneEventTime=19:50:31.073 } moveCount:0
+10-18 19:50:31.082 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:31.082 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:31.093 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:31.095 13655 13655 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 19:50:31.100 13655 13655 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
