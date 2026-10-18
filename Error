@@ -1,192 +1,823 @@
 --------- beginning of main
-10-18 23:19:28.030 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:28.030 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:28.790 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34273042, downTime=34273042, phoneEventTime=23:19:28.786 } moveCount:0
+10-19 00:05:37.347 14671 14671 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-19 00:05:37.347 14671 14671 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-19 00:05:38.742 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36980731, downTime=36980731, phoneEventTime=00:05:38.738 } moveCount:0
 --------- beginning of system
-10-18 23:19:28.791 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:28.852 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34273107, downTime=34273042, phoneEventTime=23:19:28.850 } moveCount:0
-10-18 23:19:28.870 32630 32630 I ImeTracker: com.lagradost.cloudstream3:6ced9ea4: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 23:19:28.913 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:28.919 32630 11754 D ApiError: -------------------------------------------------------------------
-10-18 23:19:28.919 32630 11754 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:28.919 32630 11754 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:28.919 32630 11754 W System.err: java.lang.Exception: Failed to verify cookie
-10-18 23:19:28.919 32630 11754 W System.err: 	at com.horis.cncverse.UtilsKt.bypass(Utils.kt:107)
-10-18 23:19:28.919 32630 11754 W System.err: 	at com.horis.cncverse.PrimeVideoMirrorProvider.getMainPage(PrimeVideoMirrorProvider.kt:62)
-10-18 23:19:28.919 32630 11754 W System.err: 	at com.lagradost.cloudstream3.ui.APIRepository$getMainPage$2$1$3$2$1$1.invokeSuspend(APIRepository.kt:185)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-10-18 23:19:28.919 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-10-18 23:19:28.919 32630 11754 D ApiError: -------------------------------------------------------------------
-10-18 23:19:28.921 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:28.930 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:28.930 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:28.937 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:28.938 32630 32630 D AutofillManager: view not autofillable - not passing ime action check
-10-18 23:19:29.624 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34273874, downTime=34273874, phoneEventTime=23:19:29.618 } moveCount:0
-10-18 23:19:29.624 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:29.704 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34273958, downTime=34273874, phoneEventTime=23:19:29.701 } moveCount:0
-10-18 23:19:29.725 32630 32630 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
-10-18 23:19:29.727 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:29.762 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 23:19:29.771 32630 32630 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
-10-18 23:19:29.771 32630 32630 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
-10-18 23:19:29.771 32630 32630 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
-10-18 23:19:29.784 32630 32630 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 23:19:29.780 32630 32630 W st.cloudstream3: type=1400 audit(0.0:14586): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 23:19:29.784 32630 32630 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 23:19:29.785 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 23:19:29.785 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 23:19:29.785 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 23:19:29.780 32630 32630 W st.cloudstream3: type=1400 audit(0.0:14587): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 23:19:29.785 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 23:19:29.787 32630 13089 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 23:19:29.792 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:29.803 32630 32630 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 23:19:29.803 32630 32630 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#22
-10-18 23:19:29.811 32630 32630 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 23:19:29.879 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:29.879 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:31.099 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34275351, downTime=34275351, phoneEventTime=23:19:31.094 } moveCount:0
-10-18 23:19:31.100 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:31.173 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34275427, downTime=34275351, phoneEventTime=23:19:31.170 } moveCount:0
-10-18 23:19:31.182 32630 32630 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@d10a06f
-10-18 23:19:31.183 32630 11753 D ApiError: -------------------------------------------------------------------
-10-18 23:19:31.183 32630 11753 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:31.183 32630 11753 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:31.183 32630 11753 W System.err: java.lang.Exception: Failed to verify cookie
-10-18 23:19:31.184 32630 11753 W System.err: 	at com.horis.cncverse.UtilsKt.bypass(Utils.kt:107)
-10-18 23:19:31.184 32630 11753 W System.err: 	at com.horis.cncverse.NetflixMirrorProvider.getMainPage(NetflixMirrorProvider.kt:62)
-10-18 23:19:31.184 32630 11753 W System.err: 	at com.lagradost.cloudstream3.ui.APIRepository$getMainPage$2$1$3$2$1$1.invokeSuspend(APIRepository.kt:185)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-10-18 23:19:31.184 32630 11753 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-10-18 23:19:31.184 32630 11753 D ApiError: -------------------------------------------------------------------
-10-18 23:19:31.186 32630 32630 D DecorViewImmersiveImpl: onDetachedFromWindow
-10-18 23:19:31.204 32630 32630 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
-10-18 23:19:31.247 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:31.248 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:32.610 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34276862, downTime=34276862, phoneEventTime=23:19:32.605 } moveCount:0
-10-18 23:19:32.610 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:32.684 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34276937, downTime=34276862, phoneEventTime=23:19:32.680 } moveCount:0
-10-18 23:19:32.693 32630 32630 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
-10-18 23:19:32.695 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:32.737 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 23:19:32.747 32630 32630 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
-10-18 23:19:32.747 32630 32630 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
-10-18 23:19:32.747 32630 32630 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
-10-18 23:19:32.761 32630 32630 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 23:19:32.756 32630 32630 W st.cloudstream3: type=1400 audit(0.0:14588): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 23:19:32.762 32630 32630 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-10-18 23:19:32.762 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 23:19:32.762 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 23:19:32.762 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 23:19:32.756 32630 32630 W st.cloudstream3: type=1400 audit(0.0:14589): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 23:19:32.763 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 23:19:32.763 32630 13098 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 23:19:32.768 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:32.777 32630 32630 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 23:19:32.777 32630 32630 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#24
-10-18 23:19:32.784 32630 32630 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 23:19:32.854 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:32.854 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:34.622 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34278871, downTime=34278871, phoneEventTime=23:19:34.614 } moveCount:0
-10-18 23:19:34.623 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:34.693 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34278947, downTime=34278871, phoneEventTime=23:19:34.690 } moveCount:0
-10-18 23:19:34.700 32630 32630 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@3a3383d
-10-18 23:19:34.702 32630 11754 D ApiError: -------------------------------------------------------------------
-10-18 23:19:34.702 32630 11754 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:34.702 32630 11754 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:34.702 32630 11754 W System.err: java.lang.Exception: Failed to verify cookie
-10-18 23:19:34.702 32630 11754 W System.err: 	at com.horis.cncverse.UtilsKt.bypass(Utils.kt:107)
-10-18 23:19:34.702 32630 11754 W System.err: 	at com.horis.cncverse.NetflixMirrorProvider.getMainPage(NetflixMirrorProvider.kt:62)
-10-18 23:19:34.702 32630 11754 W System.err: 	at com.lagradost.cloudstream3.ui.APIRepository$getMainPage$2$1$3$2$1$1.invokeSuspend(APIRepository.kt:185)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-10-18 23:19:34.702 32630 11754 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-10-18 23:19:34.702 32630 11754 D ApiError: -------------------------------------------------------------------
-10-18 23:19:34.704 32630 32630 D DecorViewImmersiveImpl: onDetachedFromWindow
-10-18 23:19:34.723 32630 32630 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
-10-18 23:19:34.756 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:34.756 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:36.526 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34280777, downTime=34280777, phoneEventTime=23:19:36.520 } moveCount:0
-10-18 23:19:36.527 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:36.603 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34280856, downTime=34280777, phoneEventTime=23:19:36.599 } moveCount:0
-10-18 23:19:36.611 32630 32630 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
-10-18 23:19:36.613 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:36.657 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 23:19:36.668 32630 32630 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
-10-18 23:19:36.668 32630 32630 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
-10-18 23:19:36.668 32630 32630 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
-10-18 23:19:36.687 32630 32630 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
-10-18 23:19:36.684 32630 32630 W st.cloudstream3: type=1400 audit(0.0:14590): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 23:19:36.684 32630 32630 W st.cloudstream3: type=1400 audit(0.0:14591): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
-10-18 23:19:36.688 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
-10-18 23:19:36.688 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
-10-18 23:19:36.688 32630 32630 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
-10-18 23:19:36.688 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
-10-18 23:19:36.689 32630 13109 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
-10-18 23:19:36.695 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:36.707 32630 32630 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
-10-18 23:19:36.707 32630 32630 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#26
-10-18 23:19:36.716 32630 32630 D VRI[MainActivity]: vri.reportDrawFinished
-10-18 23:19:36.777 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:36.777 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:37.429 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34281681, downTime=34281681, phoneEventTime=23:19:37.424 } moveCount:0
-10-18 23:19:37.430 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:37.540 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34281789, downTime=34281681, phoneEventTime=23:19:37.532 } moveCount:0
-10-18 23:19:37.550 32630 32630 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@2cb024e
-10-18 23:19:37.552 32630 11772 D ApiError: -------------------------------------------------------------------
-10-18 23:19:37.552 32630 11772 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:37.552 32630 11772 D ApiError: safeApiCall: Failed to verify cookie
-10-18 23:19:37.552 32630 11772 W System.err: java.lang.Exception: Failed to verify cookie
-10-18 23:19:37.552 32630 11772 W System.err: 	at com.horis.cncverse.UtilsKt.bypass(Utils.kt:107)
-10-18 23:19:37.552 32630 11772 W System.err: 	at com.horis.cncverse.DisneyStudioProvider.getMainPage$suspendImpl(DisneyStudioProvider.kt:75)
-10-18 23:19:37.552 32630 11772 W System.err: 	at com.horis.cncverse.DisneyStudioProvider.getMainPage(DisneyStudioProvider.kt:0)
-10-18 23:19:37.552 32630 11772 W System.err: 	at com.lagradost.cloudstream3.ui.APIRepository$getMainPage$2$1$3$2$1$1.invokeSuspend(APIRepository.kt:185)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
-10-18 23:19:37.552 32630 11772 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-10-18 23:19:37.553 32630 11772 D ApiError: -------------------------------------------------------------------
-10-18 23:19:37.554 32630 32630 D DecorViewImmersiveImpl: onDetachedFromWindow
-10-18 23:19:37.574 32630 32630 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
-10-18 23:19:37.616 32630 32630 I HandWritingStubImpl: refreshLastKeyboardType: 1
-10-18 23:19:37.616 32630 32630 I HandWritingStubImpl: getCurrentKeyboardType: 1
-10-18 23:19:42.582 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34286834, downTime=34286834, phoneEventTime=23:19:42.577 } moveCount:0
-10-18 23:19:42.582 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:42.625 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34286879, downTime=34286834, phoneEventTime=23:19:42.622 } moveCount:0
-10-18 23:19:42.637 32630 32630 I ImeTracker: com.lagradost.cloudstream3:cdb0da88: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
-10-18 23:19:42.668 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:42.816 32630 32630 D AutofillManager: view not autofillable - not passing ime action check
-10-18 23:19:42.816 32630 32630 D AutofillManager: view not autofillable - not passing ime action check
-10-18 23:19:43.161 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34287417, downTime=34287417, phoneEventTime=23:19:43.160 } moveCount:0
-10-18 23:19:43.161 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:43.236 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34287491, downTime=34287417, phoneEventTime=23:19:43.234 } moveCount:4
-10-18 23:19:43.779 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=34288032, downTime=34288032, phoneEventTime=23:19:43.776 } moveCount:0
-10-18 23:19:43.780 32630 32630 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
-10-18 23:19:43.854 32630 32630 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=34288107, downTime=34288032, phoneEventTime=23:19:43.850 } moveCount:0
-10-18 23:19:43.872 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:43.873 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:43.886 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:43.887 32630 32630 D ScrollerOptimizationManager: registerConfigChangedListener
-10-18 23:19:43.893 32630 32630 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:05:38.742 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:38.744 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36980734, downTime=36980731, phoneEventTime=00:05:38.742 } moveCount:0
+10-19 00:05:38.765 14671 14671 I ImeTracker: com.lagradost.cloudstream3:5cfb9182: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:05:39.586 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=36981578000000, downTime=36981578000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:05:39.586
+10-19 00:05:39.587 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=36981579000000, downTime=36981579000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:05:39.587
+10-19 00:05:39.593 14671 14671 I ImeTracker: com.lagradost.cloudstream3:91107a79: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:05:39.595 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:39.614 14671 14671 W MIUIInput: Back key is intercepted by the app
+10-19 00:05:40.904 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36982893, downTime=36982893, phoneEventTime=00:05:40.901 } moveCount:0
+10-19 00:05:40.905 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:40.950 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36982939, downTime=36982893, phoneEventTime=00:05:40.946 } moveCount:0
+10-19 00:05:40.969 14671 14671 I NavComponent: Navigating to fragment: 2131361881
+10-19 00:05:40.972 14671 14671 I ImeTracker: com.lagradost.cloudstream3:6e84c0a9: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:05:41.009 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:41.010 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:41.028 14671 14671 I PLG     : updatePluginList = [RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json), RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)]
+10-19 00:05:41.028 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json)
+10-19 00:05:41.028 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:05:41.047 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:41.053 14671 14671 I PLG     : updatePluginList = [RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json), RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)]
+10-19 00:05:41.053 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json)
+10-19 00:05:41.053 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:05:41.055 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:41.661 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36983650, downTime=36983650, phoneEventTime=00:05:41.658 } moveCount:0
+10-19 00:05:41.662 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:41.720 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36983708, downTime=36983650, phoneEventTime=00:05:41.716 } moveCount:0
+10-19 00:05:41.739 14671 14671 I ImeTracker: com.lagradost.cloudstream3:4dda07c1: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:05:41.773 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:41.791 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:41.795 14671 14671 I PLG     : updatePluginList = [RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)]
+10-19 00:05:41.795 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:05:41.818 14671 17092 I SkJpegCodec: [mId: 357] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:41.818 14671 17092 I SkJpegCodec: [mId: 357] skia-debug SkJpegCodec::ReadHeader: width = 460, height = 460, color = 10
+10-19 00:05:41.818 14671 17092 I SkJpegCodec: [mId: 357] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:41.818 14671 17092 I SkJpegCodec: [mId: 357] skia-debug SkJpegCodec::onGetScaledDimensions: desiredScale = 0.500000
+10-19 00:05:41.818 14671 17092 I SkJpegCodec: [mId: 357] skia-debug SkJpegCodec::onStartScanlineDecode: 
+10-19 00:05:41.818 14671 17092 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 460, Dimensions.height = 460};
+10-19 00:05:41.819 14671 17092 I SkJpegCodec: [mId: 357] skia-debug onGetGainmapInfo returns false
+10-19 00:05:41.819 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:41.827 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:41.839 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:43.000 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36984898, downTime=36984898, phoneEventTime=00:05:42.906 } moveCount:0
+10-19 00:05:43.001 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:43.002 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36984988, downTime=36984898, phoneEventTime=00:05:42.996 } moveCount:0
+10-19 00:05:43.021 14671 17092 I PLG     : handlePluginAction = [RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)], PluginWrapper(repository=Repository(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, description=Adiversion's CloudStream repository with clean, open-source extensions., manifestVersion=1, pluginLists=[https://raw.githubusercontent.com/Adiversion/animepahe/builds/plugins.json]), repositoryData=RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json), plugin=SitePlugin(url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirrorProvider.cs3, status=1, version=1, apiVersion=1, name=NetMirrorProvider, internalName=NetMirrorProvider, authors=[Adiversion], description=Curated Indian OTT Catalogs (Netflix, Prime Video, JioHotstar, Sony LIV, Zee5) with NetMirror Direct High-Speed CDN Playback., repositoryUrl=https://github.com/Adiversion/animepahe, tvTypes=[Movie, TvSeries, Anime, AsianDrama], language=hi, iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirror_icon.png, fileSize=30462, fileHash=sha256-a9859ee0fcaf65951a6bb0204a58f622570b26555b81b6306e739cb064fe6323)), false
+10-19 00:05:43.022 14671 17092 D PluginManager: Downloading plugin: https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirrorProvider.cs3 to /data/user/0/com.lagradost.cloudstream3/files/Extensions/httpsraw.githubusercontent.comAdiversionanimepahebuildsrepo.json.2021206238/NetMirrorProvider.-2089761363.cs3
+10-19 00:05:43.056 14671 16250 I PluginManager: Unloading plugin: /data/user/0/com.lagradost.cloudstream3/files/Extensions/httpsraw.githubusercontent.comAdiversionanimepahebuildsrepo.json.2021206238/NetMirrorProvider.-2089761363.cs3
+10-19 00:05:43.056 14671 16250 W PluginManager: Couldn't find plugin /data/user/0/com.lagradost.cloudstream3/files/Extensions/httpsraw.githubusercontent.comAdiversionanimepahebuildsrepo.json.2021206238/NetMirrorProvider.-2089761363.cs3
+10-19 00:05:43.056 14671 16250 I PluginManager: Loading plugin: PluginData(internalName=NetMirrorProvider, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirrorProvider.cs3, isOnline=true, filePath=/data/user/0/com.lagradost.cloudstream3/files/Extensions/httpsraw.githubusercontent.comAdiversionanimepahebuildsrepo.json.2021206238/NetMirrorProvider.-2089761363.cs3, version=-2147483648)
+10-19 00:05:43.063 14671 16250 I PluginInstance: Adding NetMirror (https://netmirrors.vip) MainAPI
+10-19 00:05:43.063 14671 16250 I PluginManager: Loaded plugin NetMirrorProvider successfully
+10-19 00:05:43.063 14671 16250 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:05:43.063 14671 14671 I COMPACT : showToast = Plugin Loaded
+10-19 00:05:43.066 14671 14671 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-19 00:05:43.081 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:05:43.104 14671 14671 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-19 00:05:43.101 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16183): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:05:43.104 14671 14671 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-19 00:05:43.104 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-19 00:05:43.104 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-19 00:05:43.104 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-19 00:05:43.101 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16184): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:05:43.105 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:05:43.108 14671 18463 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-19 00:05:43.108 14671 14671 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-19 00:05:43.108 14671 14671 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#23
+10-19 00:05:43.111 14671 14671 D VRI[Toast]: vri.reportDrawFinished
+10-19 00:05:43.980 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36985970, downTime=36985970, phoneEventTime=00:05:43.978 } moveCount:0
+10-19 00:05:43.981 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:43.983 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36985972, downTime=36985970, phoneEventTime=00:05:43.979 } moveCount:0
+10-19 00:05:43.993 14671 14671 I ImeTracker: com.lagradost.cloudstream3:f80d6028: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:05:44.041 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:44.053 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:44.062 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:44.063 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:44.069 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:44.070 14671 14671 D AutofillManager: view not autofillable - not passing ime action check
+10-19 00:05:45.077 14671 14671 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@7da8b13
+10-19 00:05:45.411 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36987399, downTime=36987399, phoneEventTime=00:05:45.407 } moveCount:0
+10-19 00:05:45.413 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:45.490 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36987480, downTime=36987399, phoneEventTime=00:05:45.488 } moveCount:0
+10-19 00:05:45.498 14671 14671 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
+10-19 00:05:45.499 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:45.531 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:05:45.539 14671 14671 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-19 00:05:45.539 14671 14671 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-19 00:05:45.540 14671 14671 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-19 00:05:45.552 14671 14671 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-19 00:05:45.549 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16185): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:05:45.553 14671 14671 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-19 00:05:45.553 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-19 00:05:45.553 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-19 00:05:45.553 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-19 00:05:45.549 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16186): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:05:45.553 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:05:45.554 14671 18475 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-19 00:05:45.556 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:45.563 14671 14671 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-19 00:05:45.563 14671 14671 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#25
+10-19 00:05:45.570 14671 14671 D VRI[MainActivity]: vri.reportDrawFinished
+10-19 00:05:45.618 14671 14671 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-19 00:05:45.619 14671 14671 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-19 00:05:46.446 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36988436, downTime=36988436, phoneEventTime=00:05:46.444 } moveCount:0
+10-19 00:05:46.447 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:46.493 14671 16251 D NF      : verifyCheck: {"c":"y","statusup":"Waiting for your ads click."}
+10-19 00:05:46.526 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36988516, downTime=36988436, phoneEventTime=00:05:46.524 } moveCount:0
+10-19 00:05:46.531 14671 17089 D ApiError: -------------------------------------------------------------------
+10-19 00:05:46.531 14671 17089 D ApiError: safeApiCall: StandaloneCoroutine was cancelled
+10-19 00:05:46.531 14671 17089 D ApiError: safeApiCall: StandaloneCoroutine was cancelled
+10-19 00:05:46.531 14671 17089 W System.err: kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@d6eae2e
+10-19 00:05:46.531 14671 17089 D ApiError: -------------------------------------------------------------------
+10-19 00:05:46.531 14671 17089 D ApiError: -------------------------------------------------------------------
+10-19 00:05:46.531 14671 17089 D ApiError: safeApiCall: StandaloneCoroutine was cancelled
+10-19 00:05:46.531 14671 17089 D ApiError: safeApiCall: StandaloneCoroutine was cancelled
+10-19 00:05:46.531 14671 17089 W System.err: kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@d6eae2e
+10-19 00:05:46.531 14671 17089 D ApiError: -------------------------------------------------------------------
+10-19 00:05:46.532 14671 14671 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@335b82b
+10-19 00:05:46.535 14671 14671 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-19 00:05:46.557 14671 14671 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
+10-19 00:05:46.590 14671 14671 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-19 00:05:46.590 14671 14671 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-19 00:05:55.266 14671 16250 I SkJpegCodec: [mId: 360] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:55.266 14671 17089 I SkJpegCodec: [mId: 361] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:55.266 14671 16250 I SkJpegCodec: [mId: 360] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:55.266 14671 17089 I SkJpegCodec: [mId: 361] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:55.266 14671 16250 I SkJpegCodec: [mId: 360] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:55.266 14671 17089 I SkJpegCodec: [mId: 361] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:55.266 14671 17089 I SkJpegCodec: [mId: 361] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:55.266 14671 17089 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:55.266 14671 16250 I SkJpegCodec: [mId: 360] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:55.266 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:55.268 14671 16250 I SkJpegCodec: [mId: 360] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:55.268 14671 16250 I SkJpegCodec: [mId: 360] skia-debug onGetGainmapInfo returns false
+10-19 00:05:55.268 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:55.268 14671 17089 I SkJpegCodec: [mId: 361] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:55.268 14671 17089 I SkJpegCodec: [mId: 361] skia-debug onGetGainmapInfo returns false
+10-19 00:05:55.268 14671 17089 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:55.269 14671 18482 I SkJpegCodec: [mId: 362] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:55.269 14671 18482 I SkJpegCodec: [mId: 362] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:55.269 14671 18482 I SkJpegCodec: [mId: 362] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:55.269 14671 18482 I SkJpegCodec: [mId: 362] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:55.269 14671 18482 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:55.269 14671 17081 I SkJpegCodec: [mId: 363] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:55.269 14671 17081 I SkJpegCodec: [mId: 363] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:55.269 14671 17081 I SkJpegCodec: [mId: 363] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:55.269 14671 17081 I SkJpegCodec: [mId: 363] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:55.269 14671 17081 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:55.270 14671 18482 I SkJpegCodec: [mId: 362] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:55.270 14671 18482 I SkJpegCodec: [mId: 362] skia-debug onGetGainmapInfo returns false
+10-19 00:05:55.270 14671 18482 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:55.271 14671 17081 I SkJpegCodec: [mId: 363] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:55.271 14671 17081 I SkJpegCodec: [mId: 363] skia-debug onGetGainmapInfo returns false
+10-19 00:05:55.271 14671 17081 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:56.353 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36998343, downTime=36998343, phoneEventTime=00:05:56.351 } moveCount:0
+10-19 00:05:56.354 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:56.596 14671 17081 I SkJpegCodec: [mId: 364] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:56.596 14671 17081 I SkJpegCodec: [mId: 364] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:56.596 14671 17081 I SkJpegCodec: [mId: 364] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:56.597 14671 17081 I SkJpegCodec: [mId: 364] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:56.597 14671 17081 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:56.598 14671 18482 I SkJpegCodec: [mId: 365] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:56.598 14671 18482 I SkJpegCodec: [mId: 365] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:56.598 14671 18482 I SkJpegCodec: [mId: 365] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:56.598 14671 18482 I SkJpegCodec: [mId: 365] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:56.598 14671 18482 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:56.598 14671 16250 I SkJpegCodec: [mId: 366] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:56.598 14671 16250 I SkJpegCodec: [mId: 366] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:56.598 14671 16250 I SkJpegCodec: [mId: 366] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:56.598 14671 16250 I SkJpegCodec: [mId: 366] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:56.598 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:56.600 14671 18482 I SkJpegCodec: [mId: 365] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:56.600 14671 18482 I SkJpegCodec: [mId: 365] skia-debug onGetGainmapInfo returns false
+10-19 00:05:56.600 14671 18482 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:56.600 14671 16250 I SkJpegCodec: [mId: 366] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:56.600 14671 16250 I SkJpegCodec: [mId: 366] skia-debug onGetGainmapInfo returns false
+10-19 00:05:56.600 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:56.601 14671 17092 I SkJpegCodec: [mId: 367] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:56.601 14671 17092 I SkJpegCodec: [mId: 367] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:56.601 14671 17092 I SkJpegCodec: [mId: 367] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:56.601 14671 17092 I SkJpegCodec: [mId: 367] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:56.601 14671 17092 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:56.602 14671 17081 I SkJpegCodec: [mId: 364] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:56.602 14671 17081 I SkJpegCodec: [mId: 364] skia-debug onGetGainmapInfo returns false
+10-19 00:05:56.602 14671 17081 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:56.611 14671 17092 I SkJpegCodec: [mId: 367] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:56.611 14671 17092 I SkJpegCodec: [mId: 367] skia-debug onGetGainmapInfo returns false
+10-19 00:05:56.611 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:56.854 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36998845, downTime=36998343, phoneEventTime=00:05:56.853 } moveCount:28
+10-19 00:05:57.421 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=36999409, downTime=36999409, phoneEventTime=00:05:57.417 } moveCount:0
+10-19 00:05:57.421 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:57.580 14671 17092 I SkJpegCodec: [mId: 368] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:57.580 14671 17092 I SkJpegCodec: [mId: 368] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:57.580 14671 17092 I SkJpegCodec: [mId: 368] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:57.580 14671 17092 I SkJpegCodec: [mId: 368] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:57.580 14671 17092 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:57.581 14671 18482 I SkJpegCodec: [mId: 369] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:57.581 14671 18482 I SkJpegCodec: [mId: 369] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:57.581 14671 18482 I SkJpegCodec: [mId: 369] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:57.581 14671 18482 I SkJpegCodec: [mId: 369] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:57.581 14671 18482 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:57.582 14671 18482 I SkJpegCodec: [mId: 369] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:57.582 14671 18482 I SkJpegCodec: [mId: 369] skia-debug onGetGainmapInfo returns false
+10-19 00:05:57.582 14671 18482 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:57.583 14671 16250 I SkJpegCodec: [mId: 370] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:57.583 14671 17089 I SkJpegCodec: [mId: 371] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:57.583 14671 17089 I SkJpegCodec: [mId: 371] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:57.583 14671 16250 I SkJpegCodec: [mId: 370] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:57.583 14671 17089 I SkJpegCodec: [mId: 371] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:57.583 14671 16250 I SkJpegCodec: [mId: 370] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:57.583 14671 17089 I SkJpegCodec: [mId: 371] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:57.583 14671 17089 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:57.583 14671 16250 I SkJpegCodec: [mId: 370] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:57.583 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:57.584 14671 17089 I SkJpegCodec: [mId: 371] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:57.585 14671 17089 I SkJpegCodec: [mId: 371] skia-debug onGetGainmapInfo returns false
+10-19 00:05:57.585 14671 17089 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:57.585 14671 16250 I SkJpegCodec: [mId: 370] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:57.585 14671 16250 I SkJpegCodec: [mId: 370] skia-debug onGetGainmapInfo returns false
+10-19 00:05:57.585 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:57.585 14671 17092 I SkJpegCodec: [mId: 368] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:57.585 14671 17092 I SkJpegCodec: [mId: 368] skia-debug onGetGainmapInfo returns false
+10-19 00:05:57.585 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:57.594 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:57.771 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=36999761, downTime=36999409, phoneEventTime=00:05:57.769 } moveCount:18
+10-19 00:05:58.453 14671 14671 D CS3ExoPlayer: CronetEngine shutdown
+10-19 00:05:58.791 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37000780, downTime=37000780, phoneEventTime=00:05:58.788 } moveCount:0
+10-19 00:05:58.792 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:58.941 14671 14671 D AutofillManager: view not autofillable - not passing ime action check
+10-19 00:05:58.941 14671 14671 D AutofillManager: view not autofillable - not passing ime action check
+10-19 00:05:58.962 14671 17089 I SkJpegCodec: [mId: 373] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:58.962 14671 16250 I SkJpegCodec: [mId: 372] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:58.962 14671 16250 I SkJpegCodec: [mId: 372] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:58.962 14671 17089 I SkJpegCodec: [mId: 373] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:58.962 14671 16250 I SkJpegCodec: [mId: 372] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:58.962 14671 17089 I SkJpegCodec: [mId: 373] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:58.962 14671 16250 I SkJpegCodec: [mId: 372] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:58.962 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:58.962 14671 17089 I SkJpegCodec: [mId: 373] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:58.962 14671 17089 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:58.964 14671 16250 I SkJpegCodec: [mId: 372] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:58.964 14671 16250 I SkJpegCodec: [mId: 372] skia-debug onGetGainmapInfo returns false
+10-19 00:05:58.964 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:58.964 14671 17089 I SkJpegCodec: [mId: 373] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:58.965 14671 17089 I SkJpegCodec: [mId: 373] skia-debug onGetGainmapInfo returns false
+10-19 00:05:58.965 14671 17089 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:58.966 14671 17092 I SkJpegCodec: [mId: 374] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:58.966 14671 17092 I SkJpegCodec: [mId: 374] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:58.966 14671 17092 I SkJpegCodec: [mId: 374] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:58.966 14671 17092 I SkJpegCodec: [mId: 374] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:58.966 14671 17092 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:58.967 14671 17094 I SkJpegCodec: [mId: 375] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:58.967 14671 17094 I SkJpegCodec: [mId: 375] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:58.967 14671 17094 I SkJpegCodec: [mId: 375] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:58.967 14671 17092 I SkJpegCodec: [mId: 374] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:58.967 14671 17092 I SkJpegCodec: [mId: 374] skia-debug onGetGainmapInfo returns false
+10-19 00:05:58.967 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:58.968 14671 17094 I SkJpegCodec: [mId: 375] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:58.968 14671 17094 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:58.972 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:05:58.974 14671 17094 I SkJpegCodec: [mId: 375] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:58.974 14671 17094 I SkJpegCodec: [mId: 375] skia-debug onGetGainmapInfo returns false
+10-19 00:05:58.974 14671 17094 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:59.153 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37001141, downTime=37000780, phoneEventTime=00:05:59.149 } moveCount:18
+10-19 00:05:59.425 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37001414, downTime=37001414, phoneEventTime=00:05:59.421 } moveCount:0
+10-19 00:05:59.425 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:05:59.564 14671 17094 I SkJpegCodec: [mId: 376] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:59.564 14671 17094 I SkJpegCodec: [mId: 376] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:59.564 14671 17094 I SkJpegCodec: [mId: 376] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:59.564 14671 17094 I SkJpegCodec: [mId: 376] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:59.564 14671 17094 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:59.567 14671 17094 I SkJpegCodec: [mId: 376] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:59.567 14671 17094 I SkJpegCodec: [mId: 376] skia-debug onGetGainmapInfo returns false
+10-19 00:05:59.567 14671 17094 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:59.648 14671 17094 I SkJpegCodec: [mId: 377] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:05:59.648 14671 17094 I SkJpegCodec: [mId: 377] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:05:59.648 14671 17094 I SkJpegCodec: [mId: 377] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:05:59.648 14671 17094 I SkJpegCodec: [mId: 377] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:05:59.648 14671 17094 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:05:59.651 14671 17094 I SkJpegCodec: [mId: 377] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:05:59.651 14671 17094 I SkJpegCodec: [mId: 377] skia-debug onGetGainmapInfo returns false
+10-19 00:05:59.652 14671 17094 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:05:59.734 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37001723, downTime=37001414, phoneEventTime=00:05:59.731 } moveCount:17
+10-19 00:06:00.045 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37002034, downTime=37002034, phoneEventTime=00:06:00.042 } moveCount:0
+10-19 00:06:00.045 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:00.216 14671 17094 I SkJpegCodec: [mId: 378] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:00.216 14671 17094 I SkJpegCodec: [mId: 378] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:00.216 14671 17094 I SkJpegCodec: [mId: 378] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:00.216 14671 17094 I SkJpegCodec: [mId: 378] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:00.216 14671 17094 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:00.218 14671 17094 I SkJpegCodec: [mId: 378] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:00.218 14671 17094 I SkJpegCodec: [mId: 378] skia-debug onGetGainmapInfo returns false
+10-19 00:06:00.218 14671 17094 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:00.317 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37002307, downTime=37002034, phoneEventTime=00:06:00.314 } moveCount:14
+10-19 00:06:00.365 14671 17094 I SkJpegCodec: [mId: 379] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:00.365 14671 17094 I SkJpegCodec: [mId: 379] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:00.365 14671 17094 I SkJpegCodec: [mId: 379] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:00.365 14671 17094 I SkJpegCodec: [mId: 379] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:00.365 14671 17094 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:00.369 14671 17094 I SkJpegCodec: [mId: 379] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:00.369 14671 17094 I SkJpegCodec: [mId: 379] skia-debug onGetGainmapInfo returns false
+10-19 00:06:00.370 14671 17094 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:02.109 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37004099, downTime=37004099, phoneEventTime=00:06:02.106 } moveCount:0
+10-19 00:06:02.109 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:02.195 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37004185, downTime=37004099, phoneEventTime=00:06:02.193 } moveCount:0
+10-19 00:06:02.210 14671 14671 I NavComponent: Navigating to fragment: 2131362305
+10-19 00:06:02.212 14671 14671 I ImeTracker: com.lagradost.cloudstream3:48333c08: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:02.235 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.246 14671 14671 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
+10-19 00:06:02.263 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.287 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.301 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.302 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.309 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.331 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.332 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.333 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:02.342 14671 14671 W Resources: Drawable com.lagradost.cloudstream3:drawable/go_forward_30 has unresolved theme attributes! Consider using Resources.getDrawable(int, Theme) or Context.getDrawable(int).
+10-19 00:06:02.342 14671 14671 W Resources: java.lang.RuntimeException
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.content.res.Resources.getDrawable(Resources.java:1049)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzd(com.google.android.gms:play-services-cast-framework@@22.1.0:2)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzc(com.google.android.gms:play-services-cast-framework@@22.1.0:1)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.zza(com.google.android.gms:play-services-cast-framework@@22.1.0:41)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.onCreateView(com.google.android.gms:play-services-cast-framework@@22.1.0:30)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.ensureInflatedView(FragmentStateManager.java:418)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:285)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentLayoutInflaterFactory.onCreateView(FragmentLayoutInflaterFactory.java:142)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater$FactoryMerger.onCreateView(LayoutInflater.java:226)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.tryCreateView(LayoutInflater.java:963)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:899)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:863)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1025)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:584)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:469)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.lagradost.cloudstream3.databinding.FragmentResultSwipeBinding.inflate(FragmentResultSwipeBinding.java:140)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragmentHelper$-CC.$default$createBinding(BaseFragment.kt:51)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.createBinding(BaseFragment.kt:124)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.onCreateView(BaseFragment.kt:160)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.createView(FragmentStateManager.java:577)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:286)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.executeOpsTogether(FragmentManager.java:2214)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.removeRedundantOperationsAndExecute(FragmentManager.java:2115)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.execPendingActions(FragmentManager.java:2052)
+10-19 00:06:02.342 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager$5.run(FragmentManager.java:703)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.os.Handler.handleCallback(Handler.java:959)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.os.Looper.loopOnce(Looper.java:249)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.os.Looper.loop(Looper.java:337)
+10-19 00:06:02.342 14671 14671 W Resources: 	at android.app.ActivityThread.main(ActivityThread.java:9682)
+10-19 00:06:02.342 14671 14671 W Resources: 	at java.lang.reflect.Method.invoke(Native Method)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:625)
+10-19 00:06:02.342 14671 14671 W Resources: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:944)
+10-19 00:06:02.352 14671 14671 I CS3ExoPlayer: SET STYLE = SaveCaptionStyle(foregroundColor=-1, backgroundColor=0, windowColor=0, edgeType=1, edgeColor=-16777216, typeface=2131296262, typefaceFilePath=null, elevation=0, fixedTextSize=20.0, edgeSize=null, removeCaptions=false, removeBloat=true, upperCase=false, bold=false, italic=false, backgroundRadius=null, alignment=null)
+10-19 00:06:02.354 14671 14671 I ImeTracker: com.lagradost.cloudstream3:193fc41: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:02.355 14671 17094 I SYNCVM  : addFromUrl = https://netmirrors.vip/meta:movie:tt39139925:1582770:Dhurandhar The Revenge
+10-19 00:06:02.355 14671 17094 I SYNCUTIL: getIdsFromUrl https://netmirrors.vip/meta:movie:tt39139925:1582770:Dhurandhar The Revenge
+10-19 00:06:02.367 14671 14671 I CS3ExoPlayer: reloadPlayer
+10-19 00:06:02.367 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:02.367 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:02.369 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:02.370 14671 14671 W View    : requestLayout() improperly called by android.widget.FrameLayout{896fe1b I.E..V... ......I. 0,0-0,0 #7f0a0546 app:id/start_panel} during layout: running second layout pass
+10-19 00:06:02.370 14671 14671 W View    : requestLayout() improperly called by android.widget.FrameLayout{d989bb8 I.E..V... ......ID 1080,0-1080,2107 #7f0a0184 app:id/end_panel} during layout: running second layout pass
+10-19 00:06:08.678 14671 16250 I RVM2    : applyMeta
+10-19 00:06:08.685 14671 14671 W PanelsChildGestureRegionObserver: failed to register view with ID 2131362883. already registered
+10-19 00:06:08.687 14671 14671 I SYNCVM  : addSync simkl = {"Imdb":"movie"}
+10-19 00:06:08.687 14671 14671 I SYNCVM  : updateMetaAndUser
+10-19 00:06:08.688 14671 16250 I SYNCVM  : updateMetadata
+10-19 00:06:08.688 14671 16250 I SYNCVM  : updateMetadata loading simkl
+10-19 00:06:08.688 14671 14671 I SYNCVM  : updateSynced
+10-19 00:06:08.688 14671 17092 I SYNCVM  : updateUserData
+10-19 00:06:08.688 14671 16250 I SYNCVM  : setEpisodesDelta = 0
+10-19 00:06:08.704 14671 14671 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{423e4ee V.E..V... ......ID 0,0-1080,550 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
+10-19 00:06:08.704 14671 14671 W View    : requestLayout() improperly called by android.view.View{11d2d8f V.ED.V... ......ID 0,0-1080,550 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
+10-19 00:06:08.705 14671 14671 D SurfaceView: UPDATE null, mIsCastMode = false
+10-19 00:06:08.707 14671 14671 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-19 00:06:08.705 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16187): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:08.708 14671 14671 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-19 00:06:08.708 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-19 00:06:08.708 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-19 00:06:08.708 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-19 00:06:08.705 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16188): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:08.715 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15165)/@0x8b9cc25, mIsProjectionMode = false
+10-19 00:06:09.885 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37011870, downTime=37011870, phoneEventTime=00:06:09.878 } moveCount:0
+10-19 00:06:09.886 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:09.983 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37011973, downTime=37011870, phoneEventTime=00:06:09.981 } moveCount:0
+10-19 00:06:10.006 14671 14671 I CS3ExoPlayer: newInstance = {simkl={"Imdb":"movie"}}
+10-19 00:06:10.006 14671 14671 I NavComponent: Navigating to fragment: 2131362303
+10-19 00:06:10.009 14671 14671 I ImeTracker: com.lagradost.cloudstream3:91cb815e: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:10.020 14671 14671 I CS3ExoPlayer: onStop
+10-19 00:06:10.020 14671 14671 I CS3ExoPlayer: saveData
+10-19 00:06:10.020 14671 14671 I CS3ExoPlayer: handleEvent Pause
+10-19 00:06:10.062 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:10.077 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:10.078 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:10.084 14671 14671 I CS3ExoPlayer: unwrapBundle = null
+10-19 00:06:10.084 14671 14671 I CS3ExoPlayer: unwrapBundle = Bundle[{resumePosition=0, uuid=53191649-ac2c-4b40-b3bb-0eb9b32409da, index=0, syncData={simkl={"Imdb":"movie"}}}]
+10-19 00:06:10.084 14671 14671 I SYNCVM  : addSync simkl = {"Imdb":"movie"}
+10-19 00:06:10.084 14671 14671 I CS3ExoPlayer: SET STYLE = SaveCaptionStyle(foregroundColor=-1, backgroundColor=0, windowColor=0, edgeType=1, edgeColor=-16777216, typeface=2131296262, typefaceFilePath=null, elevation=0, fixedTextSize=20.0, edgeSize=null, removeCaptions=false, removeBloat=true, upperCase=false, bold=false, italic=false, backgroundRadius=null, alignment=null)
+10-19 00:06:10.087 14671 14671 I PlayViewGen: attachGenerator with generator=com.lagradost.cloudstream3.ui.player.RepoLinkGenerator@b2993d2 and index=0
+10-19 00:06:10.087 14671 14671 I CS3ExoPlayer: unwrapBundle = null
+10-19 00:06:10.087 14671 14671 I CS3ExoPlayer: unwrapBundle = Bundle[{resumePosition=0, uuid=53191649-ac2c-4b40-b3bb-0eb9b32409da, index=0, syncData={simkl={"Imdb":"movie"}}}]
+10-19 00:06:10.087 14671 14671 I PlayViewGen: loadLinks with generator=com.lagradost.cloudstream3.ui.player.RepoLinkGenerator@b2993d2 and index=0
+10-19 00:06:10.087 14671 17092 I SYNCVM  : updateUserData
+10-19 00:06:10.089 14671 16423 D InsetsController: default animation onReady types: 3 controller=android.view.InsetsAnimationControlImpl@b557485
+10-19 00:06:10.089 14671 16423 D ViewRootImplStubImpl: requestedTypes: 519
+10-19 00:06:10.142 14671 14671 I CS3ExoPlayer: reloadPlayer
+10-19 00:06:10.142 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:10.142 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:10.144 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:10.144 14671 14671 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{95afce2 V.E..V... ......ID 0,0-1080,2400 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
+10-19 00:06:10.144 14671 14671 W View    : requestLayout() improperly called by android.view.View{d96b873 V.ED.V... ......ID 0,0-1080,2400 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
+10-19 00:06:10.145 14671 14671 D SurfaceView: UPDATE null, mIsCastMode = false
+10-19 00:06:10.146 14671 14671 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-19 00:06:10.141 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16189): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:10.147 14671 14671 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-19 00:06:10.141 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16190): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:10.147 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-19 00:06:10.147 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-19 00:06:10.150 14671 14671 I CS3ExoPlayer: setActiveSubtitles 0
+10-19 00:06:10.150 14671 14671 I CS3ExoPlayer: autoSelectFromSettings = null
+10-19 00:06:10.150 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:10.150 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:10.163 14671 14671 D ActivityThread: Activity = com.lagradost.cloudstream3.MainActivity@f1610b3, onConfigurationChanged = {0.9 405mcc863mnc [en_IN] ldltr sw393dp w873dp h393dp 440dpi nrml long hdr widecg land uimode=12 night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 2400, 1080) mAppBounds=Rect(0, 0 - 2400, 1080) mMaxBounds=Rect(0, 0 - 2400, 1080) mDisplayRotation=ROTATION_90 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_90 mInSplitScreen=false letterBoxed=false foScaled=false isSpecificEmbedded=false} s.11 fontWeightAdjustment=0/d themeChanged=0 themeChangedFlags=0 display=0 extraData = Bundle[{}] screenType=0/0}
+10-19 00:06:10.164 14671 14671 I ImeTracker: com.lagradost.cloudstream3:3296c98e: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:10.171 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:06:10.171 14671 14671 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-19 00:06:10.172 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:10.178 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15171)/@0x17c20f4, mIsProjectionMode = false
+10-19 00:06:10.178 14671 14671 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{95afce2 V.E..V... ......ID 0,0-2400,1080 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
+10-19 00:06:10.178 14671 14671 W View    : requestLayout() improperly called by android.view.View{d96b873 V.ED.V... ......ID 0,0-1080,2400 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
+10-19 00:06:10.179 14671 14671 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#31
+10-19 00:06:10.187 14671 14671 D VRI[MainActivity]: vri.reportDrawFinished
+10-19 00:06:10.290 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15165)/@0x8b9cc25, mIsCastMode = false
+10-19 00:06:10.291 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15165)/@0x8b9cc25, mIsProjectionMode = false
+10-19 00:06:10.294 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:10.294 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:10.301 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:10.503 14671 16423 D InsetsAnimationCtrlImpl: notifyFinished shown: false, currentAlpha: 1.000000, currentInsets: Insets{left=0, top=0, right=0, bottom=0}
+10-19 00:06:10.504 14671 16423 D InsetsAnimationCtrlImpl: Animation finished abruptly.
+10-19 00:06:10.504 14671 16423 D InsetsController: onAnimationFinish showOnFinish: false
+10-19 00:06:10.504 14671 14671 D InsetsController: cancelAnimation of types:3 animType=1 host:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity invokeCallback=false
+10-19 00:06:10.504 14671 14671 D InsetsController: notifyFinished. shown: false runner=android.view.InsetsAnimationThreadControlRunner@63e1043
+10-19 00:06:15.132 14671 16102 I System.out: Exception in NiceHttp: java.io.InterruptedIOException timeout
+10-19 00:06:15.134 14671 14671 I COMPACT : showToast = No Links Found
+10-19 00:06:15.139 14671 14671 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-19 00:06:15.154 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:06:15.163 14671 14671 D popFragment: Destroying Fragment
+10-19 00:06:15.173 14671 14671 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-19 00:06:15.169 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16192): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:15.173 14671 14671 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-19 00:06:15.169 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16193): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:15.173 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-19 00:06:15.173 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-19 00:06:15.174 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:06:15.175 14671 18643 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-19 00:06:15.175 14671 14671 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-19 00:06:15.175 14671 14671 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#33
+10-19 00:06:15.179 14671 14671 D VRI[Toast]: vri.reportDrawFinished
+10-19 00:06:15.179 14671 14671 D popFragment: Destroying Fragment
+10-19 00:06:15.181 14671 14671 I ImeTracker: com.lagradost.cloudstream3:25413eb2: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:15.184 14671 14671 I CS3ExoPlayer: onStop
+10-19 00:06:15.184 14671 14671 I CS3ExoPlayer: saveData
+10-19 00:06:15.184 14671 14671 I CS3ExoPlayer: handleEvent Pause
+10-19 00:06:15.191 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.200 14671 14671 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
+10-19 00:06:15.214 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.237 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.251 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.252 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.258 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.285 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.287 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.291 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:15.306 14671 14671 W Resources: Drawable com.lagradost.cloudstream3:drawable/go_forward_30 has unresolved theme attributes! Consider using Resources.getDrawable(int, Theme) or Context.getDrawable(int).
+10-19 00:06:15.306 14671 14671 W Resources: java.lang.RuntimeException
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.content.res.Resources.getDrawable(Resources.java:1049)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzd(com.google.android.gms:play-services-cast-framework@@22.1.0:2)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.zzq.zzc(com.google.android.gms:play-services-cast-framework@@22.1.0:1)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.zza(com.google.android.gms:play-services-cast-framework@@22.1.0:41)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.google.android.gms.cast.framework.media.widget.MiniControllerFragment.onCreateView(com.google.android.gms:play-services-cast-framework@@22.1.0:30)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.ensureInflatedView(FragmentStateManager.java:418)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:285)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentLayoutInflaterFactory.onCreateView(FragmentLayoutInflaterFactory.java:142)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater$FactoryMerger.onCreateView(LayoutInflater.java:226)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.tryCreateView(LayoutInflater.java:963)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:899)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:863)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1025)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:986)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:584)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:469)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.databinding.FragmentResultSwipeBinding.inflate(FragmentResultSwipeBinding.java:140)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.result.ResultFragmentPhone$1.invoke(ResultFragmentPhone.kt:112)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragmentHelper$-CC.$default$createBinding(BaseFragment.kt:51)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.createBinding(BaseFragment.kt:124)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.ui.BaseFragment.onCreateView(BaseFragment.kt:160)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.Fragment.performCreateView(Fragment.java:3119)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.createView(FragmentStateManager.java:577)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentStateManager.moveToExpectedState(FragmentStateManager.java:286)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.executeOpsTogether(FragmentManager.java:2205)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.removeRedundantOperationsAndExecute(FragmentManager.java:2115)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.popBackStackImmediate(FragmentManager.java:1116)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.popBackStackImmediate(FragmentManager.java:998)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager.handleOnBackPressed(FragmentManager.java:914)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.fragment.app.FragmentManager$1.handleOnBackPressed(FragmentManager.java:572)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.activity.OnBackPressedCallback$OnBackPressedEventHandler.onBackCompleted(OnBackPressedCallback.kt:172)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventHandler.doOnBackCompleted$navigationevent(NavigationEventHandler.kt:242)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventProcessor.dispatchOnCompleted(NavigationEventProcessor.kt:487)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventDispatcher.dispatchOnCompleted$navigationevent(NavigationEventDispatcher.kt:383)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventInput.dispatchOnBackCompleted(NavigationEventInput.kt:227)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.activity.OnBackPressedDispatcher$OnBackPressedEventInput.backCompleted(OnBackPressedDispatcher.kt:303)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.activity.OnBackPressedDispatcher.onBackPressed(OnBackPressedDispatcher.kt:248)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.BackPressedCallbackHelper$CallbackHelper.runDefault(BackPressedCallbackHelper.kt:22)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.MainActivity.onCreate$lambda$25(MainActivity.kt:2049)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.MainActivity$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.BackPressedCallbackHelper$attachBackPressedCallback$newCallback$1.handleOnBackPressed(BackPressedCallbackHelper.kt:40)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.activity.OnBackPressedCallback$OnBackPressedEventHandler.onBackCompleted(OnBackPressedCallback.kt:172)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventHandler.doOnBackCompleted$navigationevent(NavigationEventHandler.kt:242)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventProcessor.dispatchOnCompleted(NavigationEventProcessor.kt:487)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventDispatcher.dispatchOnCompleted$navigationevent(NavigationEventDispatcher.kt:383)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.navigationevent.NavigationEventInput.dispatchOnBackCompleted(NavigationEventInput.kt:227)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.activity.OnBackPressedDispatcher$OnBackPressedEventInput.backCompleted(OnBackPressedDispatcher.kt:303)
+10-19 00:06:15.306 14671 14671 W Resources: 	at androidx.activity.OnBackPressedDispatcher.onBackPressed(OnBackPressedDispatcher.kt:248)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.UIHelper$popCurrentPage$1.invokeSuspend(UIHelper.kt:294)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.UIHelper$popCurrentPage$1.invoke(UIHelper.kt:8)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.UIHelper$popCurrentPage$1.invoke(UIHelper.kt:4)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.Coroutines$main$1.invokeSuspend(Coroutines.kt:20)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.Coroutines$main$1.invoke(Coroutines.kt:8)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.utils.Coroutines$main$1.invoke(Coroutines.kt:4)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.lagradost.cloudstream3.mvvm.ArchComponentExtKt$launchSafe$obj$1.invokeSuspend(ArchComponentExt.kt:156)
+10-19 00:06:15.306 14671 14671 W Resources: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-19 00:06:15.306 14671 14671 W Resources: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.os.Handler.handleCallback(Handler.java:959)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.os.Looper.loopOnce(Looper.java:249)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.os.Looper.loop(Looper.java:337)
+10-19 00:06:15.306 14671 14671 W Resources: 	at android.app.ActivityThread.main(ActivityThread.java:9682)
+10-19 00:06:15.306 14671 14671 W Resources: 	at java.lang.reflect.Method.invoke(Native Method)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:625)
+10-19 00:06:15.306 14671 14671 W Resources: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:944)
+10-19 00:06:15.318 14671 14671 I CS3ExoPlayer: SET STYLE = SaveCaptionStyle(foregroundColor=-1, backgroundColor=0, windowColor=0, edgeType=1, edgeColor=-16777216, typeface=2131296262, typefaceFilePath=null, elevation=0, fixedTextSize=20.0, edgeSize=null, removeCaptions=false, removeBloat=true, upperCase=false, bold=false, italic=false, backgroundRadius=null, alignment=null)
+10-19 00:06:15.319 14671 14671 I ImeTracker: com.lagradost.cloudstream3:e1247e4f: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:15.320 14671 17089 I SYNCVM  : addFromUrl = https://netmirrors.vip/meta:movie:tt39139925:1582770:Dhurandhar The Revenge
+10-19 00:06:15.320 14671 17089 I SYNCUTIL: getIdsFromUrl https://netmirrors.vip/meta:movie:tt39139925:1582770:Dhurandhar The Revenge
+10-19 00:06:15.378 14671 16423 D InsetsController: default animation onReady types: 3 controller=android.view.InsetsAnimationControlImpl@a5eddce
+10-19 00:06:15.378 14671 16423 D ViewRootImplStubImpl: requestedTypes: 519
+10-19 00:06:15.381 14671 17092 I SYNCVM  : addFromUrl = https://netmirrors.vip/meta:movie:tt39139925:1582770:Dhurandhar The Revenge
+10-19 00:06:15.381 14671 17092 I SYNCUTIL: getIdsFromUrl https://netmirrors.vip/meta:movie:tt39139925:1582770:Dhurandhar The Revenge
+10-19 00:06:15.382 14671 14671 I CS3ExoPlayer: reloadPlayer
+10-19 00:06:15.382 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:15.382 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:15.404 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:15.406 14671 14671 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{2f2f2e2 V.E..V... ......ID 0,0-2289,550 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
+10-19 00:06:15.406 14671 14671 W View    : requestLayout() improperly called by android.view.View{43e7673 V.ED.V... ......ID 0,0-2289,550 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
+10-19 00:06:15.406 14671 14671 W View    : requestLayout() improperly called by android.widget.FrameLayout{6a1a930 I.E..V... ......I. 0,0-0,0 #7f0a0546 app:id/start_panel} during layout: running second layout pass
+10-19 00:06:15.406 14671 14671 W View    : requestLayout() improperly called by android.widget.FrameLayout{f81d9a9 I.E..V... ......ID 2289,0-2289,787 #7f0a0184 app:id/end_panel} during layout: running second layout pass
+10-19 00:06:15.406 14671 14671 D SurfaceView: UPDATE null, mIsCastMode = false
+10-19 00:06:15.405 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16195): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:15.408 14671 14671 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-19 00:06:15.408 14671 14671 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-19 00:06:15.408 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-19 00:06:15.408 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-19 00:06:15.408 14671 14671 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-19 00:06:15.405 14671 14671 W st.cloudstream3: type=1400 audit(0.0:16196): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-19 00:06:15.409 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15187)/@0x130285c, mIsProjectionMode = false
+10-19 00:06:15.417 14671 14671 D ActivityThread: Activity = com.lagradost.cloudstream3.MainActivity@f1610b3, onConfigurationChanged = {0.9 405mcc863mnc [en_IN] ldltr sw393dp w393dp h873dp 440dpi nrml long hdr widecg port uimode=12 night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mInSplitScreen=false letterBoxed=false foScaled=false isSpecificEmbedded=false} s.12 fontWeightAdjustment=0/d themeChanged=0 themeChangedFlags=0 display=0 extraData = Bundle[{}] screenType=0/0}
+10-19 00:06:15.418 14671 14671 I ImeTracker: com.lagradost.cloudstream3:7a997c5e: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:15.419 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:06:15.420 14671 14671 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-19 00:06:15.420 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-19 00:06:15.420 14671 14671 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-19 00:06:15.420 14671 14671 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-19 00:06:15.420 14671 14671 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.handleResized:2794 android.view.ViewRootImpl.-$$Nest$mhandleResized:0 android.view.ViewRootImpl$W.resized:12841 android.app.servertransaction.WindowStateResizeItem.execute:64 android.app.servertransaction.WindowStateTransactionItem.execute:59 
+10-19 00:06:15.422 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:15.423 14671 14671 W View    : requestLayout() improperly called by androidx.media3.ui.AspectRatioFrameLayout{2f2f2e2 V.E..V... ......ID 0,0-1080,550 #7f0a01a5 app:id/exo_content_frame} during layout: running second layout pass
+10-19 00:06:15.423 14671 14671 W View    : requestLayout() improperly called by android.view.View{43e7673 V.ED.V... ......ID 0,0-2289,550 #7f0a01da app:id/extra_brightness_overlay} during layout: running second layout pass
+10-19 00:06:15.424 14671 14671 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#38
+10-19 00:06:15.433 14671 14671 D VRI[MainActivity]: vri.reportDrawFinished
+10-19 00:06:15.433 14671 14671 D VRI[Toast]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:15.435 14671 14671 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#40
+10-19 00:06:15.439 14671 14671 D VRI[Toast]: vri.reportDrawFinished
+10-19 00:06:15.548 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15171)/@0x17c20f4, mIsCastMode = false
+10-19 00:06:15.549 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15171)/@0x17c20f4, mIsProjectionMode = false
+10-19 00:06:15.553 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:15.553 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:15.554 14671 16250 I SYNCVM  : updateUserData
+10-19 00:06:15.563 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:15.698 14671 16423 D InsetsAnimationCtrlImpl: notifyFinished shown: true, currentAlpha: 1.000000, currentInsets: Insets{left=0, top=111, right=0, bottom=44}
+10-19 00:06:15.698 14671 16423 D InsetsAnimationCtrlImpl: Animation finished abruptly.
+10-19 00:06:15.698 14671 16423 D InsetsController: onAnimationFinish showOnFinish: true
+10-19 00:06:15.714 14671 14671 D InsetsController: cancelAnimation of types:3 animType=0 host:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity invokeCallback=false
+10-19 00:06:15.714 14671 14671 D InsetsController: notifyFinished. shown: true runner=android.view.InsetsAnimationThreadControlRunner@e14cb20
+10-19 00:06:17.156 14671 14671 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@ce81416
+10-19 00:06:17.237 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37019229000000, downTime=37019229000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:17.237
+10-19 00:06:17.238 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37019230000000, downTime=37019230000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:17.238
+10-19 00:06:17.242 14671 14671 I ImeTracker: com.lagradost.cloudstream3:ecb234d0: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:17.244 14671 14671 I CS3ExoPlayer: onStop
+10-19 00:06:17.244 14671 14671 I CS3ExoPlayer: saveData
+10-19 00:06:17.244 14671 14671 I CS3ExoPlayer: handleEvent Pause
+10-19 00:06:17.273 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:17.280 14671 14671 W MIUIInput: Back key is intercepted by the app
+10-19 00:06:17.282 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:17.306 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:17.334 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:17.383 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:17.406 14671 16019 I st.cloudstream3: Background concurrent mark compact GC freed 11MB AllocSpace bytes, 519(10MB) LOS objects, 28% free, 59MB/83MB, paused 1.455ms,1.472ms total 141.232ms
+10-19 00:06:17.432 14671 17088 I SkJpegCodec: [mId: 380] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.432 14671 17084 I SkJpegCodec: [mId: 381] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.432 14671 17084 I SkJpegCodec: [mId: 381] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.432 14671 17088 I SkJpegCodec: [mId: 380] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.432 14671 17084 I SkJpegCodec: [mId: 381] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.432 14671 17088 I SkJpegCodec: [mId: 380] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.432 14671 17092 I SkJpegCodec: [mId: 382] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.432 14671 17084 I SkJpegCodec: [mId: 381] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.432 14671 17084 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.432 14671 17088 I SkJpegCodec: [mId: 380] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.432 14671 17088 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.432 14671 17092 I SkJpegCodec: [mId: 382] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.432 14671 17092 I SkJpegCodec: [mId: 382] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.432 14671 17092 I SkJpegCodec: [mId: 382] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.432 14671 17092 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.433 14671 16251 I SkJpegCodec: [mId: 383] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.433 14671 16251 I SkJpegCodec: [mId: 383] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.433 14671 16251 I SkJpegCodec: [mId: 383] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.433 14671 16251 I SkJpegCodec: [mId: 383] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.433 14671 16251 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.433 14671 17084 I SkJpegCodec: [mId: 381] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.433 14671 17084 I SkJpegCodec: [mId: 381] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.433 14671 17084 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.433 14671 17088 I SkJpegCodec: [mId: 380] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.433 14671 17088 I SkJpegCodec: [mId: 380] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.434 14671 17088 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.434 14671 16251 I SkJpegCodec: [mId: 383] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.435 14671 16251 I SkJpegCodec: [mId: 383] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.435 14671 16251 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.437 14671 17090 I SkJpegCodec: [mId: 384] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.437 14671 17090 I SkJpegCodec: [mId: 384] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.437 14671 17090 I SkJpegCodec: [mId: 384] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.437 14671 17090 I SkJpegCodec: [mId: 384] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.437 14671 17090 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.438 14671 17090 I SkJpegCodec: [mId: 384] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.438 14671 17090 I SkJpegCodec: [mId: 384] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.438 14671 17090 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.440 14671 17084 I SkJpegCodec: [mId: 385] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.440 14671 17084 I SkJpegCodec: [mId: 385] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.440 14671 17084 I SkJpegCodec: [mId: 385] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.440 14671 17084 I SkJpegCodec: [mId: 385] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.440 14671 17084 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.440 14671 16251 I SkJpegCodec: [mId: 386] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.440 14671 16251 I SkJpegCodec: [mId: 386] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.440 14671 16251 I SkJpegCodec: [mId: 386] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.440 14671 16251 I SkJpegCodec: [mId: 386] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.440 14671 16251 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.440 14671 17090 I SkJpegCodec: [mId: 387] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.440 14671 17090 I SkJpegCodec: [mId: 387] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.440 14671 17090 I SkJpegCodec: [mId: 387] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.440 14671 17090 I SkJpegCodec: [mId: 387] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.440 14671 17090 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.441 14671 17092 I SkJpegCodec: [mId: 382] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.441 14671 17092 I SkJpegCodec: [mId: 382] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.441 14671 17092 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.441 14671 17084 I SkJpegCodec: [mId: 385] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.441 14671 17084 I SkJpegCodec: [mId: 385] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.441 14671 17084 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.441 14671 17090 I SkJpegCodec: [mId: 387] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.441 14671 17090 I SkJpegCodec: [mId: 387] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.441 14671 17090 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.442 14671 16251 I SkJpegCodec: [mId: 386] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.442 14671 16251 I SkJpegCodec: [mId: 386] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.442 14671 16251 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.443 14671 17090 I SkJpegCodec: [mId: 388] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.443 14671 16250 I SkJpegCodec: [mId: 389] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.443 14671 16250 I SkJpegCodec: [mId: 389] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.443 14671 17090 I SkJpegCodec: [mId: 388] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.443 14671 16250 I SkJpegCodec: [mId: 389] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.443 14671 17090 I SkJpegCodec: [mId: 388] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.443 14671 17090 I SkJpegCodec: [mId: 388] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.443 14671 17090 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.443 14671 16250 I SkJpegCodec: [mId: 389] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.443 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.444 14671 17030 I SkJpegCodec: [mId: 390] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.444 14671 17030 I SkJpegCodec: [mId: 390] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.444 14671 17030 I SkJpegCodec: [mId: 390] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.444 14671 17030 I SkJpegCodec: [mId: 390] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.444 14671 17030 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.444 14671 16251 I SkJpegCodec: [mId: 391] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.444 14671 16251 I SkJpegCodec: [mId: 391] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.444 14671 16251 I SkJpegCodec: [mId: 391] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.444 14671 16251 I SkJpegCodec: [mId: 391] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.444 14671 16251 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.444 14671 17090 I SkJpegCodec: [mId: 388] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.444 14671 17090 I SkJpegCodec: [mId: 388] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.445 14671 17090 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.445 14671 16250 I SkJpegCodec: [mId: 389] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.445 14671 16250 I SkJpegCodec: [mId: 389] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.445 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.445 14671 16251 I SkJpegCodec: [mId: 391] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.445 14671 16251 I SkJpegCodec: [mId: 391] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.445 14671 16251 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.445 14671 17030 I SkJpegCodec: [mId: 390] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.445 14671 17030 I SkJpegCodec: [mId: 390] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.445 14671 17030 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.446 14671 17090 I SkJpegCodec: [mId: 392] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.446 14671 17090 I SkJpegCodec: [mId: 392] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.446 14671 17090 I SkJpegCodec: [mId: 392] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.446 14671 17090 I SkJpegCodec: [mId: 392] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.446 14671 17090 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.446 14671 16251 I SkJpegCodec: [mId: 393] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.446 14671 16251 I SkJpegCodec: [mId: 393] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.446 14671 16251 I SkJpegCodec: [mId: 393] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.447 14671 16251 I SkJpegCodec: [mId: 393] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.447 14671 16251 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.447 14671 16250 I SkJpegCodec: [mId: 394] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:17.447 14671 16250 I SkJpegCodec: [mId: 394] skia-debug SkJpegCodec::ReadHeader: width = 332, height = 472, color = 10
+10-19 00:06:17.447 14671 16250 I SkJpegCodec: [mId: 394] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:17.447 14671 16250 I SkJpegCodec: [mId: 394] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 1328, 
+10-19 00:06:17.447 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 332, Dimensions.height = 472};
+10-19 00:06:17.447 14671 17090 I SkJpegCodec: [mId: 392] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.448 14671 17090 I SkJpegCodec: [mId: 392] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.448 14671 17090 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.448 14671 16251 I SkJpegCodec: [mId: 393] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.448 14671 16251 I SkJpegCodec: [mId: 393] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.448 14671 16251 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.448 14671 16250 I SkJpegCodec: [mId: 394] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 472
+10-19 00:06:17.448 14671 16250 I SkJpegCodec: [mId: 394] skia-debug onGetGainmapInfo returns false
+10-19 00:06:17.448 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:17.477 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15187)/@0x130285c, mIsCastMode = false
+10-19 00:06:17.478 14671 14671 D SurfaceView: UPDATE Surface(name=SurfaceView[com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity]#15187)/@0x130285c, mIsProjectionMode = false
+10-19 00:06:17.484 14671 14671 I CS3ExoPlayer: releasePlayer
+10-19 00:06:17.484 14671 14671 I PlayerView: Handle event: PlayerAttachedEvent(player=null, source=Player)
+10-19 00:06:17.486 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:18.320 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37020308, downTime=37020308, phoneEventTime=00:06:18.315 } moveCount:0
+10-19 00:06:18.321 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:18.373 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37020363, downTime=37020308, phoneEventTime=00:06:18.371 } moveCount:0
+10-19 00:06:18.393 14671 14671 I ImeTracker: com.lagradost.cloudstream3:5f2e6c6b: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:18.419 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:18.431 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:18.434 14671 14671 I PLG     : updatePluginList = [RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)]
+10-19 00:06:18.434 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:06:18.469 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:18.473 14671 16250 I SkJpegCodec: [mId: 396] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:18.473 14671 16250 I SkJpegCodec: [mId: 396] skia-debug SkJpegCodec::ReadHeader: width = 460, height = 460, color = 10
+10-19 00:06:18.473 14671 16250 I SkJpegCodec: [mId: 396] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 0, streamType: SkFILEStream
+10-19 00:06:18.473 14671 16250 I SkJpegCodec: [mId: 396] skia-debug SkJpegCodec::onGetScaledDimensions: desiredScale = 0.500000
+10-19 00:06:18.474 14671 16250 I SkJpegCodec: [mId: 396] skia-debug SkJpegCodec::onStartScanlineDecode: 
+10-19 00:06:18.474 14671 16250 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 460, Dimensions.height = 460};
+10-19 00:06:18.474 14671 16250 I SkJpegCodec: [mId: 396] skia-debug onGetGainmapInfo returns false
+10-19 00:06:18.474 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:18.481 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:18.493 14671 16250 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:19.520 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37021511000000, downTime=37021511000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:19.519
+10-19 00:06:19.521 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37021513000000, downTime=37021513000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:19.521
+10-19 00:06:19.528 14671 14671 I ImeTracker: com.lagradost.cloudstream3:26e84c49: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:19.540 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:19.541 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:19.556 14671 14671 I PLG     : updatePluginList = [RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json), RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)]
+10-19 00:06:19.557 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json)
+10-19 00:06:19.557 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:06:19.559 14671 14671 W MIUIInput: Back key is intercepted by the app
+10-19 00:06:19.571 14671 17093 I AHardwareBuffer: proc name :com.lagradost.cloudstream3
+10-19 00:06:19.576 14671 14671 I PLG     : updatePluginList = [RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json), RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)]
+10-19 00:06:19.576 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://wsrv.nl/?url=https://avatars.githubusercontent.com/u/91174352&mask=circle, name=Megix Repo(Hindi & English), url=https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json)
+10-19 00:06:19.576 14671 14671 I PLG     : getPlugins = RepositoryData(iconUrl=https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png, name=Adiversion, url=https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+10-19 00:06:20.387 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37022378000000, downTime=37022378000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:20.385
+10-19 00:06:20.387 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37022379000000, downTime=37022379000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:20.387
+10-19 00:06:20.391 14671 14671 I ImeTracker: com.lagradost.cloudstream3:cb64829: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:20.395 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:20.413 14671 14671 I SkJpegCodec: [mId: 141] skia-debug SkJpegCodec::+SkJpegCodec
+10-19 00:06:20.413 14671 14671 I SkJpegCodec: [mId: 141] skia-debug SkJpegCodec::ReadHeader: width = 640, height = 360, color = 10
+10-19 00:06:20.413 14671 14671 I SkJpegCodec: [mId: 141] skia-debug SkJpegCodec::ReadHeader: progressive_mode = 1, streamType: SkStreamRewindable
+10-19 00:06:20.413 14671 14671 I SkJpegCodec: [mId: 141] skia-debug SkJpegCodec::onGetPixels: dstRowBytes = 2560, 
+10-19 00:06:20.413 14671 14671 I SkJpegCodec: dstInfo: SkImageInfo: {IsRGB = 1, ColorType = 4, AlphaType = 1, Dimensions.width = 640, Dimensions.height = 360};
+10-19 00:06:20.417 14671 14671 I SkJpegCodec: [mId: 141] skia-debug SkJpegCodec::onGetPixels ends with rowsDecodec = 360
+10-19 00:06:20.417 14671 14671 I SkJpegCodec: [mId: 141] skia-debug onGetGainmapInfo returns false
+10-19 00:06:20.419 14671 14671 W MIUIInput: Back key is intercepted by the app
+10-19 00:06:21.290 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37023279, downTime=37023279, phoneEventTime=00:06:21.287 } moveCount:0
+10-19 00:06:21.291 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:21.354 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37023344, downTime=37023279, phoneEventTime=00:06:21.352 } moveCount:0
+10-19 00:06:21.364 14671 14671 I NavComponent: Navigating to fragment: 2131361880
+10-19 00:06:21.366 14671 14671 I ImeTracker: com.lagradost.cloudstream3:99eb590e: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:21.387 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:22.282 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37024273000000, downTime=37024273000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:22.281
+10-19 00:06:22.284 14671 14671 I MIUIInput: [KeyEvent] ViewRootImpl windowName 'sendBackKeyEvent-com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=37024276000000, downTime=37024276000000, deviceId=-1, source=0x101, displayId=-1 }, phoneEventTime=00:06:22.284
+10-19 00:06:22.288 14671 14671 I ImeTracker: com.lagradost.cloudstream3:59da0ecd: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:22.290 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:22.304 14671 14671 W MIUIInput: Back key is intercepted by the app
+10-19 00:06:22.805 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37024794, downTime=37024794, phoneEventTime=00:06:22.802 } moveCount:0
+10-19 00:06:22.805 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:22.850 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37024841, downTime=37024794, phoneEventTime=00:06:22.849 } moveCount:0
+10-19 00:06:22.866 14671 14671 I NavComponent: Navigating to fragment: 2131361886
+10-19 00:06:22.868 14671 14671 I ImeTracker: com.lagradost.cloudstream3:b751b49a: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-19 00:06:22.887 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:23.496 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37025485, downTime=37025485, phoneEventTime=00:06:23.493 } moveCount:0
+10-19 00:06:23.497 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:23.557 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37025547, downTime=37025485, phoneEventTime=00:06:23.555 } moveCount:4
+10-19 00:06:23.558 14671 14671 D SplineOverScroller: mFlingDuration: 2616,mFlingDistance: 6434.41845703125,mVelocity: 13884
+10-19 00:06:24.290 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=37026279, downTime=37026279, phoneEventTime=00:06:24.286 } moveCount:0
+10-19 00:06:24.290 14671 14671 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-19 00:06:24.365 14671 14671 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=37026354, downTime=37026279, phoneEventTime=00:06:24.361 } moveCount:0
+10-19 00:06:24.391 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:24.393 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:24.410 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:24.412 14671 14671 D ScrollerOptimizationManager: registerConfigChangedListener
+10-19 00:06:24.419 14671 14671 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
