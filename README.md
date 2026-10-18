@@ -23,9 +23,12 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
    - Repository Name: `AnimePahe`
    - Repository URL:
      ```text
-     https://raw.githubusercontent.com/Adiversion/animepahe/builds/plugins.json
+     https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json
      ```
    - Tap **Download**, then locate **AnimePahe** in the extension list and click **Install**.
+
+   > **One-Click Add (on Android):**  
+   > [`cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json`](cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
 
 ---
 
@@ -62,6 +65,7 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
 │           ├── AnimePahePlugin.kt   # Cloudstream plugin entrypoint
 │           └── AnimePaheProvider.kt # MainAPI scraper and stream extractor
 ├── build.gradle.kts                 # Root Gradle build script
+├── repo.json                        # CloudStream repository manifest
 ├── settings.gradle.kts              # Module auto-discovery
 └── gradle/wrapper/                  # Gradle 8.12 wrapper
 ```
