@@ -49,7 +49,13 @@ jobs:
           chmod +x gradlew
           set -o pipefail
           BUILD_STATUS=0
-          ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log || BUILD_STATUS=$?
+          for attempt in 1 2 3; do
+            echo "Gradle build attempt $attempt of 3..."
+            BUILD_STATUS=0
+            ./gradlew :AnimePaheProvider:make makePluginsJson --stacktrace 2>&1 | tee build_output.log && break || BUILD_STATUS=$?
+            echo "Attempt $attempt failed with code $BUILD_STATUS, waiting 5s before retry..."
+            sleep 5
+          done
           
           if [ $BUILD_STATUS -ne 0 ]; then
             echo "::error::Gradle build failed with exit code $BUILD_STATUS"
