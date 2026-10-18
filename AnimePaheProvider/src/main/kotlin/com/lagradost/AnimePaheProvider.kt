@@ -72,6 +72,32 @@ class AnimePaheProvider : MainAPI() {
             return headers
         }
 
+        fun getImageHeaders(base: String = MAIN_URL): Map<String, String> {
+            val ua = cfUserAgent ?: USER_AGENT
+            val headers = mutableMapOf(
+                "User-Agent" to ua,
+                "Referer" to "$base/",
+                "sec-ch-ua-mobile" to "?1",
+                "sec-ch-ua-platform" to "\"Android\""
+            )
+            val cookies = cfCookies ?: runCatching {
+                CookieManager.getInstance().getCookie(base)
+            }.getOrNull()
+            if (!cookies.isNullOrBlank()) {
+                headers["Cookie"] = cookies
+            }
+            return headers
+        }
+
+        fun fixImageUrl(url: String?, base: String = MAIN_URL): String? {
+            if (url.isNullOrBlank()) return null
+            return when {
+                url.startsWith("//") -> "https:$url"
+                url.startsWith("/") -> "$base$url"
+                else -> url
+            }
+        }
+
         private fun getActivity(): Activity? {
             return CommonActivity.activity ?: runCatching {
                 val activityThreadClass = Class.forName("android.app.ActivityThread")
@@ -334,7 +360,14 @@ class AnimePaheProvider : MainAPI() {
                         val title = webView.title ?: ""
                         val currentUrl = webView.url ?: url ?: ""
 
-                        // 1. Immediately check if cf_clearance has been issued
+                        // 1. While Cloudflare challenge is still active, DO NOT dismiss!
+                        if (isChallenge(title, currentUrl)) {
+                            android.util.Log.d("AnimePahe", "Challenge active: title='$title', url='$currentUrl'")
+                            tryAutoCheck()
+                            return
+                        }
+
+                        // 2. Challenge has finished (title is site title, url is destination)
                         val cookies = extractMergedCookies(currentUrl)
                         if (cookies.contains("cf_clearance")) {
                             android.util.Log.d("AnimePahe", "Clearance verified! Title='$title', saving cookies and dismissing dialog.")
@@ -356,13 +389,6 @@ class AnimePaheProvider : MainAPI() {
                                     }
                                 }
                             }, 800L)
-                            return
-                        }
-
-                        // 2. While Cloudflare challenge is active, attempt auto-trigger
-                        if (isChallenge(title, currentUrl)) {
-                            android.util.Log.d("AnimePahe", "Challenge active: title='$title', url='$currentUrl'")
-                            tryAutoCheck()
                             return
                         }
                     }
@@ -400,13 +426,16 @@ class AnimePaheProvider : MainAPI() {
                     dialog.setOnDismissListener {
                         handler.removeCallbacks(checkRunnable)
                         if (latch.count > 0) {
+                            val title = webView.title ?: ""
                             val currentUrl = webView.url ?: targetUrl
-                            val finalCookies = extractMergedCookies(currentUrl)
-                            if (finalCookies.contains("cf_clearance")) {
-                                cookieManager.flush()
-                                cfCookies = finalCookies
-                                solvedCookies = finalCookies
-                                cfUserAgent = webView.settings.userAgentString
+                            if (!isChallenge(title, currentUrl)) {
+                                val finalCookies = extractMergedCookies(currentUrl)
+                                if (finalCookies.contains("cf_clearance")) {
+                                    cookieManager.flush()
+                                    cfCookies = finalCookies
+                                    solvedCookies = finalCookies
+                                    cfUserAgent = webView.settings.userAgentString
+                                }
                             }
                             latch.countDown()
                         }
@@ -498,7 +527,7 @@ class AnimePaheProvider : MainAPI() {
 
 
     override val mainPage = listOf(
-        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", false)
+        MainPageData("Latest Releases", "$mainUrl/api?m=airing&page=", true)
     )
 
     // ── Data Models ──────────────────────────────────────────────────
@@ -592,14 +621,18 @@ class AnimePaheProvider : MainAPI() {
                 LoadData(item.animeSession, unixTime, item.animeTitle).toJson(),
                 fix = false
             ) {
-                this.posterUrl = item.snapshot
+                this.posterUrl = fixImageUrl(item.snapshot)
+                this.posterHeaders = getImageHeaders()
                 addDubStatus(DubStatus.Subbed, item.episode)
             }
         }
 
         return newHomePageResponse(
-            name = request.name,
-            list = items,
+            HomePageList(
+                name = request.name,
+                list = items,
+                isHorizontalImages = true
+            ),
             hasNext = items.isNotEmpty()
         )
     }
@@ -617,7 +650,8 @@ class AnimePaheProvider : MainAPI() {
                 LoadData(item.session, unixTime, item.title).toJson(),
                 fix = false
             ) {
-                this.posterUrl = item.poster
+                this.posterUrl = fixImageUrl(item.poster)
+                this.posterHeaders = getImageHeaders()
                 addDubStatus(DubStatus.Subbed, item.episodes)
             }
         }
@@ -655,7 +689,7 @@ class AnimePaheProvider : MainAPI() {
                         ) {
                             ep.createdAt?.let { addDate(it) }
                             this.name = getTitle(ep)
-                            this.posterUrl = ep.snapshot
+                            this.posterUrl = fixImageUrl(ep.snapshot)
                             this.episode = ep.episode
                         }
                     )
@@ -751,7 +785,8 @@ class AnimePaheProvider : MainAPI() {
             newAnimeLoadResponse(animeTitle, url, tvType) {
                 engName = animeTitle
                 japName = japTitle
-                this.posterUrl = poster
+                this.posterUrl = fixImageUrl(poster)
+                this.posterHeaders = getImageHeaders()
                 this.year = year
                 addEpisodes(DubStatus.Subbed, episodes)
                 this.showStatus = status
