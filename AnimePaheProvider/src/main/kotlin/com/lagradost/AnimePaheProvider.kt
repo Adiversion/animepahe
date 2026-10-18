@@ -4,27 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
-import android.content.res.Resources
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PixelFormat
-import android.graphics.drawable.Drawable
-import android.os.Bundle
+import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Base64
 import android.util.Log
 import android.view.Gravity
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
@@ -33,25 +22,20 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.APIHolder.unixTime
 import com.lagradost.cloudstream3.LoadResponse.Companion.addAniListId
 import com.lagradost.cloudstream3.LoadResponse.Companion.addMalId
 import com.lagradost.cloudstream3.LoadResponse.Companion.addTrailer
-import com.lagradost.cloudstream3.mvvm.logError
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import com.lagradost.nicehttp.NiceResponse
+import com.lagradost.nicehttp.Requests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -65,22 +49,26 @@ import java.net.URLEncoder
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 
-// ── Native Cloudflare Verification BottomSheetDialogFragment ─────────────────────────
-class CloudflareWebViewDialog(
-    private val targetUrl: String = AnimePaheProvider.MAIN_URL,
-    private val onFinished: (Boolean) -> Unit = {}
-) : BottomSheetDialogFragment() {
-
-    private var webView: WebView? = null
-    private var statusText: TextView? = null
-    private var progressBar: ProgressBar? = null
-    private var cookiesSaved = false
-    private val handler = Handler(Looper.getMainLooper())
-    private var pollElapsedMs = 0L
+class AnimePaheProvider : MainAPI() {
 
     companion object {
-        const val POLL_INTERVAL_MS = 800L
-        const val POLL_TIMEOUT_MS = 60_000L
+        const val MAIN_URL = "https://animepahe.pw"
+        const val USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36"
+
+        val MIRRORS = listOf(
+            "https://animepahe.pw",
+            "https://animepahe.org",
+            "https://animepahe.com",
+            "https://animepahe.ru"
+        )
+
+        var cfCookies: String? = null
+        var cfUserAgent: String? = null
+
+        private val cfMutex = Mutex()
+        private var lastCfDialogAtMs: Long = 0L
+        private val isDialogShowing = AtomicBoolean(false)
 
         val CHALLENGE_TITLES = listOf(
             "one more step",
@@ -102,458 +90,21 @@ class CloudflareWebViewDialog(
             if (cookies.isNullOrBlank()) return false
             return cookies.contains("cf_clearance=") && !cookies.contains("cf_clearance=;")
         }
-    }
 
-    private val cursorDrawable = object : Drawable() {
-        val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.WHITE
-            style = Paint.Style.FILL
-        }
-        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.BLACK
-            style = Paint.Style.STROKE
-            strokeWidth = 2.5f
-        }
-        val path = Path().apply {
-            moveTo(0f, 0f)
-            lineTo(0f, 32f)
-            lineTo(9f, 25f)
-            lineTo(16f, 40f)
-            lineTo(22f, 37f)
-            lineTo(15f, 22f)
-            lineTo(26f, 22f)
-            close()
-        }
-
-        override fun draw(canvas: Canvas) {
-            canvas.drawPath(path, fillPaint)
-            canvas.drawPath(path, strokePaint)
-        }
-
-        override fun setAlpha(alpha: Int) {
-            fillPaint.alpha = alpha
-            strokePaint.alpha = alpha
-        }
-
-        override fun setColorFilter(colorFilter: ColorFilter?) {
-            fillPaint.colorFilter = colorFilter
-            strokePaint.colorFilter = colorFilter
-        }
-
-        @Deprecated("Deprecated in Java")
-        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-    }
-
-    private val cookiePollRunnable = object : Runnable {
-        override fun run() {
-            if (cookiesSaved || !isAdded) return
-            pollElapsedMs += POLL_INTERVAL_MS
-            val currentCookies = extractMergedCookies(webView?.url ?: targetUrl)
-            val currentTitle = webView?.title ?: ""
-
-            Log.d("AnimePahe", "Poll [${pollElapsedMs}ms] title='$currentTitle'")
-
-            // Auto-trigger Turnstile checkmark click
-            tryAutoCheck()
-
-            if (hasClearance(currentCookies) && !isChallengeTitle(currentTitle)) {
-                Log.d("AnimePahe", "Clearance confirmed! Saving cookies and dismissing dialog...")
-                saveCookiesAndDismiss(currentCookies)
-                return
+        fun isBlocked(response: NiceResponse): Boolean {
+            if (response.code == 403 || response.code == 503) return true
+            val text = response.text.trimStart()
+            if (text.startsWith("<") && text.contains("<html", ignoreCase = true)) {
+                val lower = text.lowercase()
+                return lower.contains("<title>just a moment") ||
+                       lower.contains("<title>attention required") ||
+                       lower.contains("cf-browser-verification") ||
+                       lower.contains("challenge-running") ||
+                       lower.contains("verify you are human") ||
+                       lower.contains("cf-turnstile")
             }
-
-            if (pollElapsedMs >= POLL_TIMEOUT_MS) {
-                Log.w("AnimePahe", "Turnstile verification timed out after 60s")
-                notifyFinished(false)
-                dismissAllowingStateLoss()
-                return
-            }
-
-            handler.postDelayed(this, POLL_INTERVAL_MS)
+            return false
         }
-    }
-
-    private fun extractMergedCookies(currentUrl: String?): String {
-        val cookieManager = CookieManager.getInstance()
-        val map = LinkedHashMap<String, String>()
-        val domains = listOfNotNull(
-            currentUrl,
-            AnimePaheProvider.MAIN_URL,
-            "https://animepahe.pw/",
-            "https://animepahe.org/",
-            "https://animepahe.com/",
-            "https://challenges.cloudflare.com/",
-            "https://cloudflare.com/"
-        )
-        domains.forEach { d ->
-            val cookieStr = runCatching { cookieManager.getCookie(d) }.getOrNull()
-            if (!cookieStr.isNullOrBlank()) {
-                cookieStr.split(";").forEach { part ->
-                    val trimmed = part.trim()
-                    val eq = trimmed.indexOf("=")
-                    if (eq > 0) {
-                        val k = trimmed.substring(0, eq).trim()
-                        val v = trimmed.substring(eq + 1).trim()
-                        if (k.isNotEmpty() && v.isNotEmpty()) {
-                            map[k] = v
-                        }
-                    }
-                }
-            }
-        }
-        return map.entries.joinToString("; ") { "${it.key}=${it.value}" }
-    }
-
-    private fun tryAutoCheck() {
-        val script = """
-            (function() {
-                try {
-                    var selectors = [
-                        'input[type="checkbox"]',
-                        '.ctp-checkbox-label',
-                        '#challenge-stage input',
-                        '#cf-turnstile input',
-                        '.cf-turnstile input',
-                        '#turnstile-wrapper input'
-                    ];
-                    for (var i = 0; i < selectors.length; i++) {
-                        var el = document.querySelector(selectors[i]);
-                        if (el && !el.checked) {
-                            el.click();
-                            return;
-                        }
-                    }
-                    var frames = document.querySelectorAll('iframe');
-                    for (var f = 0; f < frames.length; f++) {
-                        try {
-                            var doc = frames[f].contentDocument || frames[f].contentWindow.document;
-                            if (doc) {
-                                for (var j = 0; j < selectors.length; j++) {
-                                    var cel = doc.querySelector(selectors[j]);
-                                    if (cel && !cel.checked) {
-                                        cel.click();
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch(err) {}
-                    }
-                } catch(e) {}
-            })();
-        """.trimIndent()
-        runCatching { webView?.evaluateJavascript(script, null) }
-    }
-
-    private fun saveCookiesAndDismiss(cookies: String) {
-        if (cookiesSaved) return
-        cookiesSaved = true
-
-        handler.removeCallbacks(cookiePollRunnable)
-        CookieManager.getInstance().flush()
-
-        AnimePaheProvider.cfCookies = cookies
-        AnimePaheProvider.cfUserAgent = webView?.settings?.userAgentString
-
-        AnimePaheProvider.syncCookiesToApp()
-
-        statusText?.text = "✅ Verification successful!"
-        statusText?.setTextColor(Color.parseColor("#4CAF50"))
-        progressBar?.visibility = View.GONE
-
-        notifyFinished(true)
-
-        handler.postDelayed({
-            runCatching {
-                if (isAdded) {
-                    dismissAllowingStateLoss()
-                }
-            }
-        }, 500L)
-    }
-
-    private fun notifyFinished(success: Boolean) {
-        runCatching { onFinished(success) }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        dialog.window?.apply {
-            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            setDimAmount(0f)
-        }
-        dialog.behavior.apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
-            skipCollapsed = true
-            peekHeight = Resources.getSystem().displayMetrics.heightPixels
-        }
-        return dialog
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (dialog as? BottomSheetDialog)?.behavior?.apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
-            skipCollapsed = true
-        }
-        dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.let { sheet ->
-            sheet.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            sheet.setBackgroundColor(Color.parseColor("#121218"))
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val context = requireContext()
-        val density = context.resources.displayMetrics.density
-
-        val root = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#121218"))
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setPadding(0, 0, 0, 0)
-        }
-
-        // Top Header
-        val header = LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setBackgroundColor(Color.parseColor("#1E1E2A"))
-            setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
-            gravity = Gravity.CENTER_VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        val titleTv = TextView(context).apply {
-            text = "AnimePahe Cloudflare Verification"
-            setTextColor(Color.WHITE)
-            textSize = 16f
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-        }
-
-        val closeBtn = Button(context).apply {
-            text = "✕"
-            setTextColor(Color.LTGRAY)
-            setBackgroundColor(Color.TRANSPARENT)
-            textSize = 18f
-            setOnClickListener { dismissAllowingStateLoss() }
-        }
-
-        header.addView(titleTv)
-        header.addView(closeBtn)
-        root.addView(header)
-
-        // Subtitle / status
-        statusText = TextView(context).apply {
-            text = "Please complete the verification checkmark below. The dialog will close automatically once done."
-            setTextColor(Color.parseColor("#A0A0B0"))
-            textSize = 12f
-            setPadding((16 * density).toInt(), (10 * density).toInt(), (16 * density).toInt(), (8 * density).toInt())
-        }
-        root.addView(statusText)
-
-        // Progress bar
-        progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
-            isIndeterminate = true
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (4 * density).toInt()
-            )
-        }
-        root.addView(progressBar)
-
-        // FrameLayout for WebView and TV Remote Cursor
-        val webContainer = FrameLayout(context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                1f
-            )
-        }
-
-        val wv = buildWebView(context)
-        this.webView = wv
-        webContainer.addView(
-            wv,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-        )
-
-        // TV Remote virtual cursor pointer overlay
-        val cursorView = ImageView(context).apply {
-            setImageDrawable(cursorDrawable)
-            elevation = 10f * density
-            layoutParams = FrameLayout.LayoutParams((28 * density).toInt(), (40 * density).toInt())
-            x = 100f * density
-            y = 100f * density
-        }
-        webContainer.addView(cursorView)
-
-        root.addView(webContainer)
-
-        setupTvRemoteNavigation(cursorView, wv, density)
-
-        wv.loadUrl(targetUrl)
-        handler.postDelayed(cookiePollRunnable, POLL_INTERVAL_MS)
-
-        return root
-    }
-
-    private fun setupTvRemoteNavigation(cursorView: ImageView, wv: WebView, density: Float) {
-        val step = 30f * density
-
-        dialog?.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN) {
-                var curX = cursorView.x
-                var curY = cursorView.y
-                when (keyCode) {
-                    KeyEvent.KEYCODE_DPAD_UP -> {
-                        curY = (curY - step).coerceAtLeast(0f)
-                        cursorView.y = curY
-                        return@setOnKeyListener true
-                    }
-                    KeyEvent.KEYCODE_DPAD_DOWN -> {
-                        curY = (curY + step).coerceAtMost((wv.height - cursorView.height).toFloat())
-                        cursorView.y = curY
-                        return@setOnKeyListener true
-                    }
-                    KeyEvent.KEYCODE_DPAD_LEFT -> {
-                        curX = (curX - step).coerceAtLeast(0f)
-                        cursorView.x = curX
-                        return@setOnKeyListener true
-                    }
-                    KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                        curX = (curX + step).coerceAtMost((wv.width - cursorView.width).toFloat())
-                        cursorView.x = curX
-                        return@setOnKeyListener true
-                    }
-                    KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                        val clickX = curX + (2 * density)
-                        val clickY = curY + (2 * density)
-                        val downTime = SystemClock.uptimeMillis()
-                        wv.dispatchTouchEvent(MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN, clickX, clickY, 0))
-                        wv.dispatchTouchEvent(MotionEvent.obtain(downTime, downTime + 50, MotionEvent.ACTION_UP, clickX, clickY, 0))
-                        return@setOnKeyListener true
-                    }
-                }
-            }
-            false
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun buildWebView(context: Context): WebView {
-        val wv = WebView(context).apply {
-            isFocusable = true
-            isFocusableInTouchMode = true
-            requestFocus()
-            setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        }
-
-        val cookieManager = CookieManager.getInstance()
-        cookieManager.setAcceptCookie(true)
-        cookieManager.setAcceptThirdPartyCookies(wv, true)
-
-        wv.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            databaseEnabled = true
-            allowContentAccess = true
-            allowFileAccess = true
-            mediaPlaybackRequiresUserGesture = false
-            cacheMode = WebSettings.LOAD_DEFAULT
-            useWideViewPort = true
-            loadWithOverviewMode = true
-            loadsImagesAutomatically = true
-            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-
-            val baseUa = userAgentString ?: AnimePaheProvider.USER_AGENT
-            val sanitizedUa = baseUa
-                .replace("; wv", "")
-                .replace(Regex("Version/[0-9.]+\\s*"), "")
-                .replace("Android TV", "Android")
-                .let { ua ->
-                    if (ua.contains("Android") && ua.contains("Safari/") && !ua.contains("Mobile Safari/")) {
-                        ua.replace("Safari/", "Mobile Safari/")
-                    } else {
-                        ua
-                    }
-                }
-            userAgentString = sanitizedUa
-        }
-
-        wv.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                super.onProgressChanged(view, newProgress)
-                progressBar?.progress = newProgress
-                if (newProgress > 50) {
-                    tryAutoCheck()
-                }
-            }
-        }
-
-        wv.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                progressBar?.visibility = View.GONE
-                tryAutoCheck()
-            }
-        }
-
-        return wv
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        handler.removeCallbacks(cookiePollRunnable)
-        if (!cookiesSaved) {
-            val finalCookies = extractMergedCookies(webView?.url ?: targetUrl)
-            val finalTitle = webView?.title ?: ""
-            if (hasClearance(finalCookies) && !isChallengeTitle(finalTitle)) {
-                saveCookiesAndDismiss(finalCookies)
-            } else {
-                notifyFinished(false)
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        handler.removeCallbacks(cookiePollRunnable)
-        webView?.destroy()
-        webView = null
-    }
-}
-
-// ── Main AnimePahe Provider ──────────────────────────────────────────────────────────
-class AnimePaheProvider : MainAPI() {
-
-    companion object {
-        const val MAIN_URL = "https://animepahe.pw"
-        const val USER_AGENT =
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36"
-
-        val MIRRORS = listOf(
-            "https://animepahe.pw",
-            "https://animepahe.org",
-            "https://animepahe.com",
-            "https://animepahe.ru"
-        )
-
-        var cfCookies: String? = null
-        var cfUserAgent: String? = null
-
-        private val cfMutex = Mutex()
-        private var lastCfDialogAtMs: Long = 0L
 
         fun getHeaders(base: String = MAIN_URL): Map<String, String> {
             val ua = cfUserAgent ?: USER_AGENT
@@ -600,22 +151,7 @@ class AnimePaheProvider : MainAPI() {
             }
         }
 
-        fun isBlocked(response: NiceResponse): Boolean {
-            if (response.code == 403 || response.code == 503) return true
-            val text = response.text.trimStart()
-            if (text.startsWith("<") && text.contains("<html", ignoreCase = true)) {
-                val lower = text.lowercase()
-                return lower.contains("<title>just a moment") ||
-                       lower.contains("<title>attention required") ||
-                       lower.contains("cf-browser-verification") ||
-                       lower.contains("challenge-running") ||
-                       lower.contains("verify you are human") ||
-                       lower.contains("cf-turnstile")
-            }
-            return false
-        }
-
-        fun syncCookiesToApp(base: String = MAIN_URL) {
+        fun syncCookiesToApp(appInstance: Requests, base: String = MAIN_URL) {
             val httpUrl = base.toHttpUrlOrNull() ?: return
             val cookies = cfCookies ?: runCatching {
                 CookieManager.getInstance().getCookie(base)
@@ -629,7 +165,7 @@ class AnimePaheProvider : MainAPI() {
             }
             if (list.isNotEmpty()) {
                 runCatching {
-                    app.baseClient.cookieJar.saveFromResponse(httpUrl, list)
+                    appInstance.baseClient.cookieJar.saveFromResponse(httpUrl, list)
                 }
             }
         }
@@ -653,10 +189,87 @@ class AnimePaheProvider : MainAPI() {
             }.getOrNull()
         }
 
-        suspend fun showCFBypassDialogAndWait(targetUrl: String): Boolean = withContext(Dispatchers.Main) {
-            val activity = (CommonActivity.activity ?: getActivity()) as? AppCompatActivity
+        private fun extractMergedCookies(currentUrl: String?): String {
+            val cookieManager = CookieManager.getInstance()
+            val map = LinkedHashMap<String, String>()
+            val domains = listOfNotNull(
+                currentUrl,
+                MAIN_URL,
+                "https://animepahe.pw/",
+                "https://animepahe.org/",
+                "https://animepahe.com/",
+                "https://challenges.cloudflare.com/",
+                "https://cloudflare.com/"
+            )
+            domains.forEach { d ->
+                val cookieStr = runCatching { cookieManager.getCookie(d) }.getOrNull()
+                if (!cookieStr.isNullOrBlank()) {
+                    cookieStr.split(";").forEach { part ->
+                        val trimmed = part.trim()
+                        val eq = trimmed.indexOf("=")
+                        if (eq > 0) {
+                            val k = trimmed.substring(0, eq).trim()
+                            val v = trimmed.substring(eq + 1).trim()
+                            if (k.isNotEmpty() && v.isNotEmpty()) {
+                                map[k] = v
+                            }
+                        }
+                    }
+                }
+            }
+            return map.entries.joinToString("; ") { "${it.key}=${it.value}" }
+        }
+
+        private fun tryAutoCheck(wv: WebView?) {
+            val script = """
+                (function() {
+                    try {
+                        var selectors = [
+                            'input[type="checkbox"]',
+                            '.ctp-checkbox-label',
+                            '#challenge-stage input',
+                            '#cf-turnstile input',
+                            '.cf-turnstile input',
+                            '#turnstile-wrapper input'
+                        ];
+                        for (var i = 0; i < selectors.length; i++) {
+                            var el = document.querySelector(selectors[i]);
+                            if (el && !el.checked) {
+                                el.click();
+                                return;
+                            }
+                        }
+                        var frames = document.querySelectorAll('iframe');
+                        for (var f = 0; f < frames.length; f++) {
+                            try {
+                                var doc = frames[f].contentDocument || frames[f].contentWindow.document;
+                                if (doc) {
+                                    for (var j = 0; j < selectors.length; j++) {
+                                        var cel = doc.querySelector(selectors[j]);
+                                        if (cel && !cel.checked) {
+                                            cel.click();
+                                            return;
+                                        }
+                                    }
+                                }
+                            } catch(err) {}
+                        }
+                    } catch(e) {}
+                })();
+            """.trimIndent()
+            runCatching { wv?.evaluateJavascript(script, null) }
+        }
+
+        @SuppressLint("SetJavaScriptEnabled")
+        suspend fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/api?m=airing&page=1"): Boolean = withContext(Dispatchers.Main) {
+            val activity = CommonActivity.activity ?: getActivity()
             if (activity == null || activity.isFinishing || activity.isDestroyed) {
-                Log.e("AnimePahe", "No active AppCompatActivity found for Cloudflare dialog")
+                Log.e("AnimePahe", "No active Activity found for Cloudflare verification")
+                return@withContext false
+            }
+
+            if (!isDialogShowing.compareAndSet(false, true)) {
+                Log.d("AnimePahe", "Verification dialog already in progress")
                 return@withContext false
             }
 
@@ -664,35 +277,233 @@ class AnimePaheProvider : MainAPI() {
                 val resumed = AtomicBoolean(false)
                 fun safeResume(success: Boolean) {
                     if (resumed.compareAndSet(false, true)) {
+                        isDialogShowing.set(false)
                         if (continuation.isActive) {
                             continuation.resume(success)
                         }
                     }
                 }
 
-                val dialog = CloudflareWebViewDialog(targetUrl) { success ->
-                    safeResume(success)
-                }
+                try {
+                    val density = activity.resources.displayMetrics.density
 
-                continuation.invokeOnCancellation {
-                    runCatching {
-                        if (dialog.isAdded) {
-                            dialog.dismissAllowingStateLoss()
+                    val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog.window?.apply {
+                        setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        setBackgroundDrawable(ColorDrawable(Color.parseColor("#121218")))
+                        decorView.setPadding(0, 0, 0, 0)
+                        clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    }
+
+                    val root = LinearLayout(activity).apply {
+                        orientation = LinearLayout.VERTICAL
+                        setBackgroundColor(Color.parseColor("#121218"))
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                        setPadding(0, 0, 0, 0)
+                    }
+
+                    // Top Header Bar
+                    val header = LinearLayout(activity).apply {
+                        orientation = LinearLayout.HORIZONTAL
+                        setBackgroundColor(Color.parseColor("#1E1E2A"))
+                        setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+                        gravity = Gravity.CENTER_VERTICAL
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                    }
+
+                    val titleTv = TextView(activity).apply {
+                        text = "AnimePahe Cloudflare Verification"
+                        setTextColor(Color.WHITE)
+                        textSize = 16f
+                        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                    }
+
+                    val closeBtn = Button(activity).apply {
+                        text = "✕"
+                        setTextColor(Color.LTGRAY)
+                        setBackgroundColor(Color.TRANSPARENT)
+                        textSize = 18f
+                        setOnClickListener {
+                            dialog.dismiss()
                         }
                     }
-                }
 
-                try {
-                    val fm = activity.supportFragmentManager
-                    val existing = fm.findFragmentByTag("cf_bypass_auto")
-                    val tx = fm.beginTransaction()
-                    if (existing != null) {
-                        tx.remove(existing)
+                    header.addView(titleTv)
+                    header.addView(closeBtn)
+                    root.addView(header)
+
+                    val statusText = TextView(activity).apply {
+                        text = "Please complete the verification checkmark below. The window will close automatically once done."
+                        setTextColor(Color.parseColor("#A0A0B0"))
+                        textSize = 12f
+                        setPadding((16 * density).toInt(), (10 * density).toInt(), (16 * density).toInt(), (8 * density).toInt())
                     }
-                    tx.add(dialog, "cf_bypass_auto")
-                    tx.commitAllowingStateLoss()
+                    root.addView(statusText)
+
+                    val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal).apply {
+                        isIndeterminate = true
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            (4 * density).toInt()
+                        )
+                    }
+                    root.addView(progressBar)
+
+                    val webView = WebView(activity).apply {
+                        isFocusable = true
+                        isFocusableInTouchMode = true
+                        requestFocus()
+                        setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            0,
+                            1f
+                        )
+                    }
+
+                    val cookieManager = CookieManager.getInstance()
+                    cookieManager.setAcceptCookie(true)
+                    cookieManager.setAcceptThirdPartyCookies(webView, true)
+
+                    webView.settings.apply {
+                        javaScriptEnabled = true
+                        domStorageEnabled = true
+                        databaseEnabled = true
+                        allowContentAccess = true
+                        allowFileAccess = true
+                        mediaPlaybackRequiresUserGesture = false
+                        cacheMode = WebSettings.LOAD_DEFAULT
+                        useWideViewPort = true
+                        loadWithOverviewMode = true
+                        loadsImagesAutomatically = true
+                        mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+
+                        val baseUa = userAgentString ?: USER_AGENT
+                        val sanitizedUa = baseUa
+                            .replace("; wv", "")
+                            .replace(Regex("Version/[0-9.]+\\s*"), "")
+                            .replace("Android TV", "Android")
+                            .let { ua ->
+                                if (ua.contains("Android") && ua.contains("Safari/") && !ua.contains("Mobile Safari/")) {
+                                    ua.replace("Safari/", "Mobile Safari/")
+                                } else {
+                                    ua
+                                }
+                            }
+                        userAgentString = sanitizedUa
+                    }
+
+                    var cookiesSaved = false
+                    val handler = Handler(Looper.getMainLooper())
+                    var pollElapsedMs = 0L
+
+                    fun saveCookiesAndDismiss(cookies: String) {
+                        if (cookiesSaved) return
+                        cookiesSaved = true
+
+                        cookieManager.flush()
+                        cfCookies = cookies
+                        cfUserAgent = webView.settings.userAgentString
+
+                        syncCookiesToApp(appInstance)
+
+                        statusText.text = "✅ Verification successful!"
+                        statusText.setTextColor(Color.parseColor("#4CAF50"))
+                        progressBar.visibility = View.GONE
+
+                        safeResume(true)
+
+                        handler.postDelayed({
+                            runCatching {
+                                if (dialog.isShowing) {
+                                    dialog.dismiss()
+                                }
+                            }
+                        }, 500L)
+                    }
+
+                    val cookiePollRunnable = object : Runnable {
+                        override fun run() {
+                            if (cookiesSaved || !dialog.isShowing) return
+                            pollElapsedMs += 800L
+                            val currentCookies = extractMergedCookies(webView.url ?: targetUrl)
+                            val currentTitle = webView.title ?: ""
+
+                            Log.d("AnimePahe", "Poll [${pollElapsedMs}ms] title='$currentTitle'")
+                            tryAutoCheck(webView)
+
+                            if (hasClearance(currentCookies) && !isChallengeTitle(currentTitle)) {
+                                Log.d("AnimePahe", "Clearance confirmed! Saving cookies and dismissing dialog...")
+                                saveCookiesAndDismiss(currentCookies)
+                                return
+                            }
+
+                            if (pollElapsedMs >= 60_000L) {
+                                Log.w("AnimePahe", "Turnstile verification timed out after 60s")
+                                safeResume(false)
+                                runCatching { if (dialog.isShowing) dialog.dismiss() }
+                                return
+                            }
+
+                            handler.postDelayed(this, 800L)
+                        }
+                    }
+
+                    webView.webChromeClient = object : WebChromeClient() {
+                        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                            super.onProgressChanged(view, newProgress)
+                            progressBar.progress = newProgress
+                            if (newProgress > 50) {
+                                tryAutoCheck(view)
+                            }
+                        }
+                    }
+
+                    webView.webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            super.onPageFinished(view, url)
+                            progressBar.visibility = View.GONE
+                            tryAutoCheck(view)
+                        }
+                    }
+
+                    root.addView(webView)
+                    dialog.setContentView(root)
+
+                    dialog.setOnDismissListener {
+                        handler.removeCallbacks(cookiePollRunnable)
+                        if (!cookiesSaved) {
+                            val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
+                            val finalTitle = webView.title ?: ""
+                            if (hasClearance(finalCookies) && !isChallengeTitle(finalTitle)) {
+                                saveCookiesAndDismiss(finalCookies)
+                            } else {
+                                safeResume(false)
+                            }
+                        }
+                    }
+
+                    continuation.invokeOnCancellation {
+                        runCatching {
+                            if (dialog.isShowing) {
+                                dialog.dismiss()
+                            }
+                        }
+                    }
+
+                    webView.loadUrl(targetUrl)
+                    dialog.show()
+                    handler.postDelayed(cookiePollRunnable, 800L)
+
                 } catch (e: Throwable) {
-                    Log.e("AnimePahe", "Failed to show CF dialog: ${e.message}")
+                    Log.e("AnimePahe", "Failed to display verification dialog: ${e.message}")
                     safeResume(false)
                 }
             }
@@ -736,7 +547,7 @@ class AnimePaheProvider : MainAPI() {
 
     private suspend fun fetchWithCloudflare(url: String): String {
         Log.d("AnimePahe", "fetchWithCloudflare: GET $url")
-        // 1. Fast path: check with current cookies
+        // 1. Fast path: direct attempt with active cookies
         val initial = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
         if (initial != null && !isBlocked(initial)) {
             return initial.text
@@ -767,7 +578,7 @@ class AnimePaheProvider : MainAPI() {
 
             CommonActivity.showToast("Opening AnimePahe Verification...")
             val targetUrl = "$mainUrl/api?m=airing&page=1"
-            val solved = showCFBypassDialogAndWait(targetUrl)
+            val solved = solveCloudflare(app, targetUrl)
             Log.d("AnimePahe", "CF bypass dialog completed with result: $solved")
 
             // Re-attempt request with newly saved cookies
