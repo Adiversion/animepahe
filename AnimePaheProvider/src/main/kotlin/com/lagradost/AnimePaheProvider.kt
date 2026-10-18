@@ -118,16 +118,18 @@ class AnimePaheProvider : MainAPI() {
             return headers
         }
 
-        fun getImageHeaders(base: String = MAIN_URL): Map<String, String> {
+        fun getImageHeaders(url: String? = null): Map<String, String> {
             val ua = cfUserAgent ?: USER_AGENT
+            val host = url?.toHttpUrlOrNull()?.host ?: "animepahe.pw"
             val headers = mutableMapOf(
                 "User-Agent" to ua,
-                "Referer" to "$base/",
+                "Referer" to "$MAIN_URL/",
                 "sec-ch-ua-mobile" to "?1",
                 "sec-ch-ua-platform" to "\"Android\""
             )
             val cookies = cfCookies ?: runCatching {
-                CookieManager.getInstance().getCookie(base)
+                CookieManager.getInstance().getCookie("https://$host")
+                    ?: CookieManager.getInstance().getCookie(MAIN_URL)
             }.getOrNull()
             if (!cookies.isNullOrBlank()) {
                 headers["Cookie"] = cookies
@@ -145,20 +147,51 @@ class AnimePaheProvider : MainAPI() {
         }
 
         fun syncCookiesToApp(appInstance: Requests, base: String = MAIN_URL) {
-            val httpUrl = base.toHttpUrlOrNull() ?: return
             val cookies = cfCookies ?: runCatching {
                 CookieManager.getInstance().getCookie(base)
             }.getOrNull() ?: return
-            val list = ArrayList<Cookie>()
-            cookies.split(";").forEach { part ->
-                val trimmed = part.trim()
-                if (trimmed.isNotBlank()) {
-                    Cookie.parse(httpUrl, "$trimmed; Path=/")?.let { list.add(it) }
+
+            val targetDomains = listOf(
+                "animepahe.pw",
+                "i.animepahe.pw",
+                "animepahe.ru",
+                "i.animepahe.ru",
+                "animepahe.com",
+                "i.animepahe.com",
+                "animepahe.org",
+                "i.animepahe.org"
+            )
+
+            // 1. Sync to Android CookieManager for all subdomains
+            val cookieManager = CookieManager.getInstance()
+            targetDomains.forEach { domain ->
+                cookies.split(";").forEach { part ->
+                    val trimmed = part.trim()
+                    if (trimmed.isNotBlank()) {
+                        runCatching {
+                            cookieManager.setCookie("https://$domain", "$trimmed; Domain=.$domain; Path=/")
+                            cookieManager.setCookie("https://$domain", "$trimmed; Path=/")
+                        }
+                    }
                 }
             }
-            if (list.isNotEmpty()) {
-                runCatching {
-                    appInstance.baseClient.cookieJar.saveFromResponse(httpUrl, list)
+            cookieManager.flush()
+
+            // 2. Sync to OkHttp CookieJar for all subdomains
+            targetDomains.forEach { domain ->
+                val httpUrl = "https://$domain".toHttpUrlOrNull() ?: return@forEach
+                val list = ArrayList<Cookie>()
+                cookies.split(";").forEach { part ->
+                    val trimmed = part.trim()
+                    if (trimmed.isNotBlank()) {
+                        Cookie.parse(httpUrl, "$trimmed; Domain=$domain; Path=/")?.let { list.add(it) }
+                        Cookie.parse(httpUrl, "$trimmed; Path=/")?.let { list.add(it) }
+                    }
+                }
+                if (list.isNotEmpty()) {
+                    runCatching {
+                        appInstance.baseClient.cookieJar.saveFromResponse(httpUrl, list)
+                    }
                 }
             }
         }
@@ -645,8 +678,9 @@ class AnimePaheProvider : MainAPI() {
                 LoadData(item.animeSession, unixTime, item.animeTitle).toJson(),
                 fix = false
             ) {
-                this.posterUrl = fixImageUrl(item.snapshot)
-                this.posterHeaders = getImageHeaders()
+                val snap = fixImageUrl(item.snapshot)
+                this.posterUrl = snap
+                this.posterHeaders = getImageHeaders(snap)
                 addDubStatus(DubStatus.Subbed, item.episode)
             }
         }
@@ -674,8 +708,9 @@ class AnimePaheProvider : MainAPI() {
                 LoadData(item.session, unixTime, item.title).toJson(),
                 fix = false
             ) {
-                this.posterUrl = fixImageUrl(item.poster)
-                this.posterHeaders = getImageHeaders()
+                val post = fixImageUrl(item.poster)
+                this.posterUrl = post
+                this.posterHeaders = getImageHeaders(post)
                 addDubStatus(DubStatus.Subbed, item.episodes)
             }
         }
@@ -833,7 +868,7 @@ class AnimePaheProvider : MainAPI() {
                 japName = japTitle
                 this.posterUrl = highResPosterUrl ?: fixImageUrl(poster)
                 this.backgroundPosterUrl = fanartUrl ?: fixImageUrl(episodes.firstOrNull()?.posterUrl ?: poster)
-                this.posterHeaders = getImageHeaders()
+                this.posterHeaders = getImageHeaders(this.posterUrl)
                 this.year = year
                 addEpisodes(DubStatus.Subbed, episodes)
                 this.showStatus = status
