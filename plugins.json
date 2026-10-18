@@ -1,1 +1,24 @@
-[]
+[
+    {
+        "iconUrl": "https://animepahe.pw/favicon.ico",
+        "fileHash": "sha256-42ebc5cf7aa12d9bc35190aabb49ce37f69901b818a66f105554d782f75f5280",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Adiversion/animepahe",
+        "fileSize": 32342,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "Cloudstream Community"
+        ],
+        "tvTypes": [
+            "AnimeMovie",
+            "Anime",
+            "OVA"
+        ],
+        "version": 1,
+        "internalName": "AnimePaheProvider",
+        "description": "AnimePahe anime provider with Kwik and Pahe stream resolvers.",
+        "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/AnimePaheProvider.cs3",
+        "name": "AnimePaheProvider"
+    }
+]
