@@ -783,12 +783,10 @@ class AnimePaheProvider : MainAPI() {
                 "https://graphql.anilist.co",
                 json = mapOf("query" to "query { $queryParts }")
             ).text
-            val jsonNode = AppUtils.mapper.readTree(resp)?.get("data")
             val map = mutableMapOf<Int, String>()
             titles.indices.forEach { idx ->
-                val node = jsonNode?.get("a$idx")
-                val banner = node?.get("bannerImage")?.asText()?.takeIf { it.isNotBlank() && it != "null" }
-                val poster = node?.get("coverImage")?.get("extraLarge")?.asText()?.takeIf { it.isNotBlank() && it != "null" }
+                val banner = Regex(""""a$idx":\s*\{[^}]*?"bannerImage":\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)?.takeIf { it != "null" }
+                val poster = Regex(""""a$idx":\s*\{.*?"extraLarge":\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)?.takeIf { it != "null" }
                 val best = banner ?: poster
                 if (!best.isNullOrBlank()) {
                     map[idx] = best
