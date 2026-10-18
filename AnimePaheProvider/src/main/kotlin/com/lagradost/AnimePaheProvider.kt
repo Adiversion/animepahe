@@ -213,45 +213,6 @@ class AnimePaheProvider : MainAPI() {
             return map.entries.joinToString("; ") { "${it.key}=${it.value}" }
         }
 
-        private fun tryAutoCheck(wv: WebView?) {
-            val script = """
-                (function() {
-                    try {
-                        var selectors = [
-                            'input[type="checkbox"]',
-                            '.ctp-checkbox-label',
-                            '#challenge-stage input',
-                            '#cf-turnstile input',
-                            '.cf-turnstile input',
-                            '#turnstile-wrapper input'
-                        ];
-                        for (var i = 0; i < selectors.length; i++) {
-                            var el = document.querySelector(selectors[i]);
-                            if (el && !el.checked) {
-                                el.click();
-                                return;
-                            }
-                        }
-                        var frames = document.querySelectorAll('iframe');
-                        for (var f = 0; f < frames.length; f++) {
-                            try {
-                                var doc = frames[f].contentDocument || frames[f].contentWindow.document;
-                                if (doc) {
-                                    for (var j = 0; j < selectors.length; j++) {
-                                        var cel = doc.querySelector(selectors[j]);
-                                        if (cel && !cel.checked) {
-                                            cel.click();
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch(err) {}
-                        }
-                    } catch(e) {}
-                })();
-            """.trimIndent()
-            runCatching { wv?.evaluateJavascript(script, null) }
-        }
 
         @SuppressLint("SetJavaScriptEnabled")
         fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/api?m=airing&page=1"): Boolean {
@@ -278,11 +239,12 @@ class AnimePaheProvider : MainAPI() {
 
                     val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                    dialog.window?.apply {
-                        setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                        setBackgroundDrawable(ColorDrawable(Color.parseColor("#121218")))
-                        decorView.setPadding(0, 0, 0, 0)
-                        clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    dialog.setOnShowListener {
+                        dialog.window?.apply {
+                            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                            setBackgroundDrawable(ColorDrawable(Color.parseColor("#121218")))
+                            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                        }
                     }
 
                     val root = LinearLayout(activity).apply {
@@ -427,7 +389,6 @@ class AnimePaheProvider : MainAPI() {
                             val currentTitle = webView.title ?: ""
 
                             Log.d("AnimePahe", "Poll [${pollElapsedMs}ms] title='$currentTitle'")
-                            tryAutoCheck(webView)
 
                             if (hasClearance(currentCookies) && !isChallengeTitle(currentTitle)) {
                                 Log.d("AnimePahe", "Clearance confirmed! Saving cookies and dismissing dialog...")
@@ -450,9 +411,6 @@ class AnimePaheProvider : MainAPI() {
                         override fun onProgressChanged(view: WebView?, newProgress: Int) {
                             super.onProgressChanged(view, newProgress)
                             progressBar.progress = newProgress
-                            if (newProgress > 50) {
-                                tryAutoCheck(view)
-                            }
                         }
                     }
 
@@ -460,7 +418,6 @@ class AnimePaheProvider : MainAPI() {
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
                             progressBar.visibility = View.GONE
-                            tryAutoCheck(view)
                         }
                     }
 
@@ -543,7 +500,8 @@ class AnimePaheProvider : MainAPI() {
             return initial.text
         }
 
-        Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Acquiring lock for verification...")
+        Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Purging stale cookies and acquiring lock...")
+        cfCookies = null
 
         // 2. Concurrency gate using AtomicBoolean:
         if (isDialogShowing.get()) {
