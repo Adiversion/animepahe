@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/AnimePahe.cs3",
+    "status": 1,
+    "version": 47,
+    "name": "AnimePahe",
+    "internalName": "AnimePahe",
+    "authors": [
+      "Cloudburst",
+      "Lorem Ipsum",
+      "Phisher98"
+    ],
+    "description": "Animes (SUB/DUB) with Cloudflare Turnstile Bypass & Kwik Resolvers",
+    "fileSize": 154972,
+    "repositoryUrl": "https://github.com/Adiversion/animepahe",
+    "language": "en",
+    "tvTypes": [
+      "AnimeMovie",
+      "Anime",
+      "OVA"
+    ],
+    "iconUrl": "https://animepahe.pw/favicon.ico",
+    "apiVersion": 1,
+    "fileHash": "sha256-854ba2cb8fc6d35f52ab641663310e37ff3c00d602dcace08e2c589d6c9ed29f"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/AnimePaheProvider.cs3",
+    "status": 1,
+    "version": 47,
+    "name": "AnimePaheProvider",
+    "internalName": "AnimePaheProvider",
+    "authors": [
+      "Cloudburst",
+      "Lorem Ipsum",
+      "Phisher98"
+    ],
+    "description": "Animes (SUB/DUB) with Cloudflare Turnstile Bypass & Kwik Resolvers",
+    "fileSize": 154972,
+    "repositoryUrl": "https://github.com/Adiversion/animepahe",
+    "language": "en",
+    "tvTypes": [
+      "AnimeMovie",
+      "Anime",
+      "OVA"
+    ],
+    "iconUrl": "https://animepahe.pw/favicon.ico",
+    "apiVersion": 1,
+    "fileHash": "sha256-854ba2cb8fc6d35f52ab641663310e37ff3c00d602dcace08e2c589d6c9ed29f"
+  }
+]
