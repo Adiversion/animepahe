@@ -39,8 +39,8 @@ Fetching JAR: cloudstream.jar
 > Task :AnimePaheProvider:parseDebugLocalResources
 > Task :HDhub4uProvider:parseDebugLocalResources
 > Task :NetMirrorProvider:parseDebugLocalResources
-> Task :HDhub4uProvider:generateDebugRFile
 > Task :NetMirrorProvider:generateDebugRFile
+> Task :HDhub4uProvider:generateDebugRFile
 > Task :AnimePaheProvider:generateDebugRFile
 
 > Task :HDhub4uProvider:compileDebugKotlin
@@ -1062,5 +1062,5 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/AnimePaheP
 > Task :makePluginsJson
 Created /home/runner/work/animepahe/animepahe/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 33s
+BUILD SUCCESSFUL in 1m 40s
 31 actionable tasks: 31 executed

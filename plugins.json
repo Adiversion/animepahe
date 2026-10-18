@@ -46,10 +46,10 @@
   },
   {
     "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirror_icon.png",
-    "fileHash": "sha256-81e4248631a8797b009ebb7f8ad0a32c7c64b8a9b13838245b810b90786c12c4",
+    "fileHash": "sha256-358bfe3fb34df7e475336272accfad2ed881e9daa92bd0654e3e21f238f8e2e5",
     "apiVersion": 1,
     "repositoryUrl": "https://github.com/Adiversion/animepahe",
-    "fileSize": 36706,
+    "fileSize": 30761,
     "status": 1,
     "language": "hi",
     "authors": [
@@ -61,9 +61,9 @@
       "Anime",
       "AsianDrama"
     ],
-    "version": 2,
+    "version": 3,
     "internalName": "NetMirrorProvider",
-    "description": "Curated Indian OTT Catalogs (Netflix, Prime Video, JioHotstar, Sony LIV, Zee5) with NetMirror Direct High-Speed CDN Playback.",
+    "description": "Native NetMirror Curated & Discover Catalogs with High-Speed Direct CDN Streams.",
     "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirrorProvider.cs3",
     "name": "NetMirrorProvider"
   },
