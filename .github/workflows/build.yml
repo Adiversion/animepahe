@@ -82,6 +82,8 @@ jobs:
           cp $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3 || true
           cp $GITHUB_WORKSPACE/builds/HDhub4uProvider.cs3 $GITHUB_WORKSPACE/builds/HDhub4u.cs3 || true
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
+          python3 tools/sync_upstream.py $GITHUB_WORKSPACE/builds/plugins.json || true
+          curl -s -L "https://raw.githubusercontent.com/NivinCNC/CNCVerse-Cloud-Stream-Extension/builds/CNC%20Verse%20Mobile.cs3" -o "$GITHUB_WORKSPACE/builds/CNC Verse Mobile.cs3" || true
           cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
           cp icon.png $GITHUB_WORKSPACE/builds/icon.png || true
           cp HDhub4uProvider/icon.png $GITHUB_WORKSPACE/builds/HDhub4u_icon.png || true
