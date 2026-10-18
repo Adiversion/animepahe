@@ -71,9 +71,12 @@ subprojects {
     dependencies {
         val cloudstream by configurations
         val implementation by configurations
+        val compileOnly by configurations
 
         // Stubs for all cloudstream classes
         cloudstream("com.lagradost:cloudstream3:pre-release")
+        compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+        compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
         // These dependencies can include any of those which are added by the app,
         // but you don't need to include any of them if you don't need them.

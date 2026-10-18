@@ -892,7 +892,6 @@ class AnimePaheProvider : MainAPI() {
                             }
                             this.name = getTitle(ep)
                             this.posterUrl = fixImageUrl(ep.snapshot)
-                            this.posterHeaders = getImageHeaders(this.posterUrl)
                             this.episode = ep.episode
                         }
                     )
@@ -1085,7 +1084,7 @@ class AnimePaheProvider : MainAPI() {
                 japName = japTitle
                 this.posterUrl = bestPoster
                 this.backgroundPosterUrl = bestHeroBanner
-                this.posterHeaders = getImageHeaders(this.posterUrl)
+                this.posterHeaders = getImageHeaders(poster ?: "$MAIN_URL/")
                 this.year = year
                 addEpisodes(DubStatus.Subbed, episodes)
                 this.showStatus = status
@@ -1144,18 +1143,17 @@ class AnimePaheProvider : MainAPI() {
                         ?: Qualities.Unknown.value
 
                     getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
+                        val link = newExtractorLink(
+                            source = "AnimePahe",
+                            name = "AnimePahe - $qualityText",
+                            url = streamUrl,
+                            type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                        ) {
+                            this.referer = "https://kwik.cx/"
+                            this.quality = quality
+                        }
                         synchronized(callback) {
-                            callback(
-                                newExtractorLink(
-                                    source = "AnimePahe",
-                                    name = "AnimePahe - $qualityText",
-                                    url = streamUrl,
-                                    type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                                ) {
-                                    this.referer = "https://kwik.cx/"
-                                    this.quality = quality
-                                }
-                            )
+                            callback(link)
                         }
                     }
                 }
@@ -1167,19 +1165,18 @@ class AnimePaheProvider : MainAPI() {
                     val urlRegex = Regex("""let url = "(.*?)";""")
                     val embed = urlRegex.find(html)?.groupValues?.getOrNull(1)
                     if (!embed.isNullOrBlank()) {
-                        getStreamUrlFromKwik(embed)?.let { link ->
+                        getStreamUrlFromKwik(embed)?.let { linkUrl ->
+                            val link = newExtractorLink(
+                                source = "AnimePahe",
+                                name = "Kwik",
+                                url = linkUrl,
+                                type = if (linkUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                            ) {
+                                this.referer = "https://kwik.cx/"
+                                this.quality = Qualities.Unknown.value
+                            }
                             synchronized(callback) {
-                                callback(
-                                    newExtractorLink(
-                                        source = "AnimePahe",
-                                        name = "Kwik",
-                                        url = link,
-                                        type = if (link.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                                    ) {
-                                        this.referer = "https://kwik.cx/"
-                                        this.quality = Qualities.Unknown.value
-                                    }
-                                )
+                                callback(link)
                             }
                         }
                     }
@@ -1196,18 +1193,17 @@ class AnimePaheProvider : MainAPI() {
 
                     if (href.contains("kwik.cx")) {
                         getStreamUrlFromKwik(href)?.let { directUrl ->
+                            val link = newExtractorLink(
+                                source = "AnimePahe",
+                                name = "Download - $label",
+                                url = directUrl,
+                                type = ExtractorLinkType.VIDEO
+                            ) {
+                                this.referer = href
+                                this.quality = quality
+                            }
                             synchronized(callback) {
-                                callback(
-                                    newExtractorLink(
-                                        source = "AnimePahe",
-                                        name = "Download - $label",
-                                        url = directUrl,
-                                        type = ExtractorLinkType.VIDEO
-                                    ) {
-                                        this.referer = href
-                                        this.quality = quality
-                                    }
-                                )
+                                callback(link)
                             }
                         }
                     }
