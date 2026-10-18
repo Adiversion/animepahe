@@ -306,12 +306,21 @@ class NetMirrorProvider : MainAPI() {
                             else -> Qualities.P360.value
                         }
 
+                        val cdnReferer = when {
+                            stUrl.contains("hakunaymatata.com") -> "https://moviebox.ph/"
+                            stUrl.contains("mxcontent.net") -> "https://mixdrop.top/"
+                            stUrl.contains("messycloud.ink") -> "https://netmirror.hair/"
+                            stUrl.contains("juicybits.io") -> "https://www.messycloud.ink/"
+                            stUrl.contains("aoneroom.com") -> "https://videodownloader.site/"
+                            else -> "$gw/"
+                        }
+
                         callback(
                             ExtractorLink(
                                 source = "NetMirror",
                                 name = "NetMirror [${resP}p Direct]",
                                 url = stUrl,
-                                referer = "$gw/",
+                                referer = cdnReferer,
                                 quality = qual,
                                 type = ExtractorLinkType.VIDEO
                             )
