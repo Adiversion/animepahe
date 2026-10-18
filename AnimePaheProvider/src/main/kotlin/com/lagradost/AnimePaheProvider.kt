@@ -45,6 +45,10 @@ import java.net.URLEncoder
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withTimeoutOrNull
 
 class AnimePaheProvider : MainAPI() {
 
@@ -675,6 +679,7 @@ class AnimePaheProvider : MainAPI() {
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class AniListMedia(
         @JsonProperty("id") val id: Int? = null,
+        @JsonProperty("idMal") val idMal: Int? = null,
         @JsonProperty("bannerImage") val bannerImage: String? = null,
         @JsonProperty("coverImage") val coverImage: AniListCoverImage? = null
     )
@@ -882,9 +887,12 @@ class AnimePaheProvider : MainAPI() {
                                 episodeSession = ep.session
                             ).toJson()
                         ) {
-                            ep.createdAt?.let { addDate(it) }
+                            ep.createdAt?.let { dateStr ->
+                                runCatching { addDate(dateStr.replace(" ", "T")) }
+                            }
                             this.name = getTitle(ep)
                             this.posterUrl = fixImageUrl(ep.snapshot)
+                            this.posterHeaders = getImageHeaders(this.posterUrl)
                             this.episode = ep.episode
                         }
                     )
@@ -922,17 +930,106 @@ class AnimePaheProvider : MainAPI() {
         }
     }
 
+    private data class AnimeArtwork(
+        val fanartUrl: String? = null,
+        val bannerUrl: String? = null,
+        val highResPosterUrl: String? = null,
+        val anilistId: Int? = null,
+        val malId: Int? = null
+    )
+
+    private suspend fun fetchArtwork(
+        animeTitle: String,
+        initialAnilistId: Int?,
+        initialMalId: Int?
+    ): AnimeArtwork = withTimeoutOrNull(2500L) {
+        var anilistId = initialAnilistId
+        var malId = initialMalId
+        var fanartUrl: String? = null
+        var bannerUrl: String? = null
+        var highResPosterUrl: String? = null
+
+        coroutineScope {
+            val aniZipUrl = when {
+                anilistId != null -> "https://api.ani.zip/mappings?anilist_id=$anilistId"
+                malId != null -> "https://api.ani.zip/mappings?mal_id=$malId"
+                else -> null
+            }
+
+            val aniZipJob = if (aniZipUrl != null) {
+                async {
+                    runCatching {
+                        app.get(aniZipUrl).parsedSafe<MetaAnimeData>()
+                    }.getOrNull()
+                }
+            } else null
+
+            val aniListJob = async {
+                runCatching {
+                    val query = when {
+                        anilistId != null -> "query{Media(id:$anilistId,type:ANIME){id idMal bannerImage coverImage{extraLarge large}}}"
+                        malId != null -> "query{Media(idMal:$malId,type:ANIME){id idMal bannerImage coverImage{extraLarge large}}}"
+                        else -> {
+                            val cleanTitle = animeTitle
+                                .replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "")
+                                .replace(Regex("""[^a-zA-Z0-9\s]"""), " ")
+                                .trim()
+                            val escapedTitle = cleanTitle.replace("\\", "\\\\").replace("\"", "\\\"")
+                            "query{Media(search:\"$escapedTitle\",type:ANIME){id idMal bannerImage coverImage{extraLarge large}}}"
+                        }
+                    }
+                    app.post(
+                        "https://graphql.anilist.co",
+                        json = mapOf("query" to query)
+                    ).parsedSafe<AniListResponse>()
+                }.getOrNull()
+            }
+
+            val aniZipMeta = aniZipJob?.await()
+            val aniListMeta = aniListJob.await()?.data?.Media
+
+            if (aniZipMeta != null) {
+                fanartUrl = aniZipMeta.images?.firstOrNull { 
+                    it.coverType.equals("Fanart", ignoreCase = true) || 
+                    it.coverType.equals("Background", ignoreCase = true)
+                }?.url
+                bannerUrl = aniZipMeta.images?.firstOrNull {
+                    it.coverType.equals("Banner", ignoreCase = true)
+                }?.url
+                highResPosterUrl = aniZipMeta.images?.firstOrNull { 
+                    it.coverType.equals("Poster", ignoreCase = true) 
+                }?.url
+            }
+
+            if (aniListMeta != null) {
+                if (anilistId == null && aniListMeta.id != null) {
+                    anilistId = aniListMeta.id
+                }
+                if (malId == null && aniListMeta.idMal != null) {
+                    malId = aniListMeta.idMal
+                }
+                if (fanartUrl == null && !aniListMeta.bannerImage.isNullOrBlank()) {
+                    fanartUrl = aniListMeta.bannerImage
+                }
+                if (highResPosterUrl == null) {
+                    highResPosterUrl = aniListMeta.coverImage?.extraLarge ?: aniListMeta.coverImage?.large
+                }
+            }
+        }
+
+        AnimeArtwork(
+            fanartUrl = fanartUrl,
+            bannerUrl = bannerUrl,
+            highResPosterUrl = highResPosterUrl,
+            anilistId = anilistId,
+            malId = malId
+        )
+    } ?: AnimeArtwork(anilistId = initialAnilistId, malId = initialMalId)
+
     // ── Load Anime Details (Spotlight Banner & Metadata) ──────────────
     override suspend fun load(url: String): LoadResponse? {
         return try {
-            val session = parseJson<LoadData>(url).let { data ->
-                if (data.sessionDate + 60 * 10 < unixTime) {
-                    val fresh = search(data.name).firstOrNull() ?: return@let null
-                    parseJson<LoadData>(fresh.url).session
-                } else {
-                    data.session
-                }
-            } ?: return null
+            val session = parseJson<LoadData>(url).session.takeIf { it.isNotBlank() } ?: return null
 
             val pageHtml = fetchWithCloudflare("$mainUrl/anime/$session")
             val doc = Jsoup.parse(pageHtml)
@@ -949,7 +1046,6 @@ class AnimePaheProvider : MainAPI() {
                 YOUTUBE_VIDEO_LINK.find(pageHtml)?.groupValues?.get(1)
             } else null
 
-            val episodes = generateListOfEpisodes(session)
             val year = Regex("""<strong>Aired:</strong>[^,]*, (\d+)""")
                 .find(pageHtml)?.groupValues?.get(1)?.toIntOrNull()
 
@@ -960,81 +1056,29 @@ class AnimePaheProvider : MainAPI() {
             }
 
             val synopsis = doc.selectFirst(".anime-synopsis")?.text()
+            val genres = doc.select(".anime-genre > ul a").map { it.text() }
 
-            var anilistId: Int? = null
-            var malId: Int? = null
+            var initialAnilistId: Int? = null
+            var initialMalId: Int? = null
 
             doc.select("a[href*='anilist.co'], a[href*='myanimelist.net']").forEach { aTag ->
                 val href = aTag.attr("href")
-                if (anilistId == null) {
-                    anilistId = Regex("""anilist\.co/anime/(\d+)""").find(href)?.groupValues?.get(1)?.toIntOrNull()
+                if (initialAnilistId == null) {
+                    initialAnilistId = Regex("""anilist\.co/anime/(\d+)""").find(href)?.groupValues?.get(1)?.toIntOrNull()
                 }
-                if (malId == null) {
-                    malId = Regex("""myanimelist\.net/anime/(\d+)""").find(href)?.groupValues?.get(1)?.toIntOrNull()
-                }
-            }
-
-            var fanartUrl: String? = null
-            var bannerUrl: String? = null
-            var highResPosterUrl: String? = null
-
-            val aniZipUrl = when {
-                anilistId != null -> "https://api.ani.zip/mappings?anilist_id=$anilistId"
-                malId != null -> "https://api.ani.zip/mappings?mal_id=$malId"
-                else -> null
-            }
-
-            if (aniZipUrl != null) {
-                runCatching {
-                    val meta = app.get(aniZipUrl).parsedSafe<MetaAnimeData>()
-                    fanartUrl = meta?.images?.firstOrNull { 
-                        it.coverType.equals("Fanart", ignoreCase = true) || 
-                        it.coverType.equals("Background", ignoreCase = true)
-                    }?.url
-                    bannerUrl = meta?.images?.firstOrNull {
-                        it.coverType.equals("Banner", ignoreCase = true)
-                    }?.url
-                    highResPosterUrl = meta?.images?.firstOrNull { 
-                        it.coverType.equals("Poster", ignoreCase = true) 
-                    }?.url
+                if (initialMalId == null) {
+                    initialMalId = Regex("""myanimelist\.net/anime/(\d+)""").find(href)?.groupValues?.get(1)?.toIntOrNull()
                 }
             }
 
-            if (fanartUrl == null || highResPosterUrl == null) {
-                runCatching {
-                    val query = when {
-                        anilistId != null -> "query{Media(id:$anilistId,type:ANIME){id bannerImage coverImage{extraLarge large}}}"
-                        malId != null -> "query{Media(idMal:$malId,type:ANIME){id bannerImage coverImage{extraLarge large}}}"
-                        else -> {
-                            val cleanTitle = animeTitle
-                                .replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "")
-                                .replace(Regex("""[^a-zA-Z0-9\s]"""), " ")
-                                .trim()
-                            val escapedTitle = cleanTitle.replace("\\", "\\\\").replace("\"", "\\\"")
-                            "query{Media(search:\"$escapedTitle\",type:ANIME){id bannerImage coverImage{extraLarge large}}}"
-                        }
-                    }
-                    val resp = app.post(
-                        "https://graphql.anilist.co",
-                        json = mapOf("query" to query)
-                    ).parsedSafe<AniListResponse>()
-                    val media = resp?.data?.Media
-                    if (anilistId == null && media?.id != null) {
-                        anilistId = media.id
-                    }
-                    if (fanartUrl == null && !media?.bannerImage.isNullOrBlank()) {
-                        fanartUrl = media?.bannerImage
-                    }
-                    if (highResPosterUrl == null) {
-                        highResPosterUrl = media?.coverImage?.extraLarge ?: media?.coverImage?.large
-                    }
-                }
+            val (episodes, artwork) = coroutineScope {
+                val epJob = async { generateListOfEpisodes(session) }
+                val artJob = async { fetchArtwork(animeTitle, initialAnilistId, initialMalId) }
+                epJob.await() to artJob.await()
             }
 
-            val genres = doc.select(".anime-genre > ul a").map { it.text() }
-
-            val bestHeroBanner = fanartUrl ?: bannerUrl ?: highResPosterUrl ?: fixImageUrl(poster)
-            val bestPoster = highResPosterUrl ?: fixImageUrl(poster)
+            val bestHeroBanner = artwork.fanartUrl ?: artwork.bannerUrl ?: artwork.highResPosterUrl ?: fixImageUrl(poster)
+            val bestPoster = artwork.highResPosterUrl ?: fixImageUrl(poster)
 
             newAnimeLoadResponse(animeTitle, url, tvType) {
                 engName = animeTitle
@@ -1048,8 +1092,8 @@ class AnimePaheProvider : MainAPI() {
                 this.plot = synopsis
                 this.tags = if (genres.isNotEmpty()) ArrayList(genres) else null
 
-                addMalId(malId)
-                addAniListId(anilistId)
+                addMalId(artwork.malId)
+                addAniListId(artwork.anilistId)
                 addTrailer(trailer)
             }
         } catch (e: ErrorLoadingException) {
@@ -1087,73 +1131,92 @@ class AnimePaheProvider : MainAPI() {
         val html = fetchWithCloudflare(episodeUrl)
         val doc = Jsoup.parse(html)
 
-        // 1. Resolution menu buttons (#resolutionMenu button[data-src])
         val buttons = doc.select("#resolutionMenu > button")
-        for (btn in buttons) {
-            val kwikSrc = btn.attr("data-src").takeIf { it.isNotBlank() } ?: continue
-            val qualityText = btn.text()
-            val quality = Regex("""(\d+)p""").find(qualityText)?.groupValues?.get(1)?.toIntOrNull()
-                ?: Qualities.Unknown.value
-
-            getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
-                callback(
-                    newExtractorLink(
-                        source = "AnimePahe",
-                        name = "AnimePahe - $qualityText",
-                        url = streamUrl,
-                        type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                    ) {
-                        this.referer = "https://kwik.cx/"
-                        this.quality = quality
-                    }
-                )
-            }
-        }
-
-        // 2. Embedded player fallback script regex: let url = "https://kwik.cx/e/..."
-        if (buttons.isEmpty()) {
-            val urlRegex = Regex("""let url = "(.*?)";""")
-            val embed = urlRegex.find(html)?.groupValues?.getOrNull(1)
-            if (!embed.isNullOrBlank()) {
-                getStreamUrlFromKwik(embed)?.let { link ->
-                    callback(
-                        newExtractorLink(
-                            source = "AnimePahe",
-                            name = "Kwik",
-                            url = link,
-                            type = if (link.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                        ) {
-                            this.referer = "https://kwik.cx/"
-                            this.quality = Qualities.Unknown.value
-                        }
-                    )
-                }
-            }
-        }
-
-        // 3. Download links from #pickDownload
         val downloadAnchors = doc.select("#pickDownload > a")
-        for (a in downloadAnchors) {
-            val href = a.attr("href").takeIf { it.isNotBlank() } ?: continue
-            val label = a.text()
-            val quality = Regex("""(\d+)p""").find(label)?.groupValues?.get(1)?.toIntOrNull()
-                ?: Qualities.Unknown.value
 
-            if (href.contains("kwik.cx")) {
-                getStreamUrlFromKwik(href)?.let { directUrl ->
-                    callback(
-                        newExtractorLink(
-                            source = "AnimePahe",
-                            name = "Download - $label",
-                            url = directUrl,
-                            type = ExtractorLinkType.VIDEO
-                        ) {
-                            this.referer = href
-                            this.quality = quality
+        coroutineScope {
+            // 1. Resolution menu buttons (#resolutionMenu button[data-src])
+            val buttonJobs = buttons.map { btn ->
+                async {
+                    val kwikSrc = btn.attr("data-src").takeIf { it.isNotBlank() } ?: return@async
+                    val qualityText = btn.text()
+                    val quality = Regex("""(\d+)p""").find(qualityText)?.groupValues?.get(1)?.toIntOrNull()
+                        ?: Qualities.Unknown.value
+
+                    getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
+                        synchronized(callback) {
+                            callback(
+                                newExtractorLink(
+                                    source = "AnimePahe",
+                                    name = "AnimePahe - $qualityText",
+                                    url = streamUrl,
+                                    type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                ) {
+                                    this.referer = "https://kwik.cx/"
+                                    this.quality = quality
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
+
+            // 2. Embedded player fallback script regex: let url = "https://kwik.cx/e/..."
+            val fallbackJob = if (buttons.isEmpty()) {
+                async {
+                    val urlRegex = Regex("""let url = "(.*?)";""")
+                    val embed = urlRegex.find(html)?.groupValues?.getOrNull(1)
+                    if (!embed.isNullOrBlank()) {
+                        getStreamUrlFromKwik(embed)?.let { link ->
+                            synchronized(callback) {
+                                callback(
+                                    newExtractorLink(
+                                        source = "AnimePahe",
+                                        name = "Kwik",
+                                        url = link,
+                                        type = if (link.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                    ) {
+                                        this.referer = "https://kwik.cx/"
+                                        this.quality = Qualities.Unknown.value
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            } else null
+
+            // 3. Download links from #pickDownload
+            val downloadJobs = downloadAnchors.map { a ->
+                async {
+                    val href = a.attr("href").takeIf { it.isNotBlank() } ?: return@async
+                    val label = a.text()
+                    val quality = Regex("""(\d+)p""").find(label)?.groupValues?.get(1)?.toIntOrNull()
+                        ?: Qualities.Unknown.value
+
+                    if (href.contains("kwik.cx")) {
+                        getStreamUrlFromKwik(href)?.let { directUrl ->
+                            synchronized(callback) {
+                                callback(
+                                    newExtractorLink(
+                                        source = "AnimePahe",
+                                        name = "Download - $label",
+                                        url = directUrl,
+                                        type = ExtractorLinkType.VIDEO
+                                    ) {
+                                        this.referer = href
+                                        this.quality = quality
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            buttonJobs.awaitAll()
+            fallbackJob?.await()
+            downloadJobs.awaitAll()
         }
 
         return true
