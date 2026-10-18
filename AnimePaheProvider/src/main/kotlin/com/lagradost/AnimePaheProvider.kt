@@ -11,6 +11,7 @@ import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import com.lagradost.nicehttp.NiceResponse
+import com.lagradost.cloudstream3.network.WebViewResolver
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 import kotlin.math.pow
@@ -65,10 +66,29 @@ class AnimePaheProvider : MainAPI() {
         TvType.OVA
     )
 
-    private fun checkCloudflare(text: String, code: Int = 200) {
-        if (code == 403 || text.contains("Just a moment...") || text.contains("challenges.cloudflare.com") || text.contains("cf-browser-verification")) {
-            throw ErrorLoadingException("Cloudflare challenge encountered. Please tap 'Open In Browser' above to solve the verification.")
+    private suspend fun fetchWithCloudflare(url: String): String {
+        val direct = try {
+            app.get(url, headers = getHeaders())
+        } catch (e: Throwable) {
+            null
         }
+
+        if (direct != null && direct.code == 200 && !direct.text.contains("Just a moment...") && !direct.text.contains("challenges.cloudflare.com")) {
+            return direct.text
+        }
+
+        // Resolve Turnstile in-app via CloudStream's internal WebViewResolver
+        val resolver = WebViewResolver(
+            interceptUrl = Regex(""".*animepahe\.pw/api.*"""),
+            useOkhttp = false,
+            timeout = 30_000L
+        )
+
+        val webResponse = app.get(url, headers = getHeaders(), interceptor = resolver)
+        if (webResponse.text.contains("Just a moment...") || webResponse.text.contains("challenges.cloudflare.com")) {
+            throw ErrorLoadingException("Cloudflare challenge encountered. Please retry in a moment.")
+        }
+        return webResponse.text
     }
 
     private fun getHeaders(base: String = mainUrl): Map<String, String> = mapOf(
@@ -149,8 +169,10 @@ class AnimePaheProvider : MainAPI() {
                 "$mainUrl/play/$session/$episodeSession"
             } else {
                 val url = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=$page"
-                val jsonResponse = app.get(url, headers = mapOf("Referer" to "$mainUrl/"))
-                    .parsedSafe<AnimePaheReleaseResponse>() ?: return null
+                val jsonResponse = app.get(
+                    url,
+                    headers = mapOf("Referer" to "$mainUrl/", "X-Requested-With" to "XMLHttpRequest")
+                ).parsedSafe<AnimePaheReleaseResponse>() ?: return null
                 val epSession = jsonResponse.data.firstOrNull { it.episode == episodeNum }?.session
                     ?: return null
                 "$mainUrl/play/$session/$epSession"
@@ -161,9 +183,8 @@ class AnimePaheProvider : MainAPI() {
     // ── Main Page (Airing Releases) ───────────────────────────────────
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val url = "${request.data}$page"
-        val response = app.get(url, headers = getHeaders())
-        checkCloudflare(response.text, response.code)
-        val parsed = parseJson<AnimePaheLatestReleases>(response.text)
+        val responseText = fetchWithCloudflare(url)
+        val parsed = parseJson<AnimePaheLatestReleases>(responseText)
 
         val items = parsed.data.map { item ->
             newAnimeSearchResponse(
@@ -187,9 +208,8 @@ class AnimePaheProvider : MainAPI() {
     override suspend fun search(query: String): List<SearchResponse> {
         val encodedQuery = URLEncoder.encode(query, "UTF-8")
         val url = "$mainUrl/api?m=search&l=8&q=$encodedQuery"
-        val response = app.get(url, headers = getHeaders())
-        checkCloudflare(response.text, response.code)
-        val parsed = parseJson<AnimePaheSearch>(response.text)
+        val responseText = fetchWithCloudflare(url)
+        val parsed = parseJson<AnimePaheSearch>(responseText)
 
         return parsed.data.map { item ->
             newAnimeSearchResponse(
@@ -207,9 +227,8 @@ class AnimePaheProvider : MainAPI() {
     private suspend fun generateListOfEpisodes(session: String): List<Episode> {
         return try {
             val uri = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=1"
-            val response = app.get(uri, headers = getHeaders())
-            checkCloudflare(response.text, response.code)
-            val data = parseJson<AnimePaheReleaseResponse>(response.text)
+            val responseText = fetchWithCloudflare(uri)
+            val data = parseJson<AnimePaheReleaseResponse>(responseText)
 
             val lastPage = data.lastPage
             val perPage = data.perPage
