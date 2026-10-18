@@ -65,12 +65,16 @@ class AnimePaheProvider : MainAPI() {
         TvType.OVA
     )
 
+    private fun checkCloudflare(text: String, code: Int = 200) {
+        if (code == 403 || text.contains("Just a moment...") || text.contains("challenges.cloudflare.com") || text.contains("cf-browser-verification")) {
+            throw ErrorLoadingException("Cloudflare challenge encountered. Please tap 'Open In Browser' above to solve the verification.")
+        }
+    }
+
     private fun getHeaders(base: String = mainUrl): Map<String, String> = mapOf(
-        "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
         "Accept-Language" to "en-US,en;q=0.9",
         "Referer" to "$base/",
-        "X-Requested-With" to "XMLHttpRequest",
-        "Cookie" to "__ddg2_=1234567890"
+        "X-Requested-With" to "XMLHttpRequest"
     )
 
     override val mainPage = listOf(
@@ -157,8 +161,9 @@ class AnimePaheProvider : MainAPI() {
     // ── Main Page (Airing Releases) ───────────────────────────────────
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val url = "${request.data}$page"
-        val response = app.get(url, headers = getHeaders()).text
-        val parsed = parseJson<AnimePaheLatestReleases>(response)
+        val response = app.get(url, headers = getHeaders())
+        checkCloudflare(response.text, response.code)
+        val parsed = parseJson<AnimePaheLatestReleases>(response.text)
 
         val items = parsed.data.map { item ->
             newAnimeSearchResponse(
@@ -182,8 +187,9 @@ class AnimePaheProvider : MainAPI() {
     override suspend fun search(query: String): List<SearchResponse> {
         val encodedQuery = URLEncoder.encode(query, "UTF-8")
         val url = "$mainUrl/api?m=search&l=8&q=$encodedQuery"
-        val response = app.get(url, headers = getHeaders()).text
-        val parsed = parseJson<AnimePaheSearch>(response)
+        val response = app.get(url, headers = getHeaders())
+        checkCloudflare(response.text, response.code)
+        val parsed = parseJson<AnimePaheSearch>(response.text)
 
         return parsed.data.map { item ->
             newAnimeSearchResponse(
@@ -201,8 +207,9 @@ class AnimePaheProvider : MainAPI() {
     private suspend fun generateListOfEpisodes(session: String): List<Episode> {
         return try {
             val uri = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=1"
-            val responseText = app.get(uri, headers = getHeaders()).text
-            val data = parseJson<AnimePaheReleaseResponse>(responseText)
+            val response = app.get(uri, headers = getHeaders())
+            checkCloudflare(response.text, response.code)
+            val data = parseJson<AnimePaheReleaseResponse>(response.text)
 
             val lastPage = data.lastPage
             val perPage = data.perPage
@@ -260,6 +267,8 @@ class AnimePaheProvider : MainAPI() {
                 }
             }
             episodes
+        } catch (e: ErrorLoadingException) {
+            throw e
         } catch (e: Exception) {
             emptyList()
         }
@@ -334,6 +343,8 @@ class AnimePaheProvider : MainAPI() {
                 addAniListId(anilistId)
                 addTrailer(trailer)
             }
+        } catch (e: ErrorLoadingException) {
+            throw e
         } catch (e: Throwable) {
             null
         }
@@ -343,7 +354,7 @@ class AnimePaheProvider : MainAPI() {
     private suspend fun getStreamUrlFromKwik(kwikUrl: String): String? {
         val response = app.get(
             kwikUrl,
-            headers = mapOf("Referer" to "$mainUrl/", "Cookie" to "__ddg2_=1234567890")
+            headers = mapOf("Referer" to "$mainUrl/")
         ).text
 
         val unpacked = getAndUnpack(response)
