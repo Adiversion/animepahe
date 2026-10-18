@@ -7,7 +7,6 @@ import com.lagradost.cloudstream3.APIHolder.unixTime
 import com.lagradost.cloudstream3.LoadResponse.Companion.addAniListId
 import com.lagradost.cloudstream3.LoadResponse.Companion.addMalId
 import com.lagradost.cloudstream3.LoadResponse.Companion.addTrailer
-import com.lagradost.cloudstream3.mvvm.suspendSafeApiCall
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
@@ -267,7 +266,7 @@ class AnimePaheProvider : MainAPI() {
 
     // ── Load Anime Details ────────────────────────────────────────────
     override suspend fun load(url: String): LoadResponse? {
-        return suspendSafeApiCall {
+        return try {
             val session = parseJson<LoadData>(url).let { data ->
                 // If cached session is older than 10 minutes, re-query search to get fresh session ID
                 if (data.sessionDate + 60 * 10 < unixTime) {
@@ -276,7 +275,7 @@ class AnimePaheProvider : MainAPI() {
                 } else {
                     data.session
                 }
-            } ?: return@suspendSafeApiCall null
+            } ?: return null
 
             val pageHtml = app.get("$mainUrl/anime/$session", headers = getHeaders()).text
             val doc = Jsoup.parse(pageHtml)
@@ -334,6 +333,8 @@ class AnimePaheProvider : MainAPI() {
                 addAniListId(anilistId)
                 addTrailer(trailer)
             }
+        } catch (e: Throwable) {
+            null
         }
     }
 
@@ -394,16 +395,14 @@ class AnimePaheProvider : MainAPI() {
 
             getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
                 callback(
-                    newExtractorLink(
-                        name = "AnimePahe",
-                        source = "AnimePahe - $qualityText",
+                    ExtractorLink(
+                        source = "AnimePahe",
+                        name = "AnimePahe - $qualityText",
                         url = streamUrl,
-                        type = INFER_TYPE
-                    ) {
-                        this.referer = "https://kwik.cx"
-                        this.quality = quality
-                        this.headers = mapOf("Origin" to "https://kwik.cx")
-                    }
+                        referer = "https://kwik.cx/",
+                        quality = quality,
+                        isM3u8 = streamUrl.contains(".m3u8")
+                    )
                 )
             }
         }
@@ -415,15 +414,14 @@ class AnimePaheProvider : MainAPI() {
             if (!embed.isNullOrBlank()) {
                 getStreamUrlFromKwik(embed)?.let { link ->
                     callback(
-                        newExtractorLink(
-                            name = "AnimePahe",
-                            source = "Kwik",
+                        ExtractorLink(
+                            source = "AnimePahe",
+                            name = "Kwik",
                             url = link,
-                            type = INFER_TYPE
-                        ) {
-                            this.referer = "https://kwik.cx"
-                            this.headers = mapOf("Origin" to "https://kwik.cx")
-                        }
+                            referer = "https://kwik.cx/",
+                            quality = Qualities.Unknown.value,
+                            isM3u8 = link.contains(".m3u8")
+                        )
                     )
                 }
             }
@@ -440,15 +438,14 @@ class AnimePaheProvider : MainAPI() {
             if (href.contains("kwik.cx")) {
                 getStreamUrlFromKwik(href)?.let { directUrl ->
                     callback(
-                        newExtractorLink(
-                            name = "AnimePahe (Direct)",
-                            source = "Download - $label",
+                        ExtractorLink(
+                            source = "AnimePahe (Direct)",
+                            name = "Download - $label",
                             url = directUrl,
-                            type = ExtractorLinkType.VIDEO
-                        ) {
-                            this.referer = href
-                            this.quality = quality
-                        }
+                            referer = href,
+                            quality = quality,
+                            isM3u8 = directUrl.contains(".m3u8")
+                        )
                     )
                 }
             }
