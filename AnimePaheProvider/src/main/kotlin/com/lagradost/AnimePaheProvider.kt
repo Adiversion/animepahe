@@ -24,8 +24,8 @@ import com.lagradost.cloudstream3.LoadResponse.Companion.addTrailer
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.withTimeoutOrNull
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 import kotlin.math.pow
@@ -71,6 +71,7 @@ class AnimePaheProvider : MainAPI() {
                 val mActivitiesField = activityThreadClass.getDeclaredField("mActivities").apply { isAccessible = true }
                 val activities = mActivitiesField.get(activityThread) as? Map<*, *>
                 activities?.values?.firstNotNullOfOrNull { record ->
+                    if (record == null) return@firstNotNullOfOrNull null
                     val pausedField = record.javaClass.getDeclaredField("paused").apply { isAccessible = true }
                     val isPaused = pausedField.getBoolean(record)
                     if (!isPaused) {
@@ -82,9 +83,13 @@ class AnimePaheProvider : MainAPI() {
         }
 
         @SuppressLint("SetJavaScriptEnabled")
-        suspend fun solveCloudflare(targetUrl: String = MAIN_URL): String? {
+        fun solveCloudflare(targetUrl: String = MAIN_URL): String? {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                return null
+            }
             val activity = getActivity() ?: return null
-            val deferred = CompletableDeferred<String?>()
+            val latch = CountDownLatch(1)
+            var solvedCookies: String? = null
             val handler = Handler(Looper.getMainLooper())
 
             handler.post {
@@ -159,9 +164,8 @@ class AnimePaheProvider : MainAPI() {
                         val currentCookies = cookieManager.getCookie(url ?: targetUrl) ?: ""
                         if (currentCookies.contains("cf_clearance")) {
                             cfCookies = currentCookies
-                            if (deferred.isActive) {
-                                deferred.complete(currentCookies)
-                            }
+                            solvedCookies = currentCookies
+                            latch.countDown()
                             handler.post {
                                 runCatching { dialog.dismiss() }
                             }
@@ -191,7 +195,7 @@ class AnimePaheProvider : MainAPI() {
 
                     val checkRunnable = object : Runnable {
                         override fun run() {
-                            if (deferred.isActive) {
+                            if (latch.count > 0) {
                                 checkForClearance(targetUrl)
                                 handler.postDelayed(this, 1000L)
                             }
@@ -202,27 +206,25 @@ class AnimePaheProvider : MainAPI() {
                     dialog.setContentView(layout)
                     dialog.setOnDismissListener {
                         handler.removeCallbacks(checkRunnable)
-                        if (deferred.isActive) {
+                        if (latch.count > 0) {
                             val finalCookies = cookieManager.getCookie(targetUrl)
                             if (finalCookies?.contains("cf_clearance") == true) {
                                 cfCookies = finalCookies
-                                deferred.complete(finalCookies)
-                            } else {
-                                deferred.complete(null)
+                                solvedCookies = finalCookies
                             }
+                            latch.countDown()
                         }
                     }
 
                     webView.loadUrl(targetUrl)
                     dialog.show()
                 } catch (e: Throwable) {
-                    deferred.complete(null)
+                    latch.countDown()
                 }
             }
 
-            return withTimeoutOrNull(75_000L) {
-                deferred.await()
-            }
+            latch.await(75, TimeUnit.SECONDS)
+            return solvedCookies
         }
 
         private fun getType(t: String): TvType {
