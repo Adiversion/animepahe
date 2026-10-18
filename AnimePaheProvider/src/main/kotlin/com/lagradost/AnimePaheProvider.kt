@@ -23,6 +23,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.APIHolder.unixTime
@@ -174,22 +175,25 @@ class AnimePaheProvider : MainAPI() {
         fun getImageHeaders(url: String? = null): Map<String, String> {
             val ua = cfUserAgent ?: USER_AGENT
             val host = url?.toHttpUrlOrNull()?.host ?: "animepahe.pw"
+            val isPaheHost = host.contains("animepahe")
             val headers = mutableMapOf(
                 "User-Agent" to ua,
-                "Referer" to "$MAIN_URL/",
-                "Accept" to "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-                "sec-ch-ua-mobile" to "?1",
-                "sec-ch-ua-platform" to "\"Android\"",
-                "Sec-Fetch-Dest" to "image",
-                "Sec-Fetch-Mode" to "no-cors",
-                "Sec-Fetch-Site" to "same-site"
+                "Accept" to "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
             )
-            val cookies = cfCookies ?: runCatching {
-                CookieManager.getInstance().getCookie("https://$host")
-                    ?: CookieManager.getInstance().getCookie(MAIN_URL)
-            }.getOrNull()
-            if (!cookies.isNullOrBlank()) {
-                headers["Cookie"] = cookies
+            if (isPaheHost) {
+                headers["Referer"] = "$MAIN_URL/"
+                headers["sec-ch-ua-mobile"] = "?1"
+                headers["sec-ch-ua-platform"] = "\"Android\""
+                headers["Sec-Fetch-Dest"] = "image"
+                headers["Sec-Fetch-Mode"] = "no-cors"
+                headers["Sec-Fetch-Site"] = "same-site"
+                val cookies = cfCookies ?: runCatching {
+                    CookieManager.getInstance().getCookie("https://$host")
+                        ?: CookieManager.getInstance().getCookie(MAIN_URL)
+                }.getOrNull()
+                if (!cookies.isNullOrBlank()) {
+                    headers["Cookie"] = cookies
+                }
             }
             return headers
         }
@@ -651,30 +655,36 @@ class AnimePaheProvider : MainAPI() {
     )
 
     // ── Data Models ──────────────────────────────────────────────────
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class MetaImage(
-        @JsonProperty("coverType") val coverType: String?,
-        @JsonProperty("url") val url: String?
+        @JsonProperty("coverType") val coverType: String? = null,
+        @JsonProperty("url") val url: String? = null
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class MetaAnimeData(
         @JsonProperty("images") val images: List<MetaImage>? = null
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class AniListCoverImage(
         @JsonProperty("extraLarge") val extraLarge: String? = null,
         @JsonProperty("large") val large: String? = null
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class AniListMedia(
         @JsonProperty("id") val id: Int? = null,
         @JsonProperty("bannerImage") val bannerImage: String? = null,
         @JsonProperty("coverImage") val coverImage: AniListCoverImage? = null
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class AniListData(
         @JsonProperty("Media") val Media: AniListMedia? = null
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class AniListResponse(
         @JsonProperty("data") val data: AniListData? = null
     )
@@ -758,20 +768,57 @@ class AnimePaheProvider : MainAPI() {
     }
 
     // ── Main Page (Airing Releases - Netflix Style Horizontal Lane) ──
+    private suspend fun fetchTopBanners(titles: List<String>): Map<Int, String> {
+        if (titles.isEmpty()) return emptyMap()
+        return runCatching {
+            val queryParts = titles.mapIndexed { idx, title ->
+                val clean = title
+                    .replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "")
+                    .replace(Regex("""[^a-zA-Z0-9\s]"""), " ")
+                    .trim()
+                val escaped = clean.replace("\\", "\\\\").replace("\"", "\\\"")
+                "a$idx: Media(search: \"$escaped\", type: ANIME) { bannerImage coverImage { extraLarge } }"
+            }.joinToString(" ")
+            val resp = app.post(
+                "https://graphql.anilist.co",
+                json = mapOf("query" to "query { $queryParts }")
+            ).text
+            val jsonNode = AppUtils.mapper.readTree(resp)?.get("data")
+            val map = mutableMapOf<Int, String>()
+            titles.indices.forEach { idx ->
+                val node = jsonNode?.get("a$idx")
+                val banner = node?.get("bannerImage")?.asText()?.takeIf { it.isNotBlank() && it != "null" }
+                val poster = node?.get("coverImage")?.get("extraLarge")?.asText()?.takeIf { it.isNotBlank() && it != "null" }
+                val best = banner ?: poster
+                if (!best.isNullOrBlank()) {
+                    map[idx] = best
+                }
+            }
+            map
+        }.getOrDefault(emptyMap())
+    }
+
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val url = "${request.data}$page"
         val responseText = fetchWithCloudflare(url)
         val parsed = parseJson<AnimePaheLatestReleases>(responseText)
 
-        val items = parsed.data.map { item ->
+        val topBanners = if (page == 1 && parsed.data.isNotEmpty()) {
+            fetchTopBanners(parsed.data.take(5).map { it.animeTitle })
+        } else {
+            emptyMap()
+        }
+
+        val items = parsed.data.mapIndexed { idx, item ->
             newAnimeSearchResponse(
                 item.animeTitle,
                 LoadData(item.animeSession, unixTime, item.animeTitle).toJson(),
                 fix = false
             ) {
+                val banner = topBanners[idx]
                 val snap = fixImageUrl(item.snapshot)
-                this.posterUrl = snap
-                this.posterHeaders = getImageHeaders(snap)
+                this.posterUrl = banner ?: snap
+                this.posterHeaders = getImageHeaders(this.posterUrl)
                 addDubStatus(DubStatus.Subbed, item.episode)
             }
         }
@@ -919,17 +966,18 @@ class AnimePaheProvider : MainAPI() {
             var anilistId: Int? = null
             var malId: Int? = null
 
-            doc.select(".external-links > a").forEach { aTag ->
+            doc.select("a[href*='anilist.co'], a[href*='myanimelist.net']").forEach { aTag ->
                 val href = aTag.attr("href")
-                val lastSegment = href.trimEnd('/').substringAfterLast('/')
-                if (href.contains("anilist.co")) {
-                    anilistId = lastSegment.toIntOrNull()
-                } else if (href.contains("myanimelist.net")) {
-                    malId = lastSegment.toIntOrNull()
+                if (anilistId == null) {
+                    anilistId = Regex("""anilist\.co/anime/(\d+)""").find(href)?.groupValues?.get(1)?.toIntOrNull()
+                }
+                if (malId == null) {
+                    malId = Regex("""myanimelist\.net/anime/(\d+)""").find(href)?.groupValues?.get(1)?.toIntOrNull()
                 }
             }
 
             var fanartUrl: String? = null
+            var bannerUrl: String? = null
             var highResPosterUrl: String? = null
 
             val aniZipUrl = when {
@@ -943,8 +991,10 @@ class AnimePaheProvider : MainAPI() {
                     val meta = app.get(aniZipUrl).parsedSafe<MetaAnimeData>()
                     fanartUrl = meta?.images?.firstOrNull { 
                         it.coverType.equals("Fanart", ignoreCase = true) || 
-                        it.coverType.equals("Banner", ignoreCase = true) ||
                         it.coverType.equals("Background", ignoreCase = true)
+                    }?.url
+                    bannerUrl = meta?.images?.firstOrNull {
+                        it.coverType.equals("Banner", ignoreCase = true)
                     }?.url
                     highResPosterUrl = meta?.images?.firstOrNull { 
                         it.coverType.equals("Poster", ignoreCase = true) 
@@ -954,11 +1004,21 @@ class AnimePaheProvider : MainAPI() {
 
             if (fanartUrl == null || highResPosterUrl == null) {
                 runCatching {
-                    val cleanTitle = animeTitle.replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "").trim()
-                    val escapedTitle = cleanTitle.replace("\\", "\\\\").replace("\"", "\\\"")
+                    val query = when {
+                        anilistId != null -> "query{Media(id:$anilistId,type:ANIME){id bannerImage coverImage{extraLarge large}}}"
+                        malId != null -> "query{Media(idMal:$malId,type:ANIME){id bannerImage coverImage{extraLarge large}}}"
+                        else -> {
+                            val cleanTitle = animeTitle
+                                .replace(Regex("""\s*(?:Season|\(TV\)|Part)\s*\d+.*$""", RegexOption.IGNORE_CASE), "")
+                                .replace(Regex("""[^a-zA-Z0-9\s]"""), " ")
+                                .trim()
+                            val escapedTitle = cleanTitle.replace("\\", "\\\\").replace("\"", "\\\"")
+                            "query{Media(search:\"$escapedTitle\",type:ANIME){id bannerImage coverImage{extraLarge large}}}"
+                        }
+                    }
                     val resp = app.post(
                         "https://graphql.anilist.co",
-                        json = mapOf("query" to "query{Media(search:\"$escapedTitle\",type:ANIME){id bannerImage coverImage{extraLarge large}}}")
+                        json = mapOf("query" to query)
                     ).parsedSafe<AniListResponse>()
                     val media = resp?.data?.Media
                     if (anilistId == null && media?.id != null) {
@@ -975,11 +1035,14 @@ class AnimePaheProvider : MainAPI() {
 
             val genres = doc.select(".anime-genre > ul a").map { it.text() }
 
+            val bestHeroBanner = fanartUrl ?: bannerUrl ?: highResPosterUrl ?: fixImageUrl(poster)
+            val bestPoster = highResPosterUrl ?: fixImageUrl(poster)
+
             newAnimeLoadResponse(animeTitle, url, tvType) {
                 engName = animeTitle
                 japName = japTitle
-                this.posterUrl = highResPosterUrl ?: fixImageUrl(poster)
-                this.backgroundPosterUrl = fanartUrl
+                this.posterUrl = bestPoster
+                this.backgroundPosterUrl = bestHeroBanner
                 this.posterHeaders = getImageHeaders(this.posterUrl)
                 this.year = year
                 addEpisodes(DubStatus.Subbed, episodes)
