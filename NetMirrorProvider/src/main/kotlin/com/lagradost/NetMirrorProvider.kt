@@ -15,8 +15,6 @@ class NetMirrorProvider : MainAPI() {
             "https://net79.cc",
             "https://net52.cc"
         )
-        const val STREMIO_CATALOG_BASE =
-            "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/bmZ4LGRucCxhbXAsYXRwLGhibSxqaHMsemVlLHNvbnlsaXYsY3J1OjpJTjoxNzkyMzQzMDk5OTQ1OjA6MDo%3D/catalog"
         const val CINEMETA_BASE = "https://v3-cinemeta.strem.io"
         const val USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
@@ -57,207 +55,174 @@ class NetMirrorProvider : MainAPI() {
         }
     }
 
+    // --- Native NetMirror Catalogs ---
     override val mainPage = mainPageOf(
-        "stremio:series:jhs" to "JioHotstar: Series",
-        "stremio:movie:jhs" to "JioHotstar: Movies",
-        "stremio:series:nfx" to "Netflix: Series",
-        "stremio:movie:nfx" to "Netflix: Movies",
-        "stremio:series:amp" to "Prime Video: Series",
-        "stremio:movie:amp" to "Prime Video: Movies",
-        "stremio:series:sonyliv" to "Sony LIV: Series",
-        "stremio:movie:sonyliv" to "Sony LIV: Movies",
-        "stremio:movie:zee" to "Zee5: Movies",
-        "curated:trending" to "Trending Across OTT"
+        "curated:trending" to "🔥 Trending & Highlights",
+        "curated:Netflix" to "Netflix Curated",
+        "curated:PrimeVideo" to "Prime Video Curated",
+        "curated:Crunchyroll" to "Crunchyroll Anime",
+        "discover:JioHotstar:movie" to "JioHotstar Movies",
+        "discover:JioHotstar:tv" to "JioHotstar Series",
+        "discover:SonyLIV:movie" to "Sony LIV Movies",
+        "discover:SonyLIV:tv" to "Sony LIV Series",
+        "discover:Zee5:movie" to "Zee5 Movies",
+        "discover:Zee5:tv" to "Zee5 Series",
+        "discover:MX:movie" to "MX Player Movies",
+        "discover:MX:tv" to "MX Player Series",
+        "discover:Netflix:movie" to "Netflix All Movies",
+        "discover:Netflix:tv" to "Netflix All Series",
+        "discover:PrimeVideo:movie" to "Prime Video All Movies",
+        "discover:PrimeVideo:tv" to "Prime Video All Series"
     )
 
-    override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        if (request.data.startsWith("stremio:")) {
-            val parts = request.data.split(":")
-            val ctype = parts.getOrNull(1) ?: "series"
-            val cid = parts.getOrNull(2) ?: "jhs"
-
-            val skipParam = if (page > 1) "/skip=${(page - 1) * 100}" else ""
-            val url = "$STREMIO_CATALOG_BASE/$ctype/$cid$skipParam.json"
-
-            val res = app.get(url, timeout = 10).parsedSafe<StremioCatalogResponse>()
-            val metas = res?.metas ?: emptyList()
-
-            val items = metas.map { meta ->
-                val title = meta.name ?: "Unknown"
-                val poster = meta.poster
-                val imdbId = meta.id ?: ""
-                val payload = "meta:$ctype:$imdbId:${meta.moviedbId ?: 0}:$title"
-
-                if (ctype == "series") {
-                    newTvSeriesSearchResponse(title, payload, TvType.TvSeries) {
-                        this.posterUrl = poster
-                    }
-                } else {
-                    newMovieSearchResponse(title, payload, TvType.Movie) {
-                        this.posterUrl = poster
-                    }
-                }
+    private fun NetMirrorItem.toSearchResponse(): SearchResponse? {
+        val id = tmdbId ?: return null
+        val t = title ?: return null
+        val isTv = type.equals("tv", ignoreCase = true)
+        val ctype = if (isTv) "series" else "movie"
+        val payload = "netmirror:$ctype:$id:$t"
+        val pUrl = poster
+        return if (isTv) {
+            newTvSeriesSearchResponse(t, payload, TvType.TvSeries) {
+                this.posterUrl = pUrl
             }
+        } else {
+            newMovieSearchResponse(t, payload, TvType.Movie) {
+                this.posterUrl = pUrl
+            }
+        }
+    }
 
+    override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
+        syncGateway()
+
+        // 1. Curated Section (returns all rails as horizontal rows on page 1)
+        if (request.data.startsWith("curated:")) {
+            val curatedName = request.data.removePrefix("curated:")
+            val url = "$activeGateway/api/catalog/curated/$curatedName"
+            val res = app.get(
+                url,
+                headers = mapOf("Referer" to "$activeGateway/", "User-Agent" to USER_AGENT),
+                timeout = 8
+            ).parsedSafe<CuratedCatalogResponse>()
+
+            val rails = res?.rails ?: emptyList()
+            if (rails.isNotEmpty()) {
+                val lists = rails.mapNotNull { rail ->
+                    val items = rail.items?.mapNotNull { it.toSearchResponse() } ?: return@mapNotNull null
+                    if (items.isEmpty()) return@mapNotNull null
+                    HomePageList(
+                        name = rail.title ?: request.name,
+                        list = items,
+                        isHorizontalImages = false
+                    )
+                }
+                return newHomePageResponse(lists, hasNext = false)
+            }
+        }
+
+        // 2. Discover Platform Section (paginated 20 items per page)
+        if (request.data.startsWith("discover:")) {
+            val parts = request.data.split(":")
+            val platform = parts.getOrNull(1) ?: "Netflix"
+            val ctype = parts.getOrNull(2) ?: "movie"
+            val url = "$activeGateway/api/catalog/discover?platform=$platform&type=$ctype&sort=popularity&region=IN&page=$page"
+
+            val res = app.get(
+                url,
+                headers = mapOf("Referer" to "$activeGateway/", "User-Agent" to USER_AGENT),
+                timeout = 8
+            ).parsedSafe<DiscoverResponse>()
+
+            val items = res?.items?.mapNotNull { it.toSearchResponse() } ?: emptyList()
+            val totalPages = res?.totalPages ?: 1
             return newHomePageResponse(
-                list = HomePageList(
+                HomePageList(
                     name = request.name,
                     list = items,
                     isHorizontalImages = false
                 ),
-                hasNext = items.size >= 50
+                hasNext = page < totalPages
             )
         }
 
-        // NetMirror Curated Trending API
-        syncGateway()
-        val curUrl = "$activeGateway/api/catalog/curated/trending"
-        val curatedRes = app.get(curUrl, headers = mapOf("Referer" to "$activeGateway/", "User-Agent" to USER_AGENT), timeout = 8)
-            .parsedSafe<CuratedCatalogResponse>()
-
-        val rails = curatedRes?.rails ?: emptyList()
-        val allItems = mutableListOf<SearchResponse>()
-
-        for (r in rails) {
-            val railItems = r.items ?: continue
-            for (it in railItems) {
-                val title = it.title ?: continue
-                val tmdbId = it.tmdbId ?: 0
-                val isTv = it.type == "tv"
-                val ctype = if (isTv) "series" else "movie"
-                val payload = "meta:$ctype::$tmdbId:$title"
-                val poster = it.poster
-
-                val item = if (isTv) {
-                    newTvSeriesSearchResponse(title, payload, TvType.TvSeries) {
-                        this.posterUrl = poster
-                    }
-                } else {
-                    newMovieSearchResponse(title, payload, TvType.Movie) {
-                        this.posterUrl = poster
-                    }
-                }
-                allItems.add(item)
-            }
-        }
-
-        return newHomePageResponse(
-            list = HomePageList(
-                name = request.name,
-                list = allItems.distinctBy { it.url },
-                isHorizontalImages = false
-            ),
-            hasNext = false
-        )
+        return newHomePageResponse(emptyList(), false)
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
         val encoded = URLEncoder.encode(query, "UTF-8")
-        val results = mutableListOf<SearchResponse>()
-
-        // 1. Search NetMirror directly for native verified release mappings
         syncGateway()
         val gateways = listOf(activeGateway) + NETMIRROR_GATEWAYS.filter { it != activeGateway }
+
+        // Query NetMirror's native search API directly
         for (gw in gateways) {
             try {
-                val res = app.get("$gw/api/catalog/search?q=$encoded", headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT), timeout = 6)
-                    .parsedSafe<NetMirrorSearchResponse>()
-                if (res?.ok == true && !res.items.isNullOrEmpty()) {
-                    res.items.forEach { it ->
-                        val title = it.title ?: return@forEach
-                        val tmdbId = it.tmdbId ?: 0
-                        val isTv = it.type == "tv"
-                        val ctype = if (isTv) "series" else "movie"
-                        val payload = "meta:$ctype::$tmdbId:$title"
-                        if (isTv) {
-                            results.add(
-                                newTvSeriesSearchResponse(title, payload, TvType.TvSeries) {
-                                    this.posterUrl = it.poster
-                                }
-                            )
-                        } else {
-                            results.add(
-                                newMovieSearchResponse(title, payload, TvType.Movie) {
-                                    this.posterUrl = it.poster
-                                }
-                            )
-                        }
-                    }
-                    break
+                val url = "$gw/api/catalog/search?q=$encoded"
+                val res = app.get(
+                    url,
+                    headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT),
+                    timeout = 6
+                ).parsedSafe<NetMirrorSearchResponse>()
+
+                val items = res?.items?.mapNotNull { it.toSearchResponse() }
+                if (!items.isNullOrEmpty()) {
+                    return items
                 }
             } catch (_: Throwable) {}
         }
 
-        // 2. Search Cinemeta as secondary catalog
-        try {
-            val seriesRes = app.get("$CINEMETA_BASE/catalog/series/top/search=$encoded.json", timeout = 6)
-                .parsedSafe<CinemetaCatalogResponse>()
-            seriesRes?.metas?.forEach { m ->
-                val title = m.name ?: return@forEach
-                val id = m.id ?: return@forEach
-                val payload = "meta:series:$id:${m.moviedbId ?: 0}:$title"
-                results.add(
-                    newTvSeriesSearchResponse(title, payload, TvType.TvSeries) {
-                        this.posterUrl = m.poster
-                    }
-                )
-            }
-        } catch (_: Throwable) {}
-
-        try {
-            val movieRes = app.get("$CINEMETA_BASE/catalog/movie/top/search=$encoded.json", timeout = 6)
-                .parsedSafe<CinemetaCatalogResponse>()
-            movieRes?.metas?.forEach { m ->
-                val title = m.name ?: return@forEach
-                val id = m.id ?: return@forEach
-                val payload = "meta:movie:$id:${m.moviedbId ?: 0}:$title"
-                results.add(
-                    newMovieSearchResponse(title, payload, TvType.Movie) {
-                        this.posterUrl = m.poster
-                    }
-                )
-            }
-        } catch (_: Throwable) {}
-
-        return results.distinctBy { it.url }
+        return emptyList()
     }
 
     override suspend fun load(url: String): LoadResponse {
-        // Strip any host prefix CloudStream prepends to relative URLs
-        val cleanUrl = if (url.contains("meta:")) url.substringAfter("meta:") else url
+        val cleanUrl = when {
+            url.contains("netmirror:") -> url.substringAfter("netmirror:")
+            url.contains("meta:") -> url.substringAfter("meta:")
+            else -> url
+        }
         val parts = cleanUrl.split(":", limit = 4)
         val ctype = parts.getOrNull(0) ?: "movie"
-        val imdbId = parts.getOrNull(1) ?: ""
-        var tmdbId = parts.getOrNull(2)?.toIntOrNull() ?: 0
-        val title = parts.getOrNull(3) ?: ""
+        val tmdbId = parts.getOrNull(1)?.toIntOrNull() ?: parts.getOrNull(2)?.toIntOrNull() ?: 0
+        val fallbackTitle = parts.lastOrNull() ?: ""
 
-        // 1. Resolve metadata from Cinemeta if IMDb ID is available
-        var resolvedName = title
-        var resolvedPlot: String? = null
-        var resolvedPoster: String? = null
-        var resolvedBackdrop: String? = null
-        var resolvedYear: Int? = null
-        val episodes = mutableListOf<Episode>()
+        syncGateway()
+        val gateways = listOf(activeGateway) + NETMIRROR_GATEWAYS.filter { it != activeGateway }
+        var embedInfo: NetMirrorEmbedResponse? = null
 
-        if (imdbId.startsWith("tt")) {
-            try {
-                val metaUrl = "$CINEMETA_BASE/meta/$ctype/$imdbId.json"
-                val cinemeta = app.get(metaUrl, timeout = 7).parsedSafe<CinemetaDetailsResponse>()?.meta
-                if (cinemeta != null) {
-                    resolvedName = cinemeta.name ?: resolvedName
-                    resolvedPlot = cinemeta.description
-                    resolvedPoster = cinemeta.poster
-                    resolvedBackdrop = cinemeta.background ?: cinemeta.poster
-                    resolvedYear = cinemeta.year?.take(4)?.toIntOrNull()
-                    if (tmdbId <= 0 && cinemeta.moviedbId != null) {
-                        tmdbId = cinemeta.moviedbId
+        if (tmdbId > 0) {
+            for (gw in gateways) {
+                try {
+                    val apiUrl = "$gw/api/embed-tmdb/$tmdbId?type=$ctype&se=1&ep=1"
+                    val res = app.get(
+                        apiUrl,
+                        headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT),
+                        timeout = 6
+                    ).parsedSafe<NetMirrorEmbedResponse>()
+                    if (res?.ok == true) {
+                        embedInfo = res
+                        break
                     }
+                } catch (_: Throwable) {}
+            }
+        }
 
-                    if (ctype == "series" && !cinemeta.videos.isNullOrEmpty()) {
+        val resolvedName = embedInfo?.title ?: fallbackTitle
+        val resolvedYear = embedInfo?.year?.take(4)?.toIntOrNull()
+        val resolvedPoster = embedInfo?.poster
+        val imdbId = embedInfo?.imdb ?: ""
+        val isTv = ctype.equals("series", ignoreCase = true) || ctype.equals("tv", ignoreCase = true)
+
+        if (isTv) {
+            val episodes = mutableListOf<Episode>()
+            if (imdbId.isNotBlank() && imdbId.startsWith("tt")) {
+                try {
+                    val cinemeta = app.get("$CINEMETA_BASE/meta/series/$imdbId.json", timeout = 6)
+                        .parsedSafe<CinemetaDetailsResponse>()?.meta
+                    if (!cinemeta?.videos.isNullOrEmpty()) {
                         cinemeta.videos.filter { (it.season ?: 0) > 0 }.forEach { v ->
                             val sNum = v.season ?: 1
                             val epNum = v.episode ?: v.number ?: 1
-                            val epData = "stream:tv:$tmdbId:$sNum:$epNum:$imdbId:$resolvedName"
+                            val epData = "stream:tv:$tmdbId:$sNum:$epNum:$resolvedName"
                             episodes.add(
                                 newEpisode(epData) {
                                     this.name = v.title?.ifBlank { "Episode $epNum" } ?: "Episode $epNum"
@@ -269,40 +234,33 @@ class NetMirrorProvider : MainAPI() {
                             )
                         }
                     }
-                }
-            } catch (_: Throwable) {}
-        }
-
-        // If series has no episode index yet, populate standard season 1 episodes
-        if (ctype == "series" && episodes.isEmpty()) {
-            for (ep in 1..25) {
-                val epData = "stream:tv:$tmdbId:1:$ep:$imdbId:$resolvedName"
-                episodes.add(
-                    newEpisode(epData) {
-                        this.name = "Episode $ep"
-                        this.season = 1
-                        this.episode = ep
-                        this.posterUrl = resolvedPoster
-                    }
-                )
+                } catch (_: Throwable) {}
             }
-        }
 
-        if (ctype == "series" && episodes.isNotEmpty()) {
+            if (episodes.isEmpty()) {
+                for (ep in 1..25) {
+                    val epData = "stream:tv:$tmdbId:1:$ep:$resolvedName"
+                    episodes.add(
+                        newEpisode(epData) {
+                            this.name = "Episode $ep"
+                            this.season = 1
+                            this.episode = ep
+                            this.posterUrl = resolvedPoster
+                        }
+                    )
+                }
+            }
+
             return newTvSeriesLoadResponse(resolvedName, url, TvType.TvSeries, episodes) {
                 this.posterUrl = resolvedPoster
-                this.backgroundPosterUrl = resolvedBackdrop
-                this.plot = resolvedPlot
                 this.year = resolvedYear
                 if (imdbId.isNotBlank()) addImdbId(imdbId)
             }
         }
 
-        val movieData = "stream:movie:$tmdbId:1:1:$imdbId:$resolvedName"
+        val movieData = "stream:movie:$tmdbId:1:1:$resolvedName"
         return newMovieLoadResponse(resolvedName, url, TvType.Movie, movieData) {
             this.posterUrl = resolvedPoster
-            this.backgroundPosterUrl = resolvedBackdrop
-            this.plot = resolvedPlot
             this.year = resolvedYear
             if (imdbId.isNotBlank()) addImdbId(imdbId)
         }
@@ -319,150 +277,75 @@ class NetMirrorProvider : MainAPI() {
 
         syncGateway()
         val cleanData = data.substringAfter("stream:")
-        val parts = cleanData.split(":", limit = 6)
+        val parts = cleanData.split(":", limit = 5)
         val ctype = parts.getOrNull(0) ?: "movie"
-        var tmdbId = parts.getOrNull(1)?.toIntOrNull() ?: 0
+        val tmdbId = parts.getOrNull(1)?.toIntOrNull() ?: 0
         val season = parts.getOrNull(2)?.toIntOrNull() ?: 1
         val episode = parts.getOrNull(3)?.toIntOrNull() ?: 1
-        val imdbId = parts.getOrNull(4) ?: ""
-        val title = parts.getOrNull(5) ?: ""
 
-        // If tmdbId was missing, resolve it via Cinemeta
-        if (tmdbId <= 0 && imdbId.isNotBlank() && imdbId.startsWith("tt")) {
-            try {
-                val cinemeta = app.get("$CINEMETA_BASE/meta/$ctype/$imdbId.json", timeout = 5)
-                    .parsedSafe<CinemetaDetailsResponse>()?.meta
-                if (cinemeta?.moviedbId != null) {
-                    tmdbId = cinemeta.moviedbId
-                }
-            } catch (_: Throwable) {}
-        }
+        if (tmdbId <= 0) return false
 
         val gateways = listOf(activeGateway) + NETMIRROR_GATEWAYS.filter { it != activeGateway }
 
-        // Primary: Direct NetMirror embed query
-        if (tmdbId > 0) {
-            for (gw in gateways) {
-                try {
-                    val apiUrl = "$gw/api/embed-tmdb/$tmdbId?type=$ctype&se=$season&ep=$episode"
-                    val res = app.get(apiUrl, headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT), timeout = 6)
-                        .parsedSafe<NetMirrorEmbedResponse>()
+        for (gw in gateways) {
+            try {
+                val apiUrl = "$gw/api/embed-tmdb/$tmdbId?type=$ctype&se=$season&ep=$episode"
+                val res = app.get(
+                    apiUrl,
+                    headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT),
+                    timeout = 6
+                ).parsedSafe<NetMirrorEmbedResponse>()
 
-                    if (res?.ok == true && !res.streams.isNullOrEmpty()) {
-                        res.streams.forEach { st ->
-                            val stUrl = st.url ?: return@forEach
-                            val resP = st.resolution ?: 720
-                            val qual = when {
-                                resP >= 1080 -> Qualities.P1080.value
-                                resP >= 720 -> Qualities.P720.value
-                                resP >= 480 -> Qualities.P480.value
-                                else -> Qualities.P360.value
-                            }
+                if (res?.ok == true && !res.streams.isNullOrEmpty()) {
+                    // 1. Add Direct MP4 CDN streams
+                    res.streams.forEach { st ->
+                        val stUrl = st.url ?: return@forEach
+                        val resP = st.resolution ?: 720
+                        val qual = when {
+                            resP >= 1080 -> Qualities.P1080.value
+                            resP >= 720 -> Qualities.P720.value
+                            resP >= 480 -> Qualities.P480.value
+                            else -> Qualities.P360.value
+                        }
 
-                            val cdnReferer = when {
-                                stUrl.contains("hakunaymatata.com") -> "https://moviebox.ph/"
-                                stUrl.contains("mxcontent.net") -> "https://mixdrop.top/"
-                                stUrl.contains("messycloud.ink") -> "https://netmirror.hair/"
-                                stUrl.contains("juicybits.io") -> "https://www.messycloud.ink/"
-                                stUrl.contains("aoneroom.com") -> "https://videodownloader.site/"
-                                else -> "$gw/"
-                            }
+                        val cdnReferer = when {
+                            stUrl.contains("hakunaymatata.com") -> "https://moviebox.ph/"
+                            stUrl.contains("mxcontent.net") -> "https://mixdrop.top/"
+                            stUrl.contains("messycloud.ink") -> "https://netmirror.hair/"
+                            stUrl.contains("juicybits.io") -> "https://www.messycloud.ink/"
+                            stUrl.contains("aoneroom.com") -> "https://videodownloader.site/"
+                            else -> "$gw/"
+                        }
 
-                            callback(
-                                ExtractorLink(
-                                    source = "NetMirror",
-                                    name = "NetMirror [${resP}p Direct]",
-                                    url = stUrl,
-                                    referer = cdnReferer,
-                                    quality = qual,
-                                    type = ExtractorLinkType.VIDEO
-                                )
+                        callback(
+                            ExtractorLink(
+                                source = "NetMirror",
+                                name = "NetMirror [${resP}p Direct]",
+                                url = stUrl,
+                                referer = cdnReferer,
+                                quality = qual,
+                                type = ExtractorLinkType.VIDEO
                             )
-                        }
-                        return true
+                        )
                     }
-                } catch (_: Throwable) {}
-            }
-        }
 
-        // Secondary Fallback: Title search on NetMirror for alternate release IDs (e.g. Dhurandhar 1291608)
-        if (title.isNotBlank()) {
-            val cleanTitle = title
-                .split(" The ")[0]
-                .split(":")[0]
-                .split("-")[0]
-                .replace(Regex("""\b(19|20)\d{2}\b"""), "")
-                .trim()
-
-            for (gw in gateways) {
-                try {
-                    val searchUrl = "$gw/api/catalog/search?q=${URLEncoder.encode(cleanTitle, "UTF-8")}"
-                    val searchRes = app.get(searchUrl, headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT), timeout = 6)
-                        .parsedSafe<NetMirrorSearchResponse>()
-
-                    val matchedItem = searchRes?.items?.firstOrNull { it.tmdbId != null && it.tmdbId != tmdbId }
-                    val altTmdbId = matchedItem?.tmdbId
-                    if (altTmdbId != null && altTmdbId > 0) {
-                        val apiUrl = "$gw/api/embed-tmdb/$altTmdbId?type=$ctype&se=$season&ep=$episode"
-                        val res = app.get(apiUrl, headers = mapOf("Referer" to "$gw/", "User-Agent" to USER_AGENT), timeout = 6)
-                            .parsedSafe<NetMirrorEmbedResponse>()
-
-                        if (res?.ok == true && !res.streams.isNullOrEmpty()) {
-                            res.streams.forEach { st ->
-                                val stUrl = st.url ?: return@forEach
-                                val resP = st.resolution ?: 720
-                                val qual = when {
-                                    resP >= 1080 -> Qualities.P1080.value
-                                    resP >= 720 -> Qualities.P720.value
-                                    resP >= 480 -> Qualities.P480.value
-                                    else -> Qualities.P360.value
-                                }
-
-                                val cdnReferer = when {
-                                    stUrl.contains("hakunaymatata.com") -> "https://moviebox.ph/"
-                                    stUrl.contains("mxcontent.net") -> "https://mixdrop.top/"
-                                    stUrl.contains("messycloud.ink") -> "https://netmirror.hair/"
-                                    stUrl.contains("juicybits.io") -> "https://www.messycloud.ink/"
-                                    stUrl.contains("aoneroom.com") -> "https://videodownloader.site/"
-                                    else -> "$gw/"
-                                }
-
-                                callback(
-                                    ExtractorLink(
-                                        source = "NetMirror",
-                                        name = "NetMirror [${resP}p Direct]",
-                                        url = stUrl,
-                                        referer = cdnReferer,
-                                        quality = qual,
-                                        type = ExtractorLinkType.VIDEO
-                                    )
-                                )
-                            }
-                            return true
-                        }
+                    // 2. Add Subtitles
+                    res.subtitles?.forEach { sub ->
+                        val rawSubUrl = sub.url ?: return@forEach
+                        val subUrl = if (rawSubUrl.startsWith("/")) "$gw$rawSubUrl" else rawSubUrl
+                        val subName = sub.name ?: sub.lang ?: "Subtitle"
+                        subtitleCallback(SubtitleFile(subName, subUrl))
                     }
-                } catch (_: Throwable) {}
-            }
+
+                    return true
+                }
+            } catch (_: Throwable) {}
         }
 
         return false
     }
 
-    // --- JSON Schema Mappings ---
-
-    data class StremioCatalogResponse(
-        @JsonProperty("metas") val metas: List<StremioMeta>? = null
-    )
-
-    data class StremioMeta(
-        @JsonProperty("id") val id: String? = null,
-        @JsonProperty("name") val name: String? = null,
-        @JsonProperty("type") val type: String? = null,
-        @JsonProperty("poster") val poster: String? = null,
-        @JsonProperty("description") val description: String? = null,
-        @JsonProperty("releaseInfo") val releaseInfo: String? = null,
-        @JsonProperty("moviedb_id") val moviedbId: Int? = null
-    )
+    // --- JSON Schema Mappings for NetMirror Native API ---
 
     data class CuratedCatalogResponse(
         @JsonProperty("ok") val ok: Boolean? = null,
@@ -470,37 +353,32 @@ class NetMirrorProvider : MainAPI() {
     )
 
     data class CuratedRail(
+        @JsonProperty("key") val key: String? = null,
         @JsonProperty("title") val title: String? = null,
-        @JsonProperty("items") val items: List<CuratedItem>? = null
+        @JsonProperty("items") val items: List<NetMirrorItem>? = null
     )
 
-    data class CuratedItem(
+    data class DiscoverResponse(
+        @JsonProperty("ok") val ok: Boolean? = null,
+        @JsonProperty("page") val page: Int? = null,
+        @JsonProperty("totalPages") val totalPages: Int? = null,
+        @JsonProperty("items") val items: List<NetMirrorItem>? = null
+    )
+
+    data class NetMirrorSearchResponse(
+        @JsonProperty("ok") val ok: Boolean? = null,
+        @JsonProperty("items") val items: List<NetMirrorItem>? = null
+    )
+
+    data class NetMirrorItem(
         @JsonProperty("tmdbId") val tmdbId: Int? = null,
         @JsonProperty("type") val type: String? = null,
         @JsonProperty("title") val title: String? = null,
         @JsonProperty("year") val year: String? = null,
         @JsonProperty("poster") val poster: String? = null,
         @JsonProperty("backdrop") val backdrop: String? = null,
-        @JsonProperty("rating") val rating: Double? = null
-    )
-
-    data class NetMirrorSearchResponse(
-        @JsonProperty("ok") val ok: Boolean? = null,
-        @JsonProperty("items") val items: List<NetMirrorSearchItem>? = null
-    )
-
-    data class NetMirrorSearchItem(
-        @JsonProperty("tmdbId") val tmdbId: Int? = null,
-        @JsonProperty("type") val type: String? = null,
-        @JsonProperty("title") val title: String? = null,
-        @JsonProperty("year") val year: String? = null,
-        @JsonProperty("poster") val poster: String? = null,
-        @JsonProperty("overview") val overview: String? = null,
-        @JsonProperty("rating") val rating: Double? = null
-    )
-
-    data class CinemetaCatalogResponse(
-        @JsonProperty("metas") val metas: List<CinemetaMeta>? = null
+        @JsonProperty("rating") val rating: Double? = null,
+        @JsonProperty("overview") val overview: String? = null
     )
 
     data class CinemetaDetailsResponse(
@@ -515,7 +393,6 @@ class NetMirrorProvider : MainAPI() {
         @JsonProperty("background") val background: String? = null,
         @JsonProperty("description") val description: String? = null,
         @JsonProperty("year") val year: String? = null,
-        @JsonProperty("moviedb_id") val moviedbId: Int? = null,
         @JsonProperty("videos") val videos: List<CinemetaVideo>? = null
     )
 
@@ -531,13 +408,27 @@ class NetMirrorProvider : MainAPI() {
 
     data class NetMirrorEmbedResponse(
         @JsonProperty("ok") val ok: Boolean? = null,
+        @JsonProperty("tmdbId") val tmdbId: Int? = null,
         @JsonProperty("title") val title: String? = null,
-        @JsonProperty("streams") val streams: List<NetMirrorStream>? = null
+        @JsonProperty("year") val year: String? = null,
+        @JsonProperty("imdb") val imdb: String? = null,
+        @JsonProperty("type") val type: String? = null,
+        @JsonProperty("poster") val poster: String? = null,
+        @JsonProperty("streams") val streams: List<NetMirrorStream>? = null,
+        @JsonProperty("subtitles") val subtitles: List<NetMirrorSubtitle>? = null,
+        @JsonProperty("noSource") val noSource: Boolean? = null,
+        @JsonProperty("error") val error: String? = null
     )
 
     data class NetMirrorStream(
         @JsonProperty("url") val url: String? = null,
         @JsonProperty("resolution") val resolution: Int? = null,
         @JsonProperty("size") val size: Long? = null
+    )
+
+    data class NetMirrorSubtitle(
+        @JsonProperty("lang") val lang: String? = null,
+        @JsonProperty("name") val name: String? = null,
+        @JsonProperty("url") val url: String? = null
     )
 }

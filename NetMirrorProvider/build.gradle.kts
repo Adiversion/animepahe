@@ -1,8 +1,8 @@
-version = 2
+version = 3
 
 cloudstream {
     language = "hi"
-    description = "Curated Indian OTT Catalogs (Netflix, Prime Video, JioHotstar, Sony LIV, Zee5) with NetMirror Direct High-Speed CDN Playback."
+    description = "Native NetMirror Curated & Discover Catalogs with High-Speed Direct CDN Streams."
     authors = listOf("Adiversion")
 
     /**
