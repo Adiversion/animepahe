@@ -1,6 +1,7 @@
 package com.lagradost
 
 import android.util.Base64
+import android.util.Log
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.LoadResponse.Companion.addImdbId
@@ -9,6 +10,9 @@ import com.lagradost.cloudstream3.utils.*
 import org.json.JSONObject
 import org.jsoup.nodes.Element
 import java.net.URLEncoder
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class HDhub4uProvider : MainAPI() {
 
@@ -161,7 +165,6 @@ class HDhub4uProvider : MainAPI() {
 
         var tmdbBackdrop: String? = null
         var tmdbPlot: String? = null
-        var tmdbRating: Int? = null
 
         if (!imdbId.isNullOrBlank()) {
             try {
@@ -174,10 +177,6 @@ class HDhub4uProvider : MainAPI() {
                     tmdbBackdrop = "https://image.tmdb.org/t/p/original$backdropPath"
                 }
                 tmdbPlot = movie?.overview ?: tv?.overview
-                val vote = movie?.voteAverage ?: tv?.voteAverage
-                if (vote != null && vote > 0) {
-                    tmdbRating = (vote * 1000).toInt()
-                }
             } catch (_: Throwable) {
                 // Fallback gracefully to default poster
             }
@@ -224,20 +223,18 @@ class HDhub4uProvider : MainAPI() {
 
         return if (episodeMap.isNotEmpty()) {
             val episodes = episodeMap.map { (epNum, epLinks) ->
-                Episode(
-                    data = epLinks.joinToString("||"),
-                    name = "Episode $epNum",
-                    season = seasonNumber,
-                    episode = epNum,
-                    posterUrl = poster
-                )
+                newEpisode(epLinks.joinToString("||")) {
+                    this.name = "Episode $epNum"
+                    this.season = seasonNumber
+                    this.episode = epNum
+                    this.posterUrl = poster
+                }
             }
             newTvSeriesLoadResponse(cleanTitle, url, TvType.TvSeries, episodes) {
                 this.posterUrl = poster
                 this.backgroundPosterUrl = finalBackdrop
                 this.plot = finalPlot
                 this.year = year
-                this.rating = tmdbRating
                 if (imdbId != null) addImdbId(imdbId)
             }
         } else {
@@ -247,7 +244,6 @@ class HDhub4uProvider : MainAPI() {
                 this.backgroundPosterUrl = finalBackdrop
                 this.plot = finalPlot
                 this.year = year
-                this.rating = tmdbRating
                 if (imdbId != null) addImdbId(imdbId)
             }
         }
@@ -286,27 +282,31 @@ class HDhub4uProvider : MainAPI() {
             }
         }
 
-        // Parallel resolution of all stream sources using apmap
-        allCandidateUrls.distinct().apmap { streamUrl ->
-            safeApiCall {
-                when {
-                    streamUrl.contains("hdstream4u") || streamUrl.contains("hubstream") -> {
-                        extractHdstream4u(streamUrl, subtitleCallback, callback)
-                    }
-                    streamUrl.contains("hubcloud") -> {
-                        extractHubcloud(streamUrl, subtitleCallback, callback)
-                    }
-                    streamUrl.contains("pixeldrain.dev") || streamUrl.contains("pixeldrain.com") -> {
-                        extractPixeldrain(streamUrl, callback)
-                    }
-                    streamUrl.contains("fuckingfast.net") -> {
-                        extractBuzzServer(streamUrl, callback)
-                    }
-                    else -> {
-                        loadExtractor(streamUrl, subtitleCallback, callback)
+        // Parallel resolution of all stream sources using coroutines
+        coroutineScope {
+            allCandidateUrls.distinct().map { streamUrl ->
+                async {
+                    safeApiCall {
+                        when {
+                            streamUrl.contains("hdstream4u") || streamUrl.contains("hubstream") -> {
+                                extractHdstream4u(streamUrl, subtitleCallback, callback)
+                            }
+                            streamUrl.contains("hubcloud") -> {
+                                extractHubcloud(streamUrl, subtitleCallback, callback)
+                            }
+                            streamUrl.contains("pixeldrain.dev") || streamUrl.contains("pixeldrain.com") -> {
+                                extractPixeldrain(streamUrl, callback)
+                            }
+                            streamUrl.contains("fuckingfast.net") -> {
+                                extractBuzzServer(streamUrl, callback)
+                            }
+                            else -> {
+                                loadExtractor(streamUrl, subtitleCallback, callback)
+                            }
+                        }
                     }
                 }
-            }
+            }.awaitAll()
         }
 
         return true
@@ -346,7 +346,7 @@ class HDhub4uProvider : MainAPI() {
                 }
             }
         } catch (e: Throwable) {
-            logError(e)
+            Log.e("HDhub4u", "Unpack shortener error: ${e.message}")
         }
         return results
     }
@@ -385,7 +385,7 @@ class HDhub4uProvider : MainAPI() {
                 }
             }
         } catch (e: Throwable) {
-            logError(e)
+            Log.e("HDhub4u", "Scrape hblinks error: ${e.message}")
         }
         return links
     }
@@ -404,7 +404,7 @@ class HDhub4uProvider : MainAPI() {
         val masterUrl = Regex("""https?://[^\s"'<>]+\.m3u8[^\s"'<>]*""").find(unpacked)?.value
         if (!masterUrl.isNullOrBlank()) {
             M3u8Helper.generateM3u8(
-                name = "HDStream4u",
+                source = "HDStream4u",
                 streamUrl = masterUrl,
                 referer = url,
                 headers = mapOf("User-Agent" to USER_AGENT)
