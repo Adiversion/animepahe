@@ -171,7 +171,7 @@ class AnimePaheProvider : MainAPI() {
             }
         }
 
-        return HomePageResponse(
+        return newHomePageResponse(
             listOf(HomePageList(request.name, items, request.horizontalImages)),
             items.isNotEmpty()
         )
@@ -239,7 +239,7 @@ class AnimePaheProvider : MainAPI() {
                     for (i in 0 until perPage) {
                         if (currentEp <= total) {
                             episodes.add(
-                                Episode(
+                                newEpisode(
                                     LinkLoadData(
                                         mainUrl = mainUrl,
                                         isPlayPage = false,
@@ -248,7 +248,7 @@ class AnimePaheProvider : MainAPI() {
                                         session = session,
                                         episodeSession = ""
                                     ).toJson()
-                                ).apply {
+                                ) {
                                     this.episode = currentEp
                                     this.name = "Episode $currentEp"
                                 }
@@ -395,14 +395,15 @@ class AnimePaheProvider : MainAPI() {
 
             getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
                 callback(
-                    ExtractorLink(
+                    newExtractorLink(
                         source = "AnimePahe",
                         name = "AnimePahe - $qualityText",
                         url = streamUrl,
-                        referer = "https://kwik.cx/",
-                        quality = quality,
-                        isM3u8 = streamUrl.contains(".m3u8")
-                    )
+                        type = ExtractorLinkType.VIDEO
+                    ) {
+                        this.referer = "https://kwik.cx/"
+                        this.quality = quality
+                    }
                 )
             }
         }
@@ -414,14 +415,15 @@ class AnimePaheProvider : MainAPI() {
             if (!embed.isNullOrBlank()) {
                 getStreamUrlFromKwik(embed)?.let { link ->
                     callback(
-                        ExtractorLink(
+                        newExtractorLink(
                             source = "AnimePahe",
                             name = "Kwik",
                             url = link,
-                            referer = "https://kwik.cx/",
-                            quality = Qualities.Unknown.value,
-                            isM3u8 = link.contains(".m3u8")
-                        )
+                            type = ExtractorLinkType.VIDEO
+                        ) {
+                            this.referer = "https://kwik.cx/"
+                            this.quality = Qualities.Unknown.value
+                        }
                     )
                 }
             }
@@ -438,14 +440,15 @@ class AnimePaheProvider : MainAPI() {
             if (href.contains("kwik.cx")) {
                 getStreamUrlFromKwik(href)?.let { directUrl ->
                     callback(
-                        ExtractorLink(
+                        newExtractorLink(
                             source = "AnimePahe (Direct)",
                             name = "Download - $label",
                             url = directUrl,
-                            referer = href,
-                            quality = quality,
-                            isM3u8 = directUrl.contains(".m3u8")
-                        )
+                            type = ExtractorLinkType.VIDEO
+                        ) {
+                            this.referer = href
+                            this.quality = quality
+                        }
                     )
                 }
             }
