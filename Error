@@ -1,0 +1,373 @@
+--------- beginning of main
+10-18 15:48:39.907 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:39.907 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:40.553 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8231246, downTime=8231246, phoneEventTime=15:48:40.549 } moveCount:0
+--------- beginning of system
+10-18 15:48:40.554 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:40.613 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8231307, downTime=8231246, phoneEventTime=15:48:40.609 } moveCount:0
+10-18 15:48:40.631 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:40.632 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:40.657 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:40.658 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:40.665 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:40.784 27255 27255 D UserSceneDetector: invoke error.
+10-18 15:48:40.789 27255 27255 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 15:48:40.821 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:40.816 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5787): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:40.821 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:40.821 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:40.821 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:40.816 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5788): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:40.822 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:40.823 27255 10857 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:40.827 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:40.827 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#46
+10-18 15:48:40.832 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:48:41.276 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8231970, downTime=8231970, phoneEventTime=15:48:41.272 } moveCount:0
+10-18 15:48:41.276 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:41.349 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8232044, downTime=8231970, phoneEventTime=15:48:41.346 } moveCount:6
+10-18 15:48:41.822 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8232518, downTime=8232518, phoneEventTime=15:48:41.821 } moveCount:0
+10-18 15:48:41.823 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:42.217 27255 27255 I MiInputConsumer: optimized resample latency: 745959 ns
+10-18 15:48:42.235 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8232930, downTime=8232518, phoneEventTime=15:48:42.233 } moveCount:48
+10-18 15:48:42.591 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8233285, downTime=8233285, phoneEventTime=15:48:42.587 } moveCount:0
+10-18 15:48:42.591 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:42.646 27255  8682 W st.cloudstream3: Missing inline cache for void android.view.InputEventManagerImpl.logOnInputEvent(android.view.InputEvent, java.lang.String)
+10-18 15:48:42.657 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8233350, downTime=8233285, phoneEventTime=15:48:42.652 } moveCount:5
+10-18 15:48:43.672 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8234368, downTime=8234368, phoneEventTime=15:48:43.671 } moveCount:0
+10-18 15:48:43.673 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:43.737 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8234433, downTime=8234368, phoneEventTime=15:48:43.735 } moveCount:0
+10-18 15:48:43.743 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@4ca096c
+10-18 15:48:43.744 27255 27255 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 15:48:43.746 27255  8726 D HWUI    : endAllActiveAnimators on 0xb400007ce647cae0 (RippleDrawable) with handle 0xb400007b76361a50
+10-18 15:48:43.769 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:43.769 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:44.381 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8235075, downTime=8235075, phoneEventTime=15:48:44.377 } moveCount:0
+10-18 15:48:44.381 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:44.423 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8235119, downTime=8235075, phoneEventTime=15:48:44.421 } moveCount:0
+10-18 15:48:44.446 27255 27255 I ImeTracker: com.lagradost.cloudstream3:9e9abd22: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 15:48:44.469 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:44.474 27255  8746 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
+10-18 15:48:44.476 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:44.482 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:44.482 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:44.487 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:44.487 27255 27255 D AutofillManager: view not autofillable - not passing ime action check
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.543 27255  8770 W System  : A resource failed to call response.body().close(). 
+10-18 15:48:44.593 27255  8750 W AnimePahe: Direct request blocked (code=403). Launching Turnstile solver...
+10-18 15:48:44.594 27255 27255 E CoilImgLoader: Image load error: HTTP 403
+10-18 15:48:44.594 27255 27255 E CoilImgLoader:   URL: https://i.animepahe.pw/uploads/posters/e8c/e8c7c0f42bdcc654bb6187e6ff6c94a3be7654c62aff9024db864efa0e3e49eb.webp
+10-18 15:48:44.594 27255 27255 E CoilImgLoader:   allowHardware: true
+10-18 15:48:44.594 27255 27255 E CoilImgLoader:   hardware: qcom, board: marblein
+10-18 15:48:44.601 27255 27255 I COMPACT : showToast = Opening AnimePahe Verification...
+10-18 15:48:44.603 27255 27255 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-18 15:48:44.639 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:44.646 27255 27255 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 15:48:44.651 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:44.648 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5789): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:44.651 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:44.651 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:44.651 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:44.651 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:48:44.648 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5790): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:44.653 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:44.654 27255 10911 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:44.655 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:44.655 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#48
+10-18 15:48:44.657 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:48:44.660 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:44.674 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:44.674 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:44.668 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5791): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:44.674 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:44.668 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5792): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:44.674 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:44.675 27255 27255 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:44.675 27255 10912 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:44.675 27255 27255 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#50
+10-18 15:48:44.676 27255 27255 D VRI[Toast]: vri.reportDrawFinished
+10-18 15:48:44.694 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:44.694 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:44.734 27255 27255 D AnimePahe: Clearance verified! Title='animepahe :: okay-ish anime website', saving cookies and dismissing dialog.
+10-18 15:48:44.734 27255  8750 D AnimePahe: Retrying request to https://animepahe.pw/api?m=airing&page=1 with solved cookies...
+10-18 15:48:44.742 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:44.766 27255  8750 E AnimePahe: Retry failed: code=403
+10-18 15:48:44.766 27255  8750 D ApiError: -------------------------------------------------------------------
+10-18 15:48:44.766 27255  8750 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 15:48:44.766 27255  8750 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 15:48:44.766 27255  8750 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 15:48:44.766 27255  8750 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:416)
+10-18 15:48:44.766 27255  8750 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:35)
+10-18 15:48:44.766 27255  8750 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+10-18 15:48:44.766 27255  8750 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+10-18 15:48:44.766 27255  8750 D ApiError: -------------------------------------------------------------------
+10-18 15:48:45.336 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@8158349
+10-18 15:48:45.337 27255 27255 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 15:48:45.371 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:45.371 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:46.434 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8237128, downTime=8237128, phoneEventTime=15:48:46.430 } moveCount:0
+10-18 15:48:46.434 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:46.536 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8237231, downTime=8237128, phoneEventTime=15:48:46.533 } moveCount:10
+10-18 15:48:46.615 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@2455281
+10-18 15:48:47.343 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8238037, downTime=8238037, phoneEventTime=15:48:47.339 } moveCount:0
+10-18 15:48:47.343 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:47.437 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8238131, downTime=8238037, phoneEventTime=15:48:47.434 } moveCount:0
+10-18 15:48:47.448 27255 27255 I AbsListViewStubImpl: com.lagradost.cloudstream3, version: 4.8.0, Enable Prefetch: false
+10-18 15:48:47.450 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:47.480 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:47.493 27255 27255 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-18 15:48:47.493 27255 27255 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-18 15:48:47.493 27255 27255 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 15:48:47.505 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:47.506 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:47.500 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5793): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:47.506 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:47.506 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:47.506 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:48:47.500 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5794): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:47.507 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:47.507 27255 10969 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:47.510 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:47.516 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:47.516 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#52
+10-18 15:48:47.522 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:48:47.563 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:47.563 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:48.242 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8238934, downTime=8238934, phoneEventTime=15:48:48.237 } moveCount:0
+10-18 15:48:48.242 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:48.360 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8239049, downTime=8238934, phoneEventTime=15:48:48.352 } moveCount:0
+10-18 15:48:48.365 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@2d500b8
+10-18 15:48:48.365 27255  8746 D AnimePahe: fetchWithCloudflare: GET https://animepahe.pw/api?m=airing&page=1
+10-18 15:48:48.367 27255 27255 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 15:48:48.369 27255  8726 D HWUI    : endAllActiveAnimators on 0xb400007ce640a030 (MaterialTextView) with handle 0xb400007b763e2870
+10-18 15:48:48.383 27255 27255 W InputEventReceiver: Attempted to finish an input event but the input event receiver has already been disposed.
+10-18 15:48:48.404 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:48.404 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:48.427 27255  8752 W AnimePahe: Direct request blocked (code=403). Launching Turnstile solver...
+10-18 15:48:48.434 27255 27255 I COMPACT : showToast = Opening AnimePahe Verification...
+10-18 15:48:48.437 27255 27255 E Toast   : setGravity() shouldn't be called on text toasts, the values won't be used
+10-18 15:48:48.461 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:48.471 27255 27255 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 15:48:48.478 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:48.472 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5795): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:48.478 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:48.478 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:48.478 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:48.478 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:48:48.472 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5796): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:48.479 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:48.479 27255 10978 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:48.480 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:48.480 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#54
+10-18 15:48:48.482 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:48:48.490 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:48.506 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:48.500 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5797): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:48.506 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:48.506 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:48.506 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:48.506 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:48:48.504 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5798): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:48.507 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:48.507 27255 10981 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:48.507 27255 27255 D VRI[Toast]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:48.508 27255 27255 D VRI[Toast]: vri.Setup new sync=wmsSync-VRI[Toast]#56
+10-18 15:48:48.510 27255 27255 D VRI[Toast]: vri.reportDrawFinished
+10-18 15:48:48.516 27255 27255 D AnimePahe: Clearance verified! Title='animepahe :: okay-ish anime website', saving cookies and dismissing dialog.
+10-18 15:48:48.516 27255  8752 D AnimePahe: Retrying request to https://animepahe.pw/api?m=airing&page=1 with solved cookies...
+10-18 15:48:48.522 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:48.522 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:48.527 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:48.553 27255  8752 E AnimePahe: Retry failed: code=403
+10-18 15:48:48.553 27255  8752 D ApiError: -------------------------------------------------------------------
+10-18 15:48:48.553 27255  8752 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 15:48:48.553 27255  8752 D ApiError: safeApiCall: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 15:48:48.553 27255  8752 W System.err: com.lagradost.cloudstream3.ErrorLoadingException: Cloudflare challenge encountered. Please complete the verification checkmark.
+10-18 15:48:48.554 27255  8752 W System.err: 	at com.lagradost.AnimePaheProvider.fetchWithCloudflare(AnimePaheProvider.kt:416)
+10-18 15:48:48.554 27255  8752 W System.err: 	at com.lagradost.AnimePaheProvider.access$fetchWithCloudflare(AnimePaheProvider.kt:35)
+10-18 15:48:48.554 27255  8752 W System.err: 	at com.lagradost.AnimePaheProvider$fetchWithCloudflare$1.invokeSuspend(AnimePaheProvider.kt:15)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+10-18 15:48:48.554 27255  8752 W System.err: 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+10-18 15:48:48.554 27255  8752 D ApiError: -------------------------------------------------------------------
+10-18 15:48:49.118 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@2c12a43
+10-18 15:48:49.120 27255 27255 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 15:48:49.156 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:49.157 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:49.707 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8240400, downTime=8240400, phoneEventTime=15:48:49.703 } moveCount:0
+10-18 15:48:49.708 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:49.740 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8240435, downTime=8240400, phoneEventTime=15:48:49.738 } moveCount:0
+10-18 15:48:49.756 27255 27255 I ImeTracker: com.lagradost.cloudstream3:98382d46: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 15:48:49.778 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:49.931 27255 27255 D AutofillManager: view not autofillable - not passing ime action check
+10-18 15:48:49.932 27255 27255 D AutofillManager: view not autofillable - not passing ime action check
+10-18 15:48:50.445 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@711bfd8
+10-18 15:48:50.597 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8241292, downTime=8241292, phoneEventTime=15:48:50.595 } moveCount:0
+10-18 15:48:50.597 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:50.673 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8241370, downTime=8241292, phoneEventTime=15:48:50.673 } moveCount:7
+10-18 15:48:51.217 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8241910, downTime=8241910, phoneEventTime=15:48:51.212 } moveCount:0
+10-18 15:48:51.217 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:51.326 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8242022, downTime=8241910, phoneEventTime=15:48:51.325 } moveCount:0
+10-18 15:48:51.336 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:51.336 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:51.348 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:51.349 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:51.353 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:51.456 27255 27255 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 15:48:51.476 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:51.472 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5799): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:51.477 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:51.477 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:51.477 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:48:51.472 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5800): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:51.477 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:51.479 27255 11018 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:51.487 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:51.487 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#58
+10-18 15:48:51.491 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:48:52.112 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8242807, downTime=8242807, phoneEventTime=15:48:52.110 } moveCount:0
+10-18 15:48:52.113 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:53.169 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8243864, downTime=8242807, phoneEventTime=15:48:53.167 } moveCount:20
+10-18 15:48:53.254 27255 27255 D SafeFile: -------------------------------------------------------------------
+10-18 15:48:53.255 27255 27255 D SafeFile: safeApiCall: ContentResolver Query not found
+10-18 15:48:53.255 27255 27255 D SafeFile: safeApiCall: ContentResolver Query not found
+10-18 15:48:53.255 27255 27255 W System.err: java.io.IOException: ContentResolver Query not found
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile.query(MediaFile.kt:280)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile.access$query(MediaFile.kt:89)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile$createFileOrThrow$3.invoke(MediaFile.kt:229)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile$createFileOrThrow$3.invoke(MediaFile.kt:229)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.safefile.UniFileWrapperKt.safe(UniFileWrapper.kt:19)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile.createFileOrThrow(MediaFile.kt:229)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.cloudstream3.utils.downloader.VideoDownloadManager.setupStream(DownloadManager.kt:524)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.cloudstream3.utils.downloader.VideoDownloadManager.setupStream(DownloadManager.kt:489)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.cloudstream3.ui.settings.SettingsUpdates.onCreatePreferences$lambda$5$4(SettingsUpdates.kt:184)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.cloudstream3.ui.settings.SettingsUpdates.$r8$lambda$YcZIVQAk_XGo-nl26sFIAN2hdqY(SettingsUpdates.kt:0)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.lagradost.cloudstream3.ui.settings.SettingsUpdates$$ExternalSyntheticLambda7.onClick(D8$$SyntheticClass:0)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.view.View.performClick(View.java:8234)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.google.android.material.button.MaterialButton.performClick(MaterialButton.java:1786)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.view.View.performClickInternal(View.java:8211)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.view.View.-$$Nest$mperformClickInternal(View.java:0)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.view.View$PerformClick.run(View.java:32873)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.os.Handler.handleCallback(Handler.java:959)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.os.Looper.loopOnce(Looper.java:249)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.os.Looper.loop(Looper.java:337)
+10-18 15:48:53.256 27255 27255 W System.err: 	at android.app.ActivityThread.main(ActivityThread.java:9682)
+10-18 15:48:53.256 27255 27255 W System.err: 	at java.lang.reflect.Method.invoke(Native Method)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:625)
+10-18 15:48:53.256 27255 27255 W System.err: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:944)
+10-18 15:48:53.256 27255 27255 D SafeFile: -------------------------------------------------------------------
+10-18 15:48:53.282 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@5dc1b0
+10-18 15:48:53.284 27255 27255 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 15:48:53.322 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:53.323 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:54.230 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8244923, downTime=8244923, phoneEventTime=15:48:54.226 } moveCount:0
+10-18 15:48:54.231 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:54.353 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8245047, downTime=8244923, phoneEventTime=15:48:54.349 } moveCount:0
+10-18 15:48:54.359 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:54.360 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:54.375 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:54.377 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:48:54.383 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:54.489 27255 27255 D UserSceneDetector: invoke error.
+10-18 15:48:54.490 27255 27255 D DecorViewImmersiveImpl: onAttachedToWindow:com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity
+10-18 15:48:54.515 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:48:54.512 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5801): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:54.516 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:48:54.516 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:48:54.516 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:48:54.516 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:48:54.512 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5802): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:48:54.516 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:48:54.517 27255 11058 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:48:54.521 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:48:54.521 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#60
+10-18 15:48:54.526 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:48:54.957 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8245651, downTime=8245651, phoneEventTime=15:48:54.954 } moveCount:0
+10-18 15:48:54.958 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:48:55.122 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8245818, downTime=8245651, phoneEventTime=15:48:55.121 } moveCount:0
+10-18 15:48:55.182 27255 27255 D SafeFile: -------------------------------------------------------------------
+10-18 15:48:55.182 27255 27255 D SafeFile: safeApiCall: ContentResolver Query not found
+10-18 15:48:55.182 27255 27255 D SafeFile: safeApiCall: ContentResolver Query not found
+10-18 15:48:55.182 27255 27255 W System.err: java.io.IOException: ContentResolver Query not found
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile.query(MediaFile.kt:280)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile.access$query(MediaFile.kt:89)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile$createFileOrThrow$3.invoke(MediaFile.kt:229)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile$createFileOrThrow$3.invoke(MediaFile.kt:229)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.safefile.UniFileWrapperKt.safe(UniFileWrapper.kt:19)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.safefile.MediaFile.createFileOrThrow(MediaFile.kt:229)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.cloudstream3.utils.downloader.VideoDownloadManager.setupStream(DownloadManager.kt:524)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.cloudstream3.utils.downloader.VideoDownloadManager.setupStream(DownloadManager.kt:489)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.cloudstream3.ui.settings.SettingsUpdates.onCreatePreferences$lambda$5$4(SettingsUpdates.kt:184)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.cloudstream3.ui.settings.SettingsUpdates.$r8$lambda$YcZIVQAk_XGo-nl26sFIAN2hdqY(SettingsUpdates.kt:0)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.lagradost.cloudstream3.ui.settings.SettingsUpdates$$ExternalSyntheticLambda7.onClick(D8$$SyntheticClass:0)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.view.View.performClick(View.java:8234)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.google.android.material.button.MaterialButton.performClick(MaterialButton.java:1786)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.view.View.performClickInternal(View.java:8211)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.view.View.-$$Nest$mperformClickInternal(View.java:0)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.view.View$PerformClick.run(View.java:32873)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.os.Handler.handleCallback(Handler.java:959)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.os.Handler.dispatchMessage(Handler.java:100)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.os.Looper.loopOnce(Looper.java:249)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.os.Looper.loop(Looper.java:337)
+10-18 15:48:55.182 27255 27255 W System.err: 	at android.app.ActivityThread.main(ActivityThread.java:9682)
+10-18 15:48:55.182 27255 27255 W System.err: 	at java.lang.reflect.Method.invoke(Native Method)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:625)
+10-18 15:48:55.182 27255 27255 W System.err: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:944)
+10-18 15:48:55.182 27255 27255 D SafeFile: -------------------------------------------------------------------
+10-18 15:48:55.215 27255 27255 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda12@c427ce7
+10-18 15:48:55.215 27255 27255 D DecorViewImmersiveImpl: onDetachedFromWindow
+10-18 15:48:55.216 27255  8726 D HWUI    : endAllActiveAnimators on 0xb400007ce6503100 (RippleDrawable) with handle 0xb400007b763a9ea0
+10-18 15:48:55.245 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:48:55.245 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:48:56.604 27255 27255 D VRI[MainActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-18 15:48:56.629 27255 27255 I AppVisibilityProxy: onAppEnteredBackground
+10-18 15:49:08.544 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
+10-18 15:49:08.545 27255  8868 D AppScoutStateMachine: 27255-ScoutStateMachinecreated
+10-18 15:49:08.574 27255 27255 I AppVisibilityProxy: onAppEnteredForeground
+10-18 15:49:08.574 27255 27255 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-18 15:49:08.574 27255 27255 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-18 15:49:08.575 27255 27255 D Activity: Activity = ActivityInfo{f8ddefd com.lagradost.cloudstream3.MainActivity}, Resume onConfigurationChanged = {0.9 405mcc863mnc [en] ldltr sw393dp w393dp h873dp 440dpi nrml long hdr widecg port uimode=12 night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mInSplitScreen=false letterBoxed=false foScaled=false isSpecificEmbedded=false} s.2 fontWeightAdjustment=0/d themeChanged=0 themeChangedFlags=0 display=0 extraData = Bundle[{}] screenType=0/0}
+10-18 15:49:08.576 27255 27255 D SecurityManager: checkAccessControl flag0
+10-18 15:49:08.582 27255 27255 W libc    : Access denied finding property "ro.vendor.display.support_round_corner_decoration_composite"
+10-18 15:49:08.576 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5857): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:49:08.582 27255 27255 W libc    : Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+10-18 15:49:08.582 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】checkUtil disable.
+10-18 15:49:08.582 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】package permission check disable.
+10-18 15:49:08.582 27255 27255 I st.cloudstream3: 【MiuiBoosterUtils】get Service disable.
+10-18 15:49:08.580 27255 27255 W st.cloudstream3: type=1400 audit(0.0:5858): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=462 scontext=u:r:untrusted_app:s0:c100,c257,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=com.lagradost.cloudstream3
+10-18 15:49:08.583 27255 27255 D VRI[MainActivity]: vri.reportNextDraw android.view.ViewRootImpl.performTraversals:5014 android.view.ViewRootImpl.doTraversal:3592 android.view.ViewRootImpl$TraversalRunnable.run:11667 android.view.Choreographer$CallbackRecord.run:1733 android.view.Choreographer$CallbackRecord.run:1742 
+10-18 15:49:08.583 27255 27255 D VRI[MainActivity]: vri.Setup new sync=wmsSync-VRI[MainActivity]#62
+10-18 15:49:08.584 27255 11537 I st.cloudstream3: 【MiuiBoosterUtils】improve disable.
+10-18 15:49:08.600 27255 27255 D VRI[MainActivity]: vri.reportDrawFinished
+10-18 15:49:08.625 27255 27255 I HandWritingStubImpl: refreshLastKeyboardType: 1
+10-18 15:49:08.625 27255 27255 I HandWritingStubImpl: getCurrentKeyboardType: 1
+10-18 15:49:09.169 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_DOWN, id[0]=0, pointerCount=1, eventTime=8259859, downTime=8259859, phoneEventTime=15:49:09.162 } moveCount:0
+10-18 15:49:09.169 27255 27255 D VRI[MainActivity]: getMiuiFreeformStackInfo mTmpFrames.miuiFreeFormStackInfo: null
+10-18 15:49:09.237 27255 27255 I MIUIInput: [MotionEvent] ViewRootImpl windowName 'com.lagradost.cloudstream3/com.lagradost.cloudstream3.MainActivity', { action=ACTION_UP, id[0]=0, pointerCount=1, eventTime=8259933, downTime=8259859, phoneEventTime=15:49:09.236 } moveCount:0
+10-18 15:49:09.246 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:49:09.246 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:49:09.267 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:49:09.269 27255 27255 D ScrollerOptimizationManager: registerConfigChangedListener
+10-18 15:49:09.277 27255 27255 I ForceDarkHelperStubImpl: setViewRootImplForceDark: false for com.lagradost.cloudstream3.MainActivity@f1610b3, reason: AppDarkModeEnable
