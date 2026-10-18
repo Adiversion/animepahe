@@ -1,8 +1,8 @@
-version = 2
+version = 3
 
 cloudstream {
     language = "hi"
-    description = "HDHub4u Bollywood, Hollywood, and Web Series provider with dynamic domain rotation, parallel stream resolution, and HD TMDB backdrops."
+    description = "HDHub4u & Indian OTT Hub: JioHotstar, Netflix, Prime Video, Sony LIV, Zee5 with NetMirror direct streams & HubCloud 10Gbps fallback."
     authors = listOf("Adiversion")
 
     /**
