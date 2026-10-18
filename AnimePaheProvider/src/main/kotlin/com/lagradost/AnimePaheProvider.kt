@@ -204,12 +204,20 @@ class AnimePaheProvider : MainAPI() {
 
         fun fixImageUrl(url: String?, base: String = MAIN_URL): String? {
             if (url.isNullOrBlank()) return null
-            return when {
+            val raw = when {
                 url.startsWith("//") -> "https:$url"
                 url.startsWith("/") -> "$base$url"
                 else -> url
             }
+            // Route AnimePahe snapshots through unblocked i.animepahe.com CDN
+            // to bypass Cloudflare 403 Forbidden blocks on Coil ImageLoader
+            return if (raw.contains("i.animepahe.")) {
+                raw.replace(Regex("""https?://i\.animepahe\.[a-z]+"""), "https://i.animepahe.com")
+            } else {
+                raw
+            }
         }
+
 
         fun syncCookiesToApp(appInstance: Requests, base: String = MAIN_URL) {
             val cookies = cfCookies ?: runCatching {
@@ -858,7 +866,7 @@ class AnimePaheProvider : MainAPI() {
     }
 
     // ── Episode List Generation ───────────────────────────────────────
-    private suspend fun generateListOfEpisodes(session: String): List<Episode> {
+    private suspend fun generateListOfEpisodes(session: String, fallbackPoster: String? = null): List<Episode> {
         return try {
             val uri = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=1"
             val responseText = fetchWithCloudflare(uri)
@@ -873,6 +881,9 @@ class AnimePaheProvider : MainAPI() {
                 val title = k.title
                 return if (!title.isNullOrBlank()) title else "Episode ${k.episode ?: 1}"
             }
+
+            // Index page 1 snapshots for instant lookup
+            val page1Snapshots = data.data.associate { (it.episode ?: 0) to fixImageUrl(it.snapshot) }
 
             if (lastPage == 1 && perPage >= total) {
                 data.data.forEach { ep ->
@@ -891,7 +902,7 @@ class AnimePaheProvider : MainAPI() {
                                 runCatching { addDate(dateStr.replace(" ", "T")) }
                             }
                             this.name = getTitle(ep)
-                            this.posterUrl = fixImageUrl(ep.snapshot)
+                            this.posterUrl = fixImageUrl(ep.snapshot) ?: fallbackPoster
                             this.episode = ep.episode
                         }
                     )
@@ -901,6 +912,8 @@ class AnimePaheProvider : MainAPI() {
                 for (page in 1..lastPage) {
                     for (i in 0 until perPage) {
                         if (currentEp <= total) {
+                            val epNum = currentEp
+                            val snap = page1Snapshots[epNum] ?: fallbackPoster
                             episodes.add(
                                 newEpisode(
                                     LinkLoadData(
@@ -914,6 +927,7 @@ class AnimePaheProvider : MainAPI() {
                                 ) {
                                     this.episode = currentEp
                                     this.name = "Episode $currentEp"
+                                    this.posterUrl = snap
                                 }
                             )
                             currentEp++
@@ -1070,14 +1084,16 @@ class AnimePaheProvider : MainAPI() {
                 }
             }
 
+            val initialPosterFallback = fixImageUrl(poster)
             val (episodes, artwork) = coroutineScope {
-                val epJob = async { generateListOfEpisodes(session) }
+                val epJob = async { generateListOfEpisodes(session, initialPosterFallback) }
                 val artJob = async { fetchArtwork(animeTitle, initialAnilistId, initialMalId) }
                 epJob.await() to artJob.await()
             }
 
-            val bestHeroBanner = artwork.fanartUrl ?: artwork.bannerUrl ?: artwork.highResPosterUrl ?: fixImageUrl(poster)
-            val bestPoster = artwork.highResPosterUrl ?: fixImageUrl(poster)
+            val bestHeroBanner = artwork.fanartUrl ?: artwork.bannerUrl ?: artwork.highResPosterUrl ?: initialPosterFallback
+            val bestPoster = artwork.highResPosterUrl ?: initialPosterFallback
+
 
             newAnimeLoadResponse(animeTitle, url, tvType) {
                 engName = animeTitle

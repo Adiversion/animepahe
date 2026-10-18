@@ -19,5 +19,6 @@ cloudstream {
         "Anime",
         "AsianDrama"
     )
-    iconUrl = "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png"
+    iconUrl = "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4u_icon.png"
 }
+
