@@ -27,85 +27,24 @@ Fetching JAR: cloudstream.jar
 > Task :AnimePaheProvider:generateDebugRFile
 
 > Task :AnimePaheProvider:compileDebugKotlin
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:40:27 Unresolved reference 'app'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:42:36 Unresolved reference 'bottomsheet'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:43:36 Unresolved reference 'bottomsheet'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:44:36 Unresolved reference 'bottomsheet'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:55:8 Unresolved reference 'kotlinx'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:56:8 Unresolved reference 'kotlinx'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:57:8 Unresolved reference 'kotlinx'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:58:8 Unresolved reference 'kotlinx'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:59:8 Unresolved reference 'kotlinx'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:60:8 Unresolved reference 'kotlinx'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:72:5 Unresolved reference 'BottomSheetDialogFragment'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:149:34 Unresolved reference 'isAdded'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:168:17 Unresolved reference 'dismissAllowingStateLoss'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:267:21 Unresolved reference 'isAdded'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:268:21 Unresolved reference 'dismissAllowingStateLoss'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:278:5 'onCreateDialog' overrides nothing.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:279:22 Unresolved reference 'BottomSheetDialogFragment'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:279:28 Unresolved reference 'onCreateDialog'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:279:66 Unresolved reference 'BottomSheetDialog'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:280:16 Unresolved reference 'window'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:280:24 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:280:30 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:281:13 Unresolved reference 'clearFlags'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:282:13 Unresolved reference 'setDimAmount'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:284:16 Unresolved reference 'behavior'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:284:25 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:284:31 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:285:13 Unresolved reference 'state'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:285:21 Unresolved reference 'BottomSheetBehavior'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:286:13 Unresolved reference 'skipCollapsed'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:287:13 Unresolved reference 'peekHeight'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:292:5 'onStart' overrides nothing.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:293:9 Unresolved reference 'BottomSheetDialogFragment'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:293:15 Unresolved reference 'onStart'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:294:10 Unresolved reference 'dialog'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:294:21 Unresolved reference 'BottomSheetDialog'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:294:41 Unresolved reference 'behavior'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:294:51 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:294:57 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:295:13 Unresolved reference 'state'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:295:21 Unresolved reference 'BottomSheetBehavior'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:296:13 Unresolved reference 'skipCollapsed'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:298:9 Unresolved reference 'dialog'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:298:91 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:298:97 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:299:19 Unresolved reference 'layoutParams'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:300:19 Unresolved reference 'setBackgroundColor'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:304:5 'onCreateView' overrides nothing.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:309:23 Unresolved reference 'requireContext'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:346:34 Unresolved reference 'dismissAllowingStateLoss'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:414:9 Unresolved reference 'dialog'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:414:36 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:414:39 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:414:48 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:415:23 Unresolved reference 'action'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:515:5 'onDismiss' overrides nothing.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:516:9 Unresolved reference 'BottomSheetDialogFragment'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:516:15 Unresolved reference 'onDismiss'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:529:5 'onDestroyView' overrides nothing.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:530:9 Unresolved reference 'BottomSheetDialogFragment'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:530:15 Unresolved reference 'onDestroyView'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:555:31 Unresolved reference 'Mutex'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:656:77 Unresolved reference 'withContext'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:656:89 Unresolved reference 'Dispatchers'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:657:75 Unresolved reference 'AppCompatActivity'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:658:46 Unresolved reference 'isFinishing'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:658:70 Unresolved reference 'isDestroyed'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:663:13 Unresolved reference 'suspendCancellableCoroutine'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:663:43 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:667:42 Unresolved reference 'isActive'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:677:30 Unresolved reference 'invokeOnCancellation'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:679:36 Unresolved reference 'isAdded'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:680:36 Unresolved reference 'dismissAllowingStateLoss'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:686:39 Unresolved reference 'supportFragmentManager'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:750:45 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:760:17 Unresolved reference 'delay'.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:761:56 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:770:26 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:774:43 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:39:8 Unresolved reference 'kotlinx'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:40:8 Unresolved reference 'kotlinx'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:41:8 Unresolved reference 'kotlinx'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:42:8 Unresolved reference 'kotlinx'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:43:8 Unresolved reference 'kotlinx'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:44:8 Unresolved reference 'kotlinx'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:69:31 Unresolved reference 'Mutex'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:264:124 Unresolved reference 'withContext'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:264:136 Unresolved reference 'Dispatchers'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:276:13 Unresolved reference 'suspendCancellableCoroutine'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:276:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:281:42 Unresolved reference 'isActive'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:493:34 Unresolved reference 'invokeOnCancellation'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:561:45 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:571:17 Unresolved reference 'delay'.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:572:56 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:581:26 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/animepahe/animepahe/src/AnimePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:585:43 Suspension functions can only be called within coroutine body.
 
 > Task :AnimePaheProvider:compileDebugKotlin FAILED
 
@@ -153,35 +92,6 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':AnimePa
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
-	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
-	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
-	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
-	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
-	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
-	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
-	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
-	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
-	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
-	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
-	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionException: A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
@@ -307,35 +217,6 @@ Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionExcept
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
-	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
-	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
-	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
-	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
-	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
-	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
-	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
-	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
-	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
-	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
-	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilation error. See log for more details
@@ -371,5 +252,5 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 	... 2 more
 
 
-BUILD FAILED in 58s
+BUILD FAILED in 1m 5s
 6 actionable tasks: 6 executed
