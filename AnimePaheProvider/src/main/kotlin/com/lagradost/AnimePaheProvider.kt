@@ -321,28 +321,72 @@ class AnimePaheProvider : MainAPI() {
         }
 
 
+        data class SolveResult(val success: Boolean, val content: String?)
+
+        fun unescapeJs(raw: String?): String? {
+            if (raw == null || raw == "null" || raw.isBlank()) return null
+            return if (raw.startsWith("\"") && raw.endsWith("\"")) {
+                try {
+                    org.json.JSONTokener(raw).nextValue().toString()
+                } catch (_: Throwable) {
+                    raw.substring(1, raw.length - 1)
+                        .replace("\\\"", "\"")
+                        .replace("\\\\", "\\")
+                        .replace("\\n", "\n")
+                        .replace("\\r", "\r")
+                        .replace("\\t", "\t")
+                }
+            } else {
+                raw
+            }
+        }
+
+        fun isBlockedText(text: String): Boolean {
+            val trimmed = text.trimStart().lowercase()
+            return trimmed.contains("<title>just a moment") ||
+                   trimmed.contains("<title>attention required") ||
+                   trimmed.contains("cf-browser-verification") ||
+                   trimmed.contains("challenge-running") ||
+                   trimmed.contains("verify you are human") ||
+                   trimmed.contains("challenges.cloudflare.com")
+        }
+
         @SuppressLint("SetJavaScriptEnabled")
-        fun solveCloudflare(appInstance: Requests, targetUrl: String = "$MAIN_URL/"): Boolean {
+        fun solveCloudflare(
+            appInstance: Requests,
+            targetUrl: String = "$MAIN_URL/",
+            allowDialog: Boolean = true
+        ): SolveResult {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                return false
+                return SolveResult(false, null)
             }
             val activity = CommonActivity.activity ?: getActivity()
             if (activity == null || activity.isFinishing || activity.isDestroyed) {
                 Log.e("AnimePahe", "No active Activity found for Cloudflare verification")
-                return false
+                return SolveResult(false, null)
             }
 
             if (!isDialogShowing.compareAndSet(false, true)) {
-                Log.d("AnimePahe", "Verification dialog already in progress")
-                return false
+                Log.d("AnimePahe", "Verification dialog already in progress, waiting...")
+                var waits = 0
+                while (isDialogShowing.get() && waits < 65) {
+                    try {
+                        Thread.sleep(1000L)
+                    } catch (_: InterruptedException) {
+                        break
+                    }
+                    waits++
+                }
+                return SolveResult(cfCookies != null, null)
             }
 
             val initialCookies = extractMergedCookies(targetUrl)
             val oldClearance = extractClearanceToken(initialCookies)
-            Log.d("AnimePahe", "solveCloudflare start: oldClearance present=${oldClearance != null}")
+            Log.d("AnimePahe", "solveCloudflare start: targetUrl=$targetUrl, allowDialog=$allowDialog, oldClearance present=${oldClearance != null}")
 
             val latch = CountDownLatch(1)
             var success = false
+            var capturedContent: String? = null
 
             activity.runOnUiThread {
                 try {
@@ -365,7 +409,6 @@ class AnimePaheProvider : MainAPI() {
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
-                        setPadding(0, 0, 0, 0)
                     }
 
                     // Top Header Bar
@@ -467,85 +510,76 @@ class AnimePaheProvider : MainAPI() {
                     val handler = Handler(Looper.getMainLooper())
                     var pollElapsedMs = 0L
 
-                    fun saveCookiesAndDismiss(cookies: String) {
+                    fun extractPageContentAndFinish(cookies: String) {
                         if (cookiesSaved) return
                         cookiesSaved = true
 
                         cookieManager.flush()
                         cfCookies = cookies
                         cfUserAgent = webView.settings.userAgentString
-
                         syncCookiesToApp(appInstance)
 
-                        statusText.text = "✅ Verification successful!"
-                        statusText.setTextColor(Color.parseColor("#4CAF50"))
-                        progressBar.visibility = View.GONE
+                        val extractScript = """
+                            (function() {
+                                var pre = document.querySelector('pre');
+                                if (pre && pre.innerText && pre.innerText.trim().length > 0) return pre.innerText;
+                                if (document.body && document.body.innerText && document.body.innerText.trim().length > 0) return document.body.innerText;
+                                return document.documentElement ? document.documentElement.outerHTML : '';
+                            })();
+                        """.trimIndent()
 
-                        success = true
-                        latch.countDown()
-
-                        handler.postDelayed({
-                            runCatching {
-                                if (dialog.isShowing) {
-                                    dialog.dismiss()
+                        webView.evaluateJavascript(extractScript) { rawVal ->
+                            val content = unescapeJs(rawVal)
+                            capturedContent = content
+                            success = true
+                            latch.countDown()
+                            handler.postDelayed({
+                                runCatching {
+                                    if (dialog.isShowing) dialog.dismiss()
                                 }
-                            }
-                        }, 500L)
-                    }
-
-                    fun checkClearanceAndDismissIfValid(url: String?) {
-                        if (cookiesSaved || !dialog.isShowing) return
-                        val currentCookies = extractMergedCookies(url ?: targetUrl)
-                        val currentClearance = extractClearanceToken(currentCookies)
-                        val currentTitle = webView.title ?: ""
-
-                        val hasValidClearance = !currentClearance.isNullOrBlank()
-                        val isNewClearance = oldClearance != null && !currentClearance.isNullOrBlank() && currentClearance != oldClearance
-
-                        if (hasValidClearance || isNewClearance) {
-                            Log.d("AnimePahe", "Verification confirmed with cf_clearance (clearance=$currentClearance, title='$currentTitle')! Dismissing dialog...")
-                            saveCookiesAndDismiss(currentCookies)
+                            }, 300L)
                         }
                     }
 
                     val cookiePollRunnable = object : Runnable {
                         override fun run() {
-                            if (cookiesSaved || !dialog.isShowing) return
+                            if (cookiesSaved) return
                             pollElapsedMs += 800L
                             val currentTitle = webView.title ?: ""
-
-                            Log.d("AnimePahe", "Poll [${pollElapsedMs}ms] title='$currentTitle'")
+                            val isChallenge = isChallengeTitle(currentTitle)
 
                             val currentCookies = extractMergedCookies(webView.url ?: targetUrl)
                             val currentClearance = extractClearanceToken(currentCookies)
                             val hasValidClearance = !currentClearance.isNullOrBlank()
                             val isNewClearance = oldClearance != null && !currentClearance.isNullOrBlank() && currentClearance != oldClearance
 
-                            if (hasValidClearance || isNewClearance) {
-                                Log.d("AnimePahe", "Verification confirmed with cf_clearance (clearance=$currentClearance, title='$currentTitle')! Dismissing dialog...")
-                                saveCookiesAndDismiss(currentCookies)
-                                return
-                            }
+                            webView.evaluateJavascript("(function() { return document.querySelector('iframe[src*=\"challenges.cloudflare.com\"]') !== null; })();") { hasIframeVal ->
+                                val hasIframe = hasIframeVal == "true"
 
-                            val isChallenge = isChallengeTitle(currentTitle)
-                            if (pollElapsedMs >= 3500L && !isChallenge && currentTitle.contains("animepahe", ignoreCase = true)) {
-                                webView.evaluateJavascript("(function() { return document.querySelector('iframe[src*=\"challenges.cloudflare.com\"]') !== null; })();") { hasIframe ->
-                                    val isTurnstileActive = hasIframe == "true"
-                                    if (!isTurnstileActive) {
-                                        Log.d("AnimePahe", "Site loaded cleanly without active Turnstile (title='$currentTitle')! Dismissing dialog...")
-                                        saveCookiesAndDismiss(currentCookies)
+                                if (isChallenge || hasIframe) {
+                                    if (allowDialog && !dialog.isShowing && !activity.isFinishing && !activity.isDestroyed) {
+                                        Log.d("AnimePahe", "Challenge active (title='$currentTitle', iframe=$hasIframe), displaying verification dialog...")
+                                        dialog.show()
+                                    } else if (!allowDialog) {
+                                        Log.w("AnimePahe", "Challenge active but allowDialog=false, aborting headless verification")
+                                        latch.countDown()
+                                        return@evaluateJavascript
                                     }
+                                } else if (hasValidClearance || isNewClearance || (pollElapsedMs >= 2400L && currentTitle.contains("animepahe", ignoreCase = true))) {
+                                    Log.d("AnimePahe", "Verification confirmed (title='$currentTitle', clearance=$currentClearance)! Extracting content...")
+                                    extractPageContentAndFinish(currentCookies)
+                                    return@evaluateJavascript
                                 }
-                            }
 
-                            if (pollElapsedMs >= 60_000L) {
-                                Log.w("AnimePahe", "Turnstile verification timed out after 60s")
-                                latch.countDown()
-                                runCatching { if (dialog.isShowing) dialog.dismiss() }
-                                return
-                            }
+                                if (pollElapsedMs >= 60_000L) {
+                                    Log.w("AnimePahe", "Turnstile verification timed out after 60s")
+                                    latch.countDown()
+                                    runCatching { if (dialog.isShowing) dialog.dismiss() }
+                                    return@evaluateJavascript
+                                }
 
-                            handler.postDelayed(this, 800L)
+                                handler.postDelayed(this@run, 800L)
+                            }
                         }
                     }
 
@@ -561,12 +595,11 @@ class AnimePaheProvider : MainAPI() {
                             super.onPageFinished(view, url)
                             progressBar.visibility = View.GONE
                             val currentCookies = extractMergedCookies(url ?: targetUrl)
-                            val currentClearance = extractClearanceToken(currentCookies)
-                            val hasValidClearance = !currentClearance.isNullOrBlank()
-                            val isNewClearance = oldClearance != null && !currentClearance.isNullOrBlank() && currentClearance != oldClearance
-                            if (hasValidClearance || isNewClearance) {
-                                Log.d("AnimePahe", "onPageFinished: cf_clearance verified! Dismissing dialog...")
-                                saveCookiesAndDismiss(currentCookies)
+                            val currentTitle = view?.title ?: ""
+                            val isChallenge = isChallengeTitle(currentTitle)
+
+                            if (!isChallenge && (extractClearanceToken(currentCookies) != null || currentTitle.contains("animepahe", ignoreCase = true))) {
+                                extractPageContentAndFinish(currentCookies)
                             }
                         }
                     }
@@ -579,28 +612,22 @@ class AnimePaheProvider : MainAPI() {
                         isDialogShowing.set(false)
                         if (!cookiesSaved) {
                             val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
-                            val finalClearance = extractClearanceToken(finalCookies)
                             val finalTitle = webView.title ?: ""
-                            val hasValidClearance = !finalClearance.isNullOrBlank()
-                            val isNewClearance = oldClearance != null && !finalClearance.isNullOrBlank() && finalClearance != oldClearance
                             val isSiteLoaded = !isChallengeTitle(finalTitle) && finalTitle.contains("animepahe", ignoreCase = true)
 
-                            if (hasValidClearance || isNewClearance || isSiteLoaded || finalCookies.isNotBlank()) {
-                                Log.d("AnimePahe", "Dismissed dialog, saving acquired cookies: $finalCookies (title='$finalTitle')")
-                                saveCookiesAndDismiss(finalCookies)
+                            if (extractClearanceToken(finalCookies) != null || isSiteLoaded || finalCookies.isNotBlank()) {
+                                extractPageContentAndFinish(finalCookies)
                             } else {
-                                Log.w("AnimePahe", "Dismissed without completing verification (title='$finalTitle')")
                                 latch.countDown()
                             }
                         }
                     }
 
                     webView.loadUrl(targetUrl)
-                    dialog.show()
-                    handler.postDelayed(cookiePollRunnable, 1500L)
+                    handler.postDelayed(cookiePollRunnable, 1200L)
 
                 } catch (e: Throwable) {
-                    Log.e("AnimePahe", "Failed to display verification dialog: ${e.message}")
+                    Log.e("AnimePahe", "Failed in solveCloudflare: ${e.message}")
                     isDialogShowing.set(false)
                     latch.countDown()
                 }
@@ -610,7 +637,7 @@ class AnimePaheProvider : MainAPI() {
                 latch.await(65, TimeUnit.SECONDS)
             } catch (_: InterruptedException) {}
 
-            return success
+            return SolveResult(success, capturedContent)
         }
 
         private fun getType(t: String): TvType {
@@ -639,48 +666,30 @@ class AnimePaheProvider : MainAPI() {
 
     private suspend fun fetchWithCloudflare(url: String, allowDialog: Boolean = true): String {
         Log.d("AnimePahe", "fetchWithCloudflare: GET $url (allowDialog=$allowDialog)")
-        // 1. Fast check with active cookies
+        // 1. Fast check with active cookies (OkHttp)
         val initial = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
         if (initial != null && !isBlocked(initial)) {
             return initial.text
         }
 
-        if (!allowDialog) {
+        if (!allowDialog && cfCookies == null) {
+            // Attempt headless WebView fetch in background without showing dialog
+            val headless = solveCloudflare(app, url, allowDialog = false)
+            val body = headless.content
+            if (headless.success && !body.isNullOrBlank() && !isBlockedText(body)) {
+                return body
+            }
             throw ErrorLoadingException("AnimePahe requires Cloudflare verification")
         }
 
-        Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Purging stale cookies and acquiring lock...")
-        cfCookies = null
-
-        // 2. Concurrency gate using AtomicBoolean:
-        if (isDialogShowing.get()) {
-            Log.d("AnimePahe", "Verification dialog already active, waiting for leader thread...")
-            var waits = 0
-            while (isDialogShowing.get() && waits < 65) {
-                try {
-                    Thread.sleep(1000L)
-                } catch (_: InterruptedException) {
-                    break
-                }
-                waits++
-            }
-        } else {
-            val now = System.currentTimeMillis()
-            if (now - lastCfDialogAtMs > 15_000L) {
-                lastCfDialogAtMs = now
-                CommonActivity.showToast("Opening AnimePahe Verification...")
-                val targetUrl = "$mainUrl/"
-                val solved = solveCloudflare(app, targetUrl)
-                Log.d("AnimePahe", "CF bypass dialog completed with result: $solved")
-            } else {
-                Log.d("AnimePahe", "Dialog recently completed, skipping duplicate invocation")
-                try {
-                    Thread.sleep(1000L)
-                } catch (_: InterruptedException) {}
-            }
+        Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Attempting WebView fetch (allowDialog=$allowDialog)...")
+        val res = solveCloudflare(app, url, allowDialog = allowDialog)
+        val body = res.content
+        if (res.success && !body.isNullOrBlank() && !isBlockedText(body)) {
+            return body
         }
 
-        // 3. Re-attempt request with newly saved cookies
+        // Retry OkHttp once in case cf_clearance was obtained
         val retry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
         if (retry != null && !isBlocked(retry)) {
             CommonActivity.showToast("Verification successful!")
@@ -797,10 +806,15 @@ class AnimePaheProvider : MainAPI() {
                 "$mainUrl/play/$session/$episodeSession"
             } else {
                 val url = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=$page"
-                val jsonResponse = app.get(
-                    url,
-                    headers = getHeaders(mainUrl)
-                ).parsedSafe<AnimePaheReleaseResponse>() ?: return null
+                val jsonResponse = runCatching {
+                    app.get(url, headers = getHeaders(mainUrl)).parsedSafe<AnimePaheReleaseResponse>()
+                }.getOrNull() ?: runCatching {
+                    val res = solveCloudflare(app, url, allowDialog = true)
+                    if (res.success && !res.content.isNullOrBlank()) {
+                        parseJson<AnimePaheReleaseResponse>(res.content)
+                    } else null
+                }.getOrNull() ?: return null
+
                 val epSession = jsonResponse.data.firstOrNull { it.episode == episodeNum }?.session
                     ?: return null
                 "$mainUrl/play/$session/$epSession"
@@ -873,7 +887,27 @@ class AnimePaheProvider : MainAPI() {
             )
         } catch (e: Throwable) {
             Log.w("AnimePahe", "Failed to load main page: ${e.message}")
-            newHomePageResponse(emptyList(), false)
+            if (page == 1) {
+                val verifyCard = newAnimeSearchResponse(
+                    "AnimePahe: Cloudflare Verification Required",
+                    "cf_verify_action",
+                    fix = false
+                ) {
+                    this.posterUrl = "https://animepahe.pw/android-chrome-192x192.png"
+                }
+                newHomePageResponse(
+                    listOf(
+                        HomePageList(
+                            name = "⚠️ Verification Required",
+                            list = listOf(verifyCard),
+                            isHorizontalImages = false
+                        )
+                    ),
+                    hasNext = false
+                )
+            } else {
+                newHomePageResponse(emptyList(), false)
+            }
         }
     }
 
@@ -1072,8 +1106,23 @@ class AnimePaheProvider : MainAPI() {
         )
     } ?: AnimeArtwork(anilistId = initialAnilistId, malId = initialMalId)
 
-    // ── Load Anime Details (Spotlight Banner & Metadata) ──────────────
     override suspend fun load(url: String): LoadResponse? {
+        if (url == "cf_verify_action") {
+            return newAnimeLoadResponse(
+                "AnimePahe Verification Required",
+                url,
+                TvType.Anime
+            ) {
+                this.posterUrl = "https://animepahe.pw/android-chrome-192x192.png"
+                this.plot = "AnimePahe requires Cloudflare verification. Tap the button below to open the verification checkmark and load the anime catalog."
+                val ep = newEpisode("cf_trigger_solve") {
+                    this.name = "👉 Tap Here to Solve Cloudflare Checkmark"
+                    this.episode = 1
+                }
+                addEpisodes(DubStatus.Subbed, listOf(ep))
+            }
+        }
+
         return try {
             val session = parseJson<LoadData>(url).session.takeIf { it.isNotBlank() } ?: return null
 
@@ -1173,6 +1222,17 @@ class AnimePaheProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
+        if (data == "cf_trigger_solve") {
+            CommonActivity.showToast("Opening AnimePahe verification...")
+            val solved = solveCloudflare(app, "$mainUrl/", allowDialog = true)
+            if (solved.success) {
+                CommonActivity.showToast("Verification successful! Pull down to refresh home page.")
+            } else {
+                CommonActivity.showToast("Verification not completed.")
+            }
+            return true
+        }
+
         val parsed = parseJson<LinkLoadData>(data)
         val episodeUrl = parsed.getUrl() ?: return false
 

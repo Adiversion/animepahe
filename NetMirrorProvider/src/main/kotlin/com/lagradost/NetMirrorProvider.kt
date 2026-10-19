@@ -211,6 +211,9 @@ class NetMirrorProvider : MainAPI() {
         val resolvedPoster = embedInfo?.poster
         val imdbId = embedInfo?.imdb ?: ""
         val isTv = ctype.equals("series", ignoreCase = true) || ctype.equals("tv", ignoreCase = true)
+        val statusNote = if (embedInfo?.noSource == true || !embedInfo?.error.isNullOrBlank()) {
+            "⚠️ " + (embedInfo?.error ?: "This title is not yet available on NetMirror CDN.") + "\n\n"
+        } else ""
 
         if (isTv) {
             val episodes = mutableListOf<Episode>()
@@ -254,6 +257,7 @@ class NetMirrorProvider : MainAPI() {
             return newTvSeriesLoadResponse(resolvedName, url, TvType.TvSeries, episodes) {
                 this.posterUrl = resolvedPoster
                 this.year = resolvedYear
+                this.plot = statusNote + (this.plot ?: "")
                 if (imdbId.isNotBlank()) addImdbId(imdbId)
             }
         }
@@ -262,6 +266,7 @@ class NetMirrorProvider : MainAPI() {
         return newMovieLoadResponse(resolvedName, url, TvType.Movie, movieData) {
             this.posterUrl = resolvedPoster
             this.year = resolvedYear
+            this.plot = statusNote + (this.plot ?: "")
             if (imdbId.isNotBlank()) addImdbId(imdbId)
         }
     }
@@ -296,6 +301,11 @@ class NetMirrorProvider : MainAPI() {
                     timeout = 6
                 ).parsedSafe<NetMirrorEmbedResponse>()
 
+                if (res?.noSource == true || !res?.error.isNullOrBlank()) {
+                    CommonActivity.showToast(res?.error ?: "Title is not yet available on NetMirror CDN")
+                    return false
+                }
+
                 if (res?.ok == true && !res.streams.isNullOrEmpty()) {
                     // 1. Add Direct MP4 CDN streams
                     res.streams.forEach { st ->
@@ -329,8 +339,8 @@ class NetMirrorProvider : MainAPI() {
                         )
                     }
 
-                    // 2. Add Subtitles
-                    res.subtitles?.forEach { sub ->
+                    // 2. Add Subtitles (support both captions and subtitles keys)
+                    (res.captions ?: res.subtitles)?.forEach { sub ->
                         val rawSubUrl = sub.url ?: return@forEach
                         val subUrl = if (rawSubUrl.startsWith("/")) "$gw$rawSubUrl" else rawSubUrl
                         val subName = sub.name ?: sub.lang ?: "Subtitle"
@@ -415,6 +425,7 @@ class NetMirrorProvider : MainAPI() {
         @JsonProperty("type") val type: String? = null,
         @JsonProperty("poster") val poster: String? = null,
         @JsonProperty("streams") val streams: List<NetMirrorStream>? = null,
+        @JsonProperty("captions") val captions: List<NetMirrorSubtitle>? = null,
         @JsonProperty("subtitles") val subtitles: List<NetMirrorSubtitle>? = null,
         @JsonProperty("noSource") val noSource: Boolean? = null,
         @JsonProperty("error") val error: String? = null
