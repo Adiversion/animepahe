@@ -578,7 +578,7 @@ class AnimePaheProvider : MainAPI() {
                                     return@evaluateJavascript
                                 }
 
-                                handler.postDelayed(this@run, 800L)
+                                handler.postDelayed(cookiePollRunnable, 800L)
                             }
                         }
                     }
