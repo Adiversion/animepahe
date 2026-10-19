@@ -541,45 +541,44 @@ class AnimePaheProvider : MainAPI() {
                         }
                     }
 
-                    val cookiePollRunnable = object : Runnable {
-                        override fun run() {
-                            if (cookiesSaved) return
-                            pollElapsedMs += 800L
-                            val currentTitle = webView.title ?: ""
-                            val isChallenge = isChallengeTitle(currentTitle)
+                    lateinit var cookiePollRunnable: Runnable
+                    cookiePollRunnable = Runnable {
+                        if (cookiesSaved) return@Runnable
+                        pollElapsedMs += 800L
+                        val currentTitle = webView.title ?: ""
+                        val isChallenge = isChallengeTitle(currentTitle)
 
-                            val currentCookies = extractMergedCookies(webView.url ?: targetUrl)
-                            val currentClearance = extractClearanceToken(currentCookies)
-                            val hasValidClearance = !currentClearance.isNullOrBlank()
-                            val isNewClearance = oldClearance != null && !currentClearance.isNullOrBlank() && currentClearance != oldClearance
+                        val currentCookies = extractMergedCookies(webView.url ?: targetUrl)
+                        val currentClearance = extractClearanceToken(currentCookies)
+                        val hasValidClearance = !currentClearance.isNullOrBlank()
+                        val isNewClearance = oldClearance != null && !currentClearance.isNullOrBlank() && currentClearance != oldClearance
 
-                            webView.evaluateJavascript("(function() { return document.querySelector('iframe[src*=\"challenges.cloudflare.com\"]') !== null; })();") { hasIframeVal ->
-                                val hasIframe = hasIframeVal == "true"
+                        webView.evaluateJavascript("(function() { return document.querySelector('iframe[src*=\"challenges.cloudflare.com\"]') !== null; })();") { hasIframeVal ->
+                            val hasIframe = hasIframeVal == "true"
 
-                                if (isChallenge || hasIframe) {
-                                    if (allowDialog && !dialog.isShowing && !activity.isFinishing && !activity.isDestroyed) {
-                                        Log.d("AnimePahe", "Challenge active (title='$currentTitle', iframe=$hasIframe), displaying verification dialog...")
-                                        dialog.show()
-                                    } else if (!allowDialog) {
-                                        Log.w("AnimePahe", "Challenge active but allowDialog=false, aborting headless verification")
-                                        latch.countDown()
-                                        return@evaluateJavascript
-                                    }
-                                } else if (hasValidClearance || isNewClearance || (pollElapsedMs >= 2400L && currentTitle.contains("animepahe", ignoreCase = true))) {
-                                    Log.d("AnimePahe", "Verification confirmed (title='$currentTitle', clearance=$currentClearance)! Extracting content...")
-                                    extractPageContentAndFinish(currentCookies)
-                                    return@evaluateJavascript
-                                }
-
-                                if (pollElapsedMs >= 60_000L) {
-                                    Log.w("AnimePahe", "Turnstile verification timed out after 60s")
+                            if (isChallenge || hasIframe) {
+                                if (allowDialog && !dialog.isShowing && !activity.isFinishing && !activity.isDestroyed) {
+                                    Log.d("AnimePahe", "Challenge active (title='$currentTitle', iframe=$hasIframe), displaying verification dialog...")
+                                    dialog.show()
+                                } else if (!allowDialog) {
+                                    Log.w("AnimePahe", "Challenge active but allowDialog=false, aborting headless verification")
                                     latch.countDown()
-                                    runCatching { if (dialog.isShowing) dialog.dismiss() }
                                     return@evaluateJavascript
                                 }
-
-                                handler.postDelayed(cookiePollRunnable, 800L)
+                            } else if (hasValidClearance || isNewClearance || (pollElapsedMs >= 2400L && currentTitle.contains("animepahe", ignoreCase = true))) {
+                                Log.d("AnimePahe", "Verification confirmed (title='$currentTitle', clearance=$currentClearance)! Extracting content...")
+                                extractPageContentAndFinish(currentCookies)
+                                return@evaluateJavascript
                             }
+
+                            if (pollElapsedMs >= 60_000L) {
+                                Log.w("AnimePahe", "Turnstile verification timed out after 60s")
+                                latch.countDown()
+                                runCatching { if (dialog.isShowing) dialog.dismiss() }
+                                return@evaluateJavascript
+                            }
+
+                            handler.postDelayed(cookiePollRunnable, 800L)
                         }
                     }
 
