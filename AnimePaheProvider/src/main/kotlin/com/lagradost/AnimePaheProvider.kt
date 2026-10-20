@@ -208,11 +208,12 @@ class AnimePaheProvider : MainAPI() {
                 url.startsWith("//") -> "https:$url"
                 url.startsWith("/") -> "$base$url"
                 else -> url
-            }
-            // Route AnimePahe snapshots through unblocked i.animepahe.com CDN
+            }.replace("\\/", "/")
+
+            // Route AnimePahe snapshots & uploads through unblocked i.animepahe.com CDN
             // to bypass Cloudflare 403 Forbidden blocks on Coil ImageLoader
-            return if (raw.contains("i.animepahe.")) {
-                raw.replace(Regex("""https?://i\.animepahe\.[a-z]+"""), "https://i.animepahe.com")
+            return if (raw.contains("animepahe.")) {
+                raw.replace(Regex("""https?://(?:i\.)?animepahe\.[a-z]+"""), "https://i.animepahe.com")
             } else {
                 raw
             }
@@ -829,8 +830,12 @@ class AnimePaheProvider : MainAPI() {
             ).text
             val map = mutableMapOf<Int, String>()
             titles.indices.forEach { idx ->
-                val banner = Regex(""""a$idx":\s*\{[^}]*?"bannerImage":\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)?.takeIf { it != "null" }
-                val poster = Regex(""""a$idx":\s*\{.*?"extraLarge":\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)?.takeIf { it != "null" }
+                val banner = Regex(""""a$idx":\s*\{[^}]*?"bannerImage":\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)
+                    ?.takeIf { it != "null" && it.isNotBlank() }
+                    ?.replace("\\/", "/")
+                val poster = Regex(""""a$idx":\s*\{.*?"extraLarge":\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)
+                    ?.takeIf { it != "null" && it.isNotBlank() }
+                    ?.replace("\\/", "/")
                 val best = banner ?: poster
                 if (!best.isNullOrBlank()) {
                     map[idx] = best
@@ -1086,6 +1091,8 @@ class AnimePaheProvider : MainAPI() {
             val animeTitle = doc.selectFirst("span.sr-only.unselectable")?.text()
                 ?: doc.selectFirst("h1")?.text() ?: ""
             val poster = doc.selectFirst(".anime-poster a")?.attr("href")
+                ?: doc.selectFirst(".anime-poster img")?.attr("src")
+                ?: doc.selectFirst(".anime-poster img")?.attr("data-src")
 
             val tvTypeStr = doc.selectFirst("""a[href*="/anime/type/"]""")?.text() ?: ""
             val tvType = getType(tvTypeStr)
@@ -1128,6 +1135,13 @@ class AnimePaheProvider : MainAPI() {
 
             val bestHeroBanner = artwork.fanartUrl ?: artwork.bannerUrl ?: artwork.highResPosterUrl ?: initialPosterFallback
             val bestPoster = artwork.highResPosterUrl ?: initialPosterFallback
+
+            // Guarantee every episode has a valid thumbnail fallback if snapshot is missing
+            episodes.forEach { ep ->
+                if (ep.posterUrl.isNullOrBlank()) {
+                    ep.posterUrl = bestPoster
+                }
+            }
 
 
             newAnimeLoadResponse(animeTitle, url, tvType) {
