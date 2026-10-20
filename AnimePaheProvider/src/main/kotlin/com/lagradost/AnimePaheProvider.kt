@@ -792,24 +792,23 @@ class AnimePaheProvider : MainAPI() {
         @JsonProperty("page") val page: Int,
         @JsonProperty("session") val session: String,
         @JsonProperty("episode_session") val episodeSession: String
-    ) {
-        suspend fun getUrl(): String? {
-            return if (isPlayPage) {
-                "$mainUrl/play/$session/$episodeSession"
-            } else {
-                val url = "$mainUrl/api?m=release&id=$session&sort=episode_asc&page=$page"
-                val jsonResponse = runCatching {
-                    app.get(url, headers = getHeaders(mainUrl)).parsedSafe<AnimePaheReleaseResponse>()
-                }.getOrNull() ?: runCatching {
-                    val raw = fetchWithCloudflare(url)
-                    parseJson<AnimePaheReleaseResponse>(raw)
-                }.getOrNull() ?: return null
+    )
 
-                val epSession = jsonResponse.data.firstOrNull { it.episode == episodeNum }?.session
-                    ?: return null
-                "$mainUrl/play/$session/$epSession"
-            }
+    private suspend fun resolveEpisodeUrl(data: LinkLoadData): String? {
+        if (data.isPlayPage) {
+            return "${data.mainUrl}/play/${data.session}/${data.episodeSession}"
         }
+        val url = "${data.mainUrl}/api?m=release&id=${data.session}&sort=episode_asc&page=${data.page}"
+        val jsonResponse = runCatching {
+            app.get(url, headers = getHeaders(data.mainUrl)).parsedSafe<AnimePaheReleaseResponse>()
+        }.getOrNull() ?: runCatching {
+            val raw = fetchWithCloudflare(url)
+            parseJson<AnimePaheReleaseResponse>(raw)
+        }.getOrNull() ?: return null
+
+        val epSession = jsonResponse.data.firstOrNull { it.episode == data.episodeNum }?.session
+            ?: return null
+        return "${data.mainUrl}/play/${data.session}/$epSession"
     }
 
     // ── Main Page (Airing Releases - Netflix Style Horizontal Lane) ──
@@ -1177,7 +1176,7 @@ class AnimePaheProvider : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         val parsed = parseJson<LinkLoadData>(data)
-        val episodeUrl = parsed.getUrl() ?: return false
+        val episodeUrl = resolveEpisodeUrl(parsed) ?: return false
 
         val html = fetchWithCloudflare(episodeUrl)
         val doc = Jsoup.parse(html)
