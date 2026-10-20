@@ -698,6 +698,15 @@ class AnimePaheProvider : MainAPI() {
 
     // ── Data Models ──────────────────────────────────────────────────
     @JsonIgnoreProperties(ignoreUnknown = true)
+    data class MetaEpisode(
+        @JsonProperty("episodeNumber") val episodeNumber: Int? = null,
+        @JsonProperty("title") val title: Map<String, String?>? = null,
+        @JsonProperty("image") val image: String? = null,
+        @JsonProperty("airDate") val airDate: String? = null,
+        @JsonProperty("overview") val overview: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class MetaImage(
         @JsonProperty("coverType") val coverType: String? = null,
         @JsonProperty("url") val url: String? = null
@@ -705,7 +714,8 @@ class AnimePaheProvider : MainAPI() {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class MetaAnimeData(
-        @JsonProperty("images") val images: List<MetaImage>? = null
+        @JsonProperty("images") val images: List<MetaImage>? = null,
+        @JsonProperty("episodes") val episodes: Map<String, MetaEpisode>? = null
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -989,7 +999,8 @@ class AnimePaheProvider : MainAPI() {
         val bannerUrl: String? = null,
         val highResPosterUrl: String? = null,
         val anilistId: Int? = null,
-        val malId: Int? = null
+        val malId: Int? = null,
+        val episodeMeta: Map<String, MetaEpisode>? = null
     )
 
     private suspend fun fetchArtwork(
@@ -1013,7 +1024,7 @@ class AnimePaheProvider : MainAPI() {
             val aniZipJob = if (aniZipUrl != null) {
                 async {
                     runCatching {
-                        app.get(aniZipUrl).parsedSafe<MetaAnimeData>()
+                        app.get(aniZipUrl, headers = mapOf("User-Agent" to USER_AGENT)).parsedSafe<MetaAnimeData>()
                     }.getOrNull()
                 }
             } else null
@@ -1069,15 +1080,16 @@ class AnimePaheProvider : MainAPI() {
                     highResPosterUrl = aniListMeta.coverImage?.extraLarge ?: aniListMeta.coverImage?.large
                 }
             }
-        }
 
-        AnimeArtwork(
-            fanartUrl = fanartUrl,
-            bannerUrl = bannerUrl,
-            highResPosterUrl = highResPosterUrl,
-            anilistId = anilistId,
-            malId = malId
-        )
+            AnimeArtwork(
+                fanartUrl = fanartUrl,
+                bannerUrl = bannerUrl,
+                highResPosterUrl = highResPosterUrl,
+                anilistId = anilistId,
+                malId = malId,
+                episodeMeta = aniZipMeta?.episodes
+            )
+        }
     } ?: AnimeArtwork(anilistId = initialAnilistId, malId = initialMalId)
 
     override suspend fun load(url: String): LoadResponse? {
@@ -1135,10 +1147,36 @@ class AnimePaheProvider : MainAPI() {
 
             val bestHeroBanner = artwork.fanartUrl ?: artwork.bannerUrl ?: artwork.highResPosterUrl ?: initialPosterFallback
             val bestPoster = artwork.highResPosterUrl ?: initialPosterFallback
+            val epMeta = artwork.episodeMeta
 
-            // Guarantee every episode has a valid thumbnail fallback if snapshot is missing
+            // Enrich episodes with high-res AniZip screencaps and real episode titles
             episodes.forEach { ep ->
-                if (ep.posterUrl.isNullOrBlank()) {
+                val epNum = ep.episode
+                val meta = epNum?.let { epMeta?.get(it.toString()) }
+
+                // 1. Localized Episode Title enrichment
+                val realTitle = meta?.title?.get("en") ?: meta?.title?.get("x-jat") ?: meta?.title?.get("ja")
+                if (!realTitle.isNullOrBlank() && (ep.name.isNullOrBlank() || ep.name?.startsWith("Episode ") == true)) {
+                    ep.name = realTitle
+                }
+
+                // 2. Air Date fallback
+                if (ep.date == null) {
+                    meta?.airDate?.let { dateStr ->
+                        runCatching { ep.addDate(dateStr.substringBefore(" ").substringBefore("T")) }
+                    }
+                }
+
+                // 3. Episode Overview / Synopsis fallback
+                if (ep.description.isNullOrBlank()) {
+                    ep.description = meta?.overview
+                }
+
+                // 4. Fast, unblocked AniZip screencap (TheTVDB/TMDB) thumbnail
+                val metaImage = meta?.image?.takeIf { it.isNotBlank() }
+                if (metaImage != null) {
+                    ep.posterUrl = metaImage
+                } else if (ep.posterUrl.isNullOrBlank() || ep.posterUrl == initialPosterFallback) {
                     ep.posterUrl = bestPoster
                 }
             }
