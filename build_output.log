@@ -30,18 +30,10 @@ Fetching JAR: cloudstream.jar
 > Task :HDhub4uProvider:generateDebugResValues
 > Task :HDhub4uProvider:generateDebugResources
 > Task :HDhub4uProvider:packageDebugResources
-> Task :NetMirrorProvider:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :NetMirrorProvider:preBuild UP-TO-DATE
-> Task :NetMirrorProvider:preDebugBuild UP-TO-DATE
-> Task :NetMirrorProvider:generateDebugResValues
-> Task :NetMirrorProvider:generateDebugResources
 > Task :AnimePaheProvider:parseDebugLocalResources
 > Task :HDhub4uProvider:parseDebugLocalResources
-> Task :NetMirrorProvider:packageDebugResources
-> Task :NetMirrorProvider:parseDebugLocalResources
-> Task :HDhub4uProvider:generateDebugRFile
 > Task :AnimePaheProvider:generateDebugRFile
-> Task :NetMirrorProvider:generateDebugRFile
+> Task :HDhub4uProvider:generateDebugRFile
 
 > Task :HDhub4uProvider:compileDebugKotlin
 w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:500:25 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
@@ -49,8 +41,6 @@ w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kot
 w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:538:33 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
 w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:560:13 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
 w: file:///home/runner/work/animepahe/animepahe/src/HDhub4uProvider/src/main/kotlin/com/lagradost/HDhub4uProvider.kt:577:17 'constructor(source: String, name: String, url: String, referer: String, quality: Int, headers: Map<String, String> = ..., extractorData: String? = ..., type: ExtractorLinkType, audioTracks: List<AudioFile> = ...): ExtractorLink' is deprecated. Use newExtractorLink.
-
-> Task :NetMirrorProvider:compileDebugKotlin
 
 > Task :AnimePaheProvider:compileDebugKotlin
 e: Daemon compilation failed: null
@@ -199,16 +189,7 @@ Compiled dex to /home/runner/work/animepahe/animepahe/src/HDhub4uProvider/build/
 > Task :HDhub4uProvider:make
 Made CloudStream package at /home/runner/work/animepahe/animepahe/src/HDhub4uProvider/build/HDhub4uProvider.cs3
 
-> Task :NetMirrorProvider:compileDex
-Compiled dex to /home/runner/work/animepahe/animepahe/src/NetMirrorProvider/build/intermediates/classes.dex
-
-> Task :NetMirrorProvider:generateManifest
-
-> Task :NetMirrorProvider:make
-Made CloudStream package at /home/runner/work/animepahe/animepahe/src/NetMirrorProvider/build/NetMirrorProvider.cs3
-
 > Task :HDhub4uProvider:writeCacheEntry
-> Task :NetMirrorProvider:writeCacheEntry
 
 > Task :AnimePaheProvider:compileDebugKotlin
 exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:484:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
@@ -1229,5 +1210,5 @@ Made CloudStream package at /home/runner/work/animepahe/animepahe/src/AnimePaheP
 > Task :makePluginsJson
 Created /home/runner/work/animepahe/animepahe/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 22s
-31 actionable tasks: 31 executed
+BUILD SUCCESSFUL in 1m 34s
+21 actionable tasks: 21 executed

@@ -1,91 +1,47 @@
 [
-  {
-    "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png",
-    "fileHash": "sha256-c70e6d28a090ddfed76158864898f3f9208cf0f8022ab603bd5193ec6fc4a9cf",
-    "apiVersion": 1,
-    "repositoryUrl": "https://github.com/Adiversion/animepahe",
-    "fileSize": 65654,
-    "status": 1,
-    "language": "en",
-    "authors": [
-      "Cloudstream Community"
-    ],
-    "tvTypes": [
-      "AnimeMovie",
-      "Anime",
-      "OVA"
-    ],
-    "version": 73,
-    "internalName": "AnimePaheProvider",
-    "description": "AnimePahe anime provider with interactive Cloudflare Turnstile verification and Kwik resolvers.",
-    "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/AnimePaheProvider.cs3",
-    "name": "AnimePaheProvider"
-  },
-  {
-    "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4u_icon.png",
-    "fileHash": "sha256-d58d4b1a6d33a2beb0ed0efbb8f5f4b03e3b9807d8ed27296ba87b58206aaa65",
-    "apiVersion": 1,
-    "repositoryUrl": "https://github.com/Adiversion/animepahe",
-    "fileSize": 30394,
-    "status": 1,
-    "language": "hi",
-    "authors": [
-      "Adiversion"
-    ],
-    "tvTypes": [
-      "Movie",
-      "TvSeries",
-      "Anime",
-      "AsianDrama"
-    ],
-    "version": 4,
-    "internalName": "HDhub4uProvider",
-    "description": "Official HDHub4u provider for Bollywood, Hollywood, South Hindi Dubbed, and Web Series with 10Gbps HubCloud & SunCDN resolvers.",
-    "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4uProvider.cs3",
-    "name": "HDhub4uProvider"
-  },
-  {
-    "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirror_icon.png",
-    "fileHash": "sha256-8908904b3bfe840c7e3182ee958907f2808c23002d948d9f205c141f03ad19e0",
-    "apiVersion": 1,
-    "repositoryUrl": "https://github.com/Adiversion/animepahe",
-    "fileSize": 31524,
-    "status": 1,
-    "language": "hi",
-    "authors": [
-      "Adiversion"
-    ],
-    "tvTypes": [
-      "Movie",
-      "TvSeries",
-      "Anime",
-      "AsianDrama"
-    ],
-    "version": 4,
-    "internalName": "NetMirrorProvider",
-    "description": "Native NetMirror Curated & Discover Catalogs with High-Speed Direct CDN Streams.",
-    "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/NetMirrorProvider.cs3",
-    "name": "NetMirrorProvider"
-  },
-  {
-    "iconUrl": "https://github.com/NivinCNC/CNCVerse-Cloud-Stream-Extension/raw/refs/heads/master/Logos/CNC%20Verse%20Mobile/logo.jpeg",
-    "fileHash": "sha256-356a0faa2ca6ada4dc112093dfab893c89ea3fa2f4c5ca777d1e77dc125c7a04",
-    "apiVersion": 1,
-    "repositoryUrl": "https://github.com/NivinCNC/CNCVerse-Cloud-Stream-Extension",
-    "fileSize": 97614,
-    "status": 1,
-    "language": "ta",
-    "authors": [
-      "NivinCNC"
-    ],
-    "tvTypes": [
-      "Movie",
-      "TvSeries"
-    ],
-    "version": 11,
-    "internalName": "CNC Verse Mobile",
-    "description": "NetMirror Mobile API",
-    "url": "https://raw.githubusercontent.com/NivinCNC/CNCVerse-Cloud-Stream-Extension/builds/CNC Verse Mobile.cs3",
-    "name": "CNC Verse Mobile"
-  }
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png",
+        "fileHash": "sha256-c70e6d28a090ddfed76158864898f3f9208cf0f8022ab603bd5193ec6fc4a9cf",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Adiversion/animepahe",
+        "fileSize": 65654,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "Cloudstream Community"
+        ],
+        "tvTypes": [
+            "AnimeMovie",
+            "Anime",
+            "OVA"
+        ],
+        "version": 73,
+        "internalName": "AnimePaheProvider",
+        "description": "AnimePahe anime provider with interactive Cloudflare Turnstile verification and Kwik resolvers.",
+        "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/AnimePaheProvider.cs3",
+        "name": "AnimePaheProvider"
+    },
+    {
+        "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4u_icon.png",
+        "fileHash": "sha256-d58d4b1a6d33a2beb0ed0efbb8f5f4b03e3b9807d8ed27296ba87b58206aaa65",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Adiversion/animepahe",
+        "fileSize": 30394,
+        "status": 1,
+        "language": "hi",
+        "authors": [
+            "Adiversion"
+        ],
+        "tvTypes": [
+            "Movie",
+            "TvSeries",
+            "Anime",
+            "AsianDrama"
+        ],
+        "version": 4,
+        "internalName": "HDhub4uProvider",
+        "description": "Official HDHub4u provider for Bollywood, Hollywood, South Hindi Dubbed, and Web Series with 10Gbps HubCloud & SunCDN resolvers.",
+        "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4uProvider.cs3",
+        "name": "HDhub4uProvider"
+    }
 ]
