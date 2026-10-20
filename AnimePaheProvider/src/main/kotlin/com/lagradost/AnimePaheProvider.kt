@@ -935,7 +935,7 @@ class AnimePaheProvider : MainAPI() {
                             ).toJson()
                         ) {
                             ep.createdAt?.let { dateStr ->
-                                runCatching { addDate(dateStr.replace(" ", "T")) }
+                                runCatching { addDate(dateStr.substringBefore(" ").substringBefore("T")) }
                             }
                             this.name = getTitle(ep)
                             this.posterUrl = fixImageUrl(ep.snapshot) ?: fallbackPoster
