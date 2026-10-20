@@ -1207,17 +1207,20 @@ class AnimePaheProvider : MainAPI() {
 
     // ── Kwik Stream Unpacker ──────────────────────────────────────────
     private suspend fun getStreamUrlFromKwik(kwikUrl: String): String? {
-        val response = app.get(
-            kwikUrl,
-            headers = mapOf(
-                "User-Agent" to (cfUserAgent ?: USER_AGENT),
-                "Referer" to "$mainUrl/"
-            )
-        ).text
+        val response = runCatching {
+            app.get(
+                kwikUrl,
+                headers = mapOf(
+                    "User-Agent" to (cfUserAgent ?: USER_AGENT),
+                    "Referer" to "$mainUrl/"
+                )
+            ).text
+        }.getOrNull() ?: return null
 
         val unpacked = getAndUnpack(response)
-        return Regex("""source='(.*?)'""").find(unpacked)?.groupValues?.get(1)
+        return Regex("""source\s*=\s*['"]([^'"]+)['"]""").find(unpacked)?.groupValues?.get(1)
             ?: Regex("""(?:https?://[^\s'"<>]+\.(?:mp4|m3u8)[^\s'"<>]*)""").find(unpacked)?.value
+            ?: Regex("""url\s*:\s*['"]([^'"]+\.(?:mp4|m3u8)[^'"]*)['"]""").find(unpacked)?.groupValues?.get(1)
     }
 
     // ── Load Links ────────────────────────────────────────────────────
@@ -1241,14 +1244,25 @@ class AnimePaheProvider : MainAPI() {
             val buttonJobs = buttons.map { btn ->
                 async {
                     val kwikSrc = btn.attr("data-src").takeIf { it.isNotBlank() } ?: return@async
-                    val qualityText = btn.text()
-                    val quality = Regex("""(\d+)p""").find(qualityText)?.groupValues?.get(1)?.toIntOrNull()
+                    val rawText = btn.text().trim()
+                    val audio = btn.attr("data-audio").trim().lowercase()
+                    val isAv1 = btn.attr("data-av1") == "1"
+                    val quality = Regex("""(\d+)p""").find(rawText)?.groupValues?.get(1)?.toIntOrNull()
                         ?: Qualities.Unknown.value
+
+                    val audioBadge = when {
+                        audio == "eng" || rawText.contains("dub", ignoreCase = true) -> " [ENG DUB]"
+                        audio == "jpn" || rawText.contains("sub", ignoreCase = true) -> " [SUB]"
+                        audio.isNotBlank() -> " [${audio.uppercase()}]"
+                        else -> ""
+                    }
+                    val av1Badge = if (isAv1) " (AV1)" else ""
+                    val formattedName = "AnimePahe - $rawText$audioBadge$av1Badge"
 
                     getStreamUrlFromKwik(kwikSrc)?.let { streamUrl ->
                         val link = newExtractorLink(
                             source = "AnimePahe",
-                            name = "AnimePahe - $qualityText",
+                            name = formattedName,
                             url = streamUrl,
                             type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                         ) {
@@ -1266,12 +1280,13 @@ class AnimePaheProvider : MainAPI() {
             val fallbackJob = if (buttons.isEmpty()) {
                 async {
                     val urlRegex = Regex("""let url = "(.*?)";""")
-                    val embed = urlRegex.find(html)?.groupValues?.getOrNull(1)
+                    val iframeSrc = doc.selectFirst("iframe[src*='kwik']")?.attr("src")
+                    val embed = urlRegex.find(html)?.groupValues?.getOrNull(1) ?: iframeSrc
                     if (!embed.isNullOrBlank()) {
                         getStreamUrlFromKwik(embed)?.let { linkUrl ->
                             val link = newExtractorLink(
                                 source = "AnimePahe",
-                                name = "Kwik",
+                                name = "AnimePahe - Default",
                                 url = linkUrl,
                                 type = if (linkUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                             ) {
