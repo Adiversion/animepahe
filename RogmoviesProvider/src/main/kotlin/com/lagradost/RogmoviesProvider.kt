@@ -1,17 +1,21 @@
 package com.lagradost
 
 import android.util.Log
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
+import com.lagradost.cloudstream3.LoadResponse.Companion.addImdbId
 import com.lagradost.cloudstream3.utils.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import java.net.URLEncoder
 
 class RogmoviesProvider : MainAPI() {
     companion object {
         const val MAIN_URL = "https://moviesnation.rent"
+        const val TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49"
         const val USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     }
@@ -105,7 +109,7 @@ class RogmoviesProvider : MainAPI() {
         )
     }
 
-    override suspend fun search(query: String): List<SearchResponse> {
+    private suspend fun queryDleSearch(query: String): List<SearchResponse> {
         val response = runCatching {
             app.post(
                 "$mainUrl/",
@@ -129,6 +133,21 @@ class RogmoviesProvider : MainAPI() {
         return cards.mapNotNull { parseCard(it) }.distinctBy { it.url }
     }
 
+    override suspend fun search(query: String): List<SearchResponse> {
+        val cleanQuery = query.trim()
+        val directResults = queryDleSearch(cleanQuery)
+        if (directResults.isNotEmpty()) return directResults
+
+        // Fallback: If 0 results, strip season/episode qualifiers to find the base series page
+        val simplifiedQuery = cleanQuery.replace(Regex("""(?i)\b(?:season|series|episode|s\d+|e\d+)\b.*"""), "").trim()
+        if (simplifiedQuery.isNotBlank() && simplifiedQuery != cleanQuery) {
+            val fallbackResults = queryDleSearch(simplifiedQuery)
+            if (fallbackResults.isNotEmpty()) return fallbackResults
+        }
+
+        return emptyList()
+    }
+
     override suspend fun load(url: String): LoadResponse? {
         val response = runCatching {
             app.get(url, headers = mapOf("User-Agent" to USER_AGENT)).text
@@ -136,7 +155,7 @@ class RogmoviesProvider : MainAPI() {
 
         val doc = Jsoup.parse(response)
         val rawTitle = doc.selectFirst("h1, .entry-title, title")?.text()?.replace("Download", "", ignoreCase = true)?.trim() ?: return null
-        val cleanTitle = rawTitle.replace(Regex("""(?:480p|720p|1080p|2160p|4k|WEB-DL|HEVC|Hindi|DD5\.1).*$""", RegexOption.IGNORE_CASE), "").trim()
+        val cleanTitle = rawTitle.replace(Regex("""(?i)\b(?:480p|720p|1080p|2160p|4k|WEB-DL|HEVC|Hindi|DD5\.1).*$"""), "").trim()
 
         val poster = doc.selectFirst("img.xfieldimage, .entry-content img, .poster-image img")?.let {
             val src = it.attr("src").takeIf { s -> s.isNotBlank() } ?: it.attr("data-src")
@@ -145,6 +164,29 @@ class RogmoviesProvider : MainAPI() {
 
         val year = Regex("""\b(19\d\d|20\d\d)\b""").find(rawTitle)?.groupValues?.get(1)?.toIntOrNull()
         val synopsis = doc.selectFirst(".story-content, .entry-content p, .synopsis")?.text()
+
+        // Extract IMDb ID and query TMDB for metadata & 16:9 high-res backdrop
+        val imdbId = doc.selectFirst("a[href*='imdb.com/title/']")?.attr("href")?.let {
+            Regex("""(tt\d+)""").find(it)?.groupValues?.get(1)
+        } ?: Regex("""\b(tt\d{7,8})\b""").find(doc.html())?.groupValues?.get(1)
+
+        var tmdbBackdrop: String? = null
+        var tmdbPlot: String? = null
+
+        if (!imdbId.isNullOrBlank()) {
+            runCatching {
+                val tmdbUrl = "https://api.themoviedb.org/3/find/$imdbId?api_key=$TMDB_API_KEY&external_source=imdb_id"
+                val find = app.get(tmdbUrl, timeout = 3).parsedSafe<TmdbFindResponse>()
+                val item = find?.movieResults?.firstOrNull() ?: find?.tvResults?.firstOrNull()
+                if (item != null) {
+                    item.backdropPath?.let { tmdbBackdrop = "https://image.tmdb.org/t/p/original$it" }
+                    tmdbPlot = item.overview
+                }
+            }
+        }
+
+        val finalPlot = tmdbPlot?.ifBlank { null } ?: synopsis
+        val finalBackdrop = tmdbBackdrop ?: poster
 
         val isTvSeries = rawTitle.contains("Season", ignoreCase = true) ||
                 rawTitle.contains("Series", ignoreCase = true) ||
@@ -155,7 +197,7 @@ class RogmoviesProvider : MainAPI() {
         return if (isTvSeries) {
             val episodes = mutableListOf<Episode>()
             bollyLinks.forEachIndexed { idx, aTag ->
-                val epHref = aTag.attr("href")
+                val epHref = aTag.attr("href").replace("bollydrive.mom", "bollydrive.buzz")
                 val epText = aTag.text().trim()
                 val epNum = Regex("""(?:Episode|EP|E)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: (idx + 1)
                 val seasonNum = Regex("""(?:Season|S)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: 1
@@ -172,14 +214,18 @@ class RogmoviesProvider : MainAPI() {
 
             newTvSeriesLoadResponse(cleanTitle, url, TvType.TvSeries, episodes) {
                 this.posterUrl = poster
+                this.backgroundPosterUrl = finalBackdrop
                 this.year = year
-                this.plot = synopsis
+                this.plot = finalPlot
+                if (!imdbId.isNullOrBlank()) addImdbId(imdbId)
             }
         } else {
             newMovieLoadResponse(cleanTitle, url, TvType.Movie, url) {
                 this.posterUrl = poster
+                this.backgroundPosterUrl = finalBackdrop
                 this.year = year
-                this.plot = synopsis
+                this.plot = finalPlot
+                if (!imdbId.isNullOrBlank()) addImdbId(imdbId)
             }
         }
     }
@@ -192,7 +238,8 @@ class RogmoviesProvider : MainAPI() {
     ): Boolean {
         // If data is directly a Bollydrive file link:
         if (data.contains("bollydrive.buzz") || data.contains("bollydrive.mom")) {
-            loadExtractor(data, subtitleCallback, callback)
+            val cleanLink = data.replace("bollydrive.mom", "bollydrive.buzz")
+            loadExtractor(cleanLink, subtitleCallback, callback)
             return true
         }
 
@@ -202,16 +249,35 @@ class RogmoviesProvider : MainAPI() {
         }.getOrNull() ?: return false
 
         val doc = Jsoup.parse(response)
-        val bollyLinks = doc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']").map { it.attr("href").trim() }.distinct()
+        val bollyLinks = doc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+            .map { it.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz") }
+            .distinct()
 
         coroutineScope {
             bollyLinks.map { link ->
                 async {
-                    loadExtractor(link, subtitleCallback, callback)
+                    runCatching {
+                        loadExtractor(link, subtitleCallback, callback)
+                    }
                 }
             }.awaitAll()
         }
 
         return true
     }
+
+    data class TmdbFindResponse(
+        @JsonProperty("movie_results") val movieResults: List<TmdbItem>? = null,
+        @JsonProperty("tv_results") val tvResults: List<TmdbItem>? = null
+    )
+
+    data class TmdbItem(
+        @JsonProperty("id") val id: Int? = null,
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("name") val name: String? = null,
+        @JsonProperty("overview") val overview: String? = null,
+        @JsonProperty("backdrop_path") val backdropPath: String? = null,
+        @JsonProperty("poster_path") val posterPath: String? = null,
+        @JsonProperty("vote_average") val voteAverage: Double? = null
+    )
 }
