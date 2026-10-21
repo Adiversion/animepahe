@@ -193,23 +193,49 @@ class RogmoviesProvider : MainAPI() {
                 url.contains("season", ignoreCase = true)
 
         val bollyLinks = doc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+        val archiveLinks = doc.select("a[href*='links.bollydrive.buzz/archives/'], a[href*='links.bollydrive.mom/archives/']")
 
         return if (isTvSeries) {
             val episodes = mutableListOf<Episode>()
-            bollyLinks.forEachIndexed { idx, aTag ->
-                val epHref = aTag.attr("href").replace("bollydrive.mom", "bollydrive.buzz")
-                val epText = aTag.text().trim()
-                val epNum = Regex("""(?:Episode|EP|E)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: (idx + 1)
-                val seasonNum = Regex("""(?:Season|S)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: 1
+            if (bollyLinks.isNotEmpty()) {
+                bollyLinks.forEachIndexed { idx, aTag ->
+                    val epHref = aTag.attr("href").replace("bollydrive.mom", "bollydrive.buzz")
+                    val epText = aTag.text().trim()
+                    val epNum = Regex("""(?:Episode|EP|E)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: (idx + 1)
+                    val seasonNum = Regex("""(?:Season|S)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: 1
 
-                episodes.add(
-                    newEpisode(epHref) {
-                        this.name = epText
-                        this.episode = epNum
-                        this.season = seasonNum
-                        this.posterUrl = poster
+                    episodes.add(
+                        newEpisode(epHref) {
+                            this.name = epText
+                            this.episode = epNum
+                            this.season = seasonNum
+                            this.posterUrl = poster
+                        }
+                    )
+                }
+            } else if (archiveLinks.isNotEmpty()) {
+                val archUrl = archiveLinks.first().attr("href").trim()
+                val archHtml = runCatching {
+                    app.get(archUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                }.getOrNull()
+                if (archHtml != null) {
+                    val archDoc = Jsoup.parse(archHtml)
+                    val epFiles = archDoc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+                    epFiles.forEachIndexed { idx, aTag ->
+                        val epHref = aTag.attr("href").replace("bollydrive.mom", "bollydrive.buzz")
+                        val epText = aTag.text().trim().ifBlank { "Episode ${idx + 1}" }
+                        val epNum = Regex("""(?:Episode|EP|E)\s*(\d+)""", RegexOption.IGNORE_CASE).find(epText)?.groupValues?.get(1)?.toIntOrNull() ?: (idx + 1)
+
+                        episodes.add(
+                            newEpisode(epHref) {
+                                this.name = epText
+                                this.episode = epNum
+                                this.season = 1
+                                this.posterUrl = poster
+                            }
+                        )
                     }
-                )
+                }
             }
 
             newTvSeriesLoadResponse(cleanTitle, url, TvType.TvSeries, episodes) {

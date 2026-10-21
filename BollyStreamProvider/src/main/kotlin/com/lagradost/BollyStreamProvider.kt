@@ -130,17 +130,15 @@ class BollyStreamProvider : MainAPI() {
                             val epNum = ep.episodeNumber ?: 1
                             val epName = ep.name ?: "Episode $epNum"
                             val epThumb = ep.stillPath?.let { "$TMDB_IMG_POSTER$it" } ?: poster
-                            val linkPayload = toJson(
-                                BollyStreamLinkData(
-                                    title = title,
-                                    year = year,
-                                    imdbId = imdbId,
-                                    tmdbId = id,
-                                    isMovie = false,
-                                    season = sNum,
-                                    episode = epNum
-                                )
-                            )
+                            val linkPayload = BollyStreamLinkData(
+                                title = title,
+                                year = year,
+                                imdbId = imdbId,
+                                tmdbId = id,
+                                isMovie = false,
+                                season = sNum,
+                                episode = epNum
+                            ).toJson()
 
                             synchronized(episodes) {
                                 episodes.add(
@@ -169,15 +167,13 @@ class BollyStreamProvider : MainAPI() {
                 if (!imdbId.isNullOrBlank()) addImdbId(imdbId)
             }
         } else {
-            val linkPayload = toJson(
-                BollyStreamLinkData(
-                    title = title,
-                    year = year,
-                    imdbId = imdbId,
-                    tmdbId = id,
-                    isMovie = true
-                )
-            )
+            val linkPayload = BollyStreamLinkData(
+                title = title,
+                year = year,
+                imdbId = imdbId,
+                tmdbId = id,
+                isMovie = true
+            ).toJson()
 
             newMovieLoadResponse(title, url, TvType.Movie, linkPayload) {
                 this.posterUrl = poster
@@ -232,14 +228,15 @@ class BollyStreamProvider : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ) {
         runCatching {
-            val searchRes = app.post(
+            val query = if (isMovie) title else "$title Season $season"
+            var searchRes = app.post(
                 "$CATALOG_URL/",
                 data = mapOf(
                     "do" to "search",
                     "subaction" to "search",
                     "search_start" to "0",
                     "full_search" to "0",
-                    "story" to title
+                    "story" to query
                 ),
                 headers = mapOf(
                     "User-Agent" to USER_AGENT,
@@ -248,33 +245,78 @@ class BollyStreamProvider : MainAPI() {
                 )
             ).text
 
-            val doc = Jsoup.parse(searchRes)
-            val articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
+            var doc = Jsoup.parse(searchRes)
+            var articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
                 .map { it.attr("href") }
                 .filter { it.contains(".html") && !it.contains("/page/") }
                 .distinct()
+
+            if (articleLinks.isEmpty() && !isMovie) {
+                // Fallback search with base title
+                searchRes = app.post(
+                    "$CATALOG_URL/",
+                    data = mapOf(
+                        "do" to "search",
+                        "subaction" to "search",
+                        "search_start" to "0",
+                        "full_search" to "0",
+                        "story" to title
+                    ),
+                    headers = mapOf(
+                        "User-Agent" to USER_AGENT,
+                        "Content-Type" to "application/x-www-form-urlencoded",
+                        "Referer" to "$CATALOG_URL/"
+                    )
+                ).text
+                doc = Jsoup.parse(searchRes)
+                articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
+                    .map { it.attr("href") }
+                    .filter { it.contains(".html") && !it.contains("/page/") }
+                    .distinct()
+            }
 
             val targetUrl = articleLinks.firstOrNull() ?: return@runCatching
             val articleHtml = app.get(targetUrl, headers = mapOf("User-Agent" to USER_AGENT)).text
             val articleDoc = Jsoup.parse(articleHtml)
 
             val bollyLinks = articleDoc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+            val archiveLinks = articleDoc.select("a[href*='links.bollydrive.buzz/archives/'], a[href*='links.bollydrive.mom/archives/']")
 
             if (isMovie) {
-                bollyLinks.map { a ->
+                bollyLinks.forEach { a ->
                     val href = a.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz")
                     loadExtractor(href, subtitleCallback, callback)
                 }
             } else {
-                // TV Series: match specific episode
-                val epMatch = bollyLinks.filter { a ->
-                    val text = a.text().lowercase()
-                    text.contains("episode $episode") || text.contains("ep $episode") || text.contains("e$episode")
-                }
-                val linksToResolve = if (epMatch.isNotEmpty()) epMatch else bollyLinks.take(1)
-                linksToResolve.forEach { a ->
-                    val href = a.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz")
-                    loadExtractor(href, subtitleCallback, callback)
+                val epRegex = Regex("""(?:Episode|EP|E)\s*0?$episode\b""", RegexOption.IGNORE_CASE)
+                val directMatch = bollyLinks.filter { a -> epRegex.containsMatchIn(a.text()) }
+
+                if (directMatch.isNotEmpty()) {
+                    directMatch.forEach { a ->
+                        val href = a.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz")
+                        loadExtractor(href, subtitleCallback, callback)
+                    }
+                } else if (archiveLinks.isNotEmpty()) {
+                    archiveLinks.take(2).forEach { arch ->
+                        val archUrl = arch.attr("href").trim()
+                        val archHtml = runCatching {
+                            app.get(archUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                        }.getOrNull() ?: return@forEach
+
+                        val archDoc = Jsoup.parse(archHtml)
+                        val epAnchors = archDoc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+
+                        var targetFile = epAnchors.firstOrNull { a -> epRegex.containsMatchIn(a.text()) }?.attr("href")
+
+                        if (targetFile.isNullOrBlank() && epAnchors.size >= episode) {
+                            targetFile = epAnchors[episode - 1].attr("href")
+                        }
+
+                        if (!targetFile.isNullOrBlank()) {
+                            val cleanHref = targetFile.trim().replace("bollydrive.mom", "bollydrive.buzz")
+                            loadExtractor(cleanHref, subtitleCallback, callback)
+                        }
+                    }
                 }
             }
         }.onFailure { e ->
@@ -292,7 +334,7 @@ class BollyStreamProvider : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ) {
         runCatching {
-            val query = imdbId ?: title
+            val query = if (isMovie) (imdbId ?: title) else "$title Season $season"
             val searchUrl = "$HDHUB4U_URL/?s=${URLEncoder.encode(query, "UTF-8")}"
             val searchHtml = app.get(searchUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
             val doc = Jsoup.parse(searchHtml)
@@ -301,10 +343,21 @@ class BollyStreamProvider : MainAPI() {
             val pageHtml = app.get(articleLink, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
             val pageDoc = Jsoup.parse(pageHtml)
 
-            pageDoc.select("a[href*='hubcloud'], a[href*='hubstream'], a[href*='hdstream4u'], a[href*='suncdn']").forEach { a ->
-                val href = a.attr("href").trim()
-                if (href.startsWith("http")) {
-                    loadExtractor(href, subtitleCallback, callback)
+            if (isMovie) {
+                pageDoc.select("a[href*='hubcloud'], a[href*='hubstream'], a[href*='hdstream4u'], a[href*='suncdn']").forEach { a ->
+                    val href = a.attr("href").trim()
+                    if (href.startsWith("http")) {
+                        loadExtractor(href, subtitleCallback, callback)
+                    }
+                }
+            } else {
+                val epRegex = Regex("""(?:Episode|EP|E)\s*0?$episode\b""", RegexOption.IGNORE_CASE)
+                pageDoc.select("a[href*='hubcloud'], a[href*='hubstream'], a[href*='hdstream4u'], a[href*='suncdn']").forEach { a ->
+                    val text = a.text()
+                    val href = a.attr("href").trim()
+                    if (href.startsWith("http") && epRegex.containsMatchIn(text)) {
+                        loadExtractor(href, subtitleCallback, callback)
+                    }
                 }
             }
         }.onFailure { e ->
