@@ -2,10 +2,8 @@ package com.lagradost
 
 import android.util.Base64
 import android.util.Log
-import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.*
-import com.lagradost.cloudstream3.SubtitleFile
-import com.lagradost.cloudstream3.ExtractorLink
 import org.jsoup.Jsoup
 
 open class BollydriveExtractor : ExtractorApi() {
