@@ -23,10 +23,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/BollyStream_icon.png",
-        "fileHash": "sha256-ae6ffccc52d086f040056d6e213b4df1dc9b61afbddfd6e86a267165d276c0fa",
+        "fileHash": "sha256-0cd1a850c61fea5c96ceb74f2d69af8829e87c4a61965eaacc14c132a167c898",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/animepahe",
-        "fileSize": 43802,
+        "fileSize": 58400,
         "status": 1,
         "language": "hi",
         "authors": [
@@ -37,9 +37,9 @@
             "TvSeries",
             "AsianDrama"
         ],
-        "version": 1,
+        "version": 2,
         "internalName": "BollyStreamProvider",
-        "description": "Universal TMDB discovery frontend with asynchronous multi-storage resolvers (Bollydrive 10Gbps Google Photos CDN, HDhub4u HubCloud).",
+        "description": "Universal TMDB discovery frontend with asynchronous multi-storage resolvers (V-Cloud R2 206 seekable stream, Bollydrive 10Gbps CDN, HDhub4u HubCloud).",
         "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/BollyStreamProvider.cs3",
         "name": "BollyStreamProvider"
     },
@@ -68,10 +68,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png",
-        "fileHash": "sha256-e3540a411090f2505c276244dcb23b1f24ca67a86dea1d3664f2069eeb1d1d81",
+        "fileHash": "sha256-f277de635293f9ef4ccafe471f38379e5dfde235f31c9f8d553e13ffd3a835ad",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/animepahe",
-        "fileSize": 29953,
+        "fileSize": 40618,
         "status": 1,
         "language": "hi",
         "authors": [
@@ -82,9 +82,9 @@
             "TvSeries",
             "AsianDrama"
         ],
-        "version": 3,
+        "version": 4,
         "internalName": "RogmoviesProvider",
-        "description": "Official Rogmovies provider for Bollywood, Hollywood Hindi Dubbed, South Indian, and Web Series with Bollydrive 10Gbps Google Photos & FilePress resolvers.",
+        "description": "Official Rogmovies provider for Bollywood, Hollywood Hindi Dubbed, South Indian, and Web Series with V-Cloud R2 (seekable HTTP 206) & Bollydrive 10Gbps resolvers.",
         "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/RogmoviesProvider.cs3",
         "name": "RogmoviesProvider"
     }
