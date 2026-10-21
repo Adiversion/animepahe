@@ -46,10 +46,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png",
-        "fileHash": "sha256-fac053fe4ccd9249e59e9429e7c2f1cfcfb17f04ebf240d91ff02818e282ad26",
+        "fileHash": "sha256-c10b5a5ea0756dfdbe65a1f606df1450aa50ab0c27408b1fe5b3674f8af1d42a",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/animepahe",
-        "fileSize": 19084,
+        "fileSize": 28018,
         "status": 1,
         "language": "hi",
         "authors": [
@@ -60,7 +60,7 @@
             "TvSeries",
             "AsianDrama"
         ],
-        "version": 1,
+        "version": 2,
         "internalName": "RogmoviesProvider",
         "description": "Official Rogmovies provider for Bollywood, Hollywood Hindi Dubbed, South Indian, and Web Series with Bollydrive 10Gbps Google Photos & FilePress resolvers.",
         "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/RogmoviesProvider.cs3",
