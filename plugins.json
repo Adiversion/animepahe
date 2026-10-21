@@ -22,6 +22,28 @@
         "name": "AnimePaheProvider"
     },
     {
+        "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/BollyStream_icon.png",
+        "fileHash": "sha256-ae6ffccc52d086f040056d6e213b4df1dc9b61afbddfd6e86a267165d276c0fa",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/Adiversion/animepahe",
+        "fileSize": 43802,
+        "status": 1,
+        "language": "hi",
+        "authors": [
+            "Adiversion"
+        ],
+        "tvTypes": [
+            "Movie",
+            "TvSeries",
+            "AsianDrama"
+        ],
+        "version": 1,
+        "internalName": "BollyStreamProvider",
+        "description": "Universal TMDB discovery frontend with asynchronous multi-storage resolvers (Bollydrive 10Gbps Google Photos CDN, HDhub4u HubCloud).",
+        "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/BollyStreamProvider.cs3",
+        "name": "BollyStreamProvider"
+    },
+    {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/HDhub4u_icon.png",
         "fileHash": "sha256-d58d4b1a6d33a2beb0ed0efbb8f5f4b03e3b9807d8ed27296ba87b58206aaa65",
         "apiVersion": 1,
@@ -46,10 +68,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png",
-        "fileHash": "sha256-c10b5a5ea0756dfdbe65a1f606df1450aa50ab0c27408b1fe5b3674f8af1d42a",
+        "fileHash": "sha256-e3540a411090f2505c276244dcb23b1f24ca67a86dea1d3664f2069eeb1d1d81",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/animepahe",
-        "fileSize": 28018,
+        "fileSize": 29953,
         "status": 1,
         "language": "hi",
         "authors": [
@@ -60,7 +82,7 @@
             "TvSeries",
             "AsianDrama"
         ],
-        "version": 2,
+        "version": 3,
         "internalName": "RogmoviesProvider",
         "description": "Official Rogmovies provider for Bollywood, Hollywood Hindi Dubbed, South Indian, and Web Series with Bollydrive 10Gbps Google Photos & FilePress resolvers.",
         "url": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/RogmoviesProvider.cs3",
