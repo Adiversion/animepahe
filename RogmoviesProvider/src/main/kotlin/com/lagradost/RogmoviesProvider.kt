@@ -193,6 +193,7 @@ class RogmoviesProvider : MainAPI() {
                 url.contains("season", ignoreCase = true)
 
         val bollyLinks = doc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+        val nexdriveLinks = doc.select("a[href*='nexdrive.beer/']")
         val archiveLinks = doc.select("a[href*='links.bollydrive.buzz/archives/'], a[href*='links.bollydrive.mom/archives/']")
 
         return if (isTvSeries) {
@@ -212,6 +213,31 @@ class RogmoviesProvider : MainAPI() {
                             this.posterUrl = poster
                         }
                     )
+                }
+            } else if (nexdriveLinks.isNotEmpty()) {
+                val targetNex = nexdriveLinks.firstOrNull { it.text().contains("1080p") || it.text().contains("720p") } ?: nexdriveLinks.first()
+                val nexUrl = targetNex.attr("href").trim()
+                val nexHtml = runCatching {
+                    app.get(nexUrl, headers = mapOf("User-Agent" to USER_AGENT, "Referer" to url), timeout = 6).text
+                }.getOrNull()
+
+                if (nexHtml != null) {
+                    val nexDoc = Jsoup.parse(nexHtml)
+                    val vclouds = nexDoc.select("a[href*='vcloud.']")
+                    if (vclouds.isNotEmpty()) {
+                        vclouds.forEachIndexed { idx, vTag ->
+                            val vHref = vTag.attr("href").trim()
+                            val epText = "Episode ${idx + 1}"
+                            episodes.add(
+                                newEpisode(vHref) {
+                                    this.name = epText
+                                    this.episode = idx + 1
+                                    this.season = 1
+                                    this.posterUrl = poster
+                                }
+                            )
+                        }
+                    }
                 }
             } else if (archiveLinks.isNotEmpty()) {
                 val archUrl = archiveLinks.firstOrNull()?.attr("href")?.trim()
@@ -264,25 +290,30 @@ class RogmoviesProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
-        // If data is directly a Bollydrive file link:
-        if (data.contains("bollydrive.buzz") || data.contains("bollydrive.mom")) {
+        // If data is directly an extractor link:
+        if (data.contains("bollydrive") || data.contains("nexdrive") || data.contains("vcloud") || data.contains("gofile") || data.contains("filebee") || data.contains("fastdl") || data.contains("driveseed")) {
             val cleanLink = data.replace("bollydrive.mom", "bollydrive.buzz")
             loadExtractor(cleanLink, subtitleCallback, callback)
             return true
         }
 
-        // If data is a Movie page URL, parse all Bollydrive links on the page:
+        // If data is a Movie page URL, parse all download and extractor links on the page:
         val response = runCatching {
             app.get(data, headers = mapOf("User-Agent" to USER_AGENT)).text
         }.getOrNull() ?: return false
 
         val doc = Jsoup.parse(response)
-        val bollyLinks = doc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
-            .map { it.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz") }
-            .distinct()
+        val extractedLinks = mutableListOf<String>()
+
+        doc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/'], a[href*='nexdrive.beer/'], a[href*='vcloud.beer/'], a[href*='vcloud.lol/'], a[href*='fastdl.beer/'], a[href*='gofile.io/']").forEach { a ->
+            val href = a.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz")
+            if (href.startsWith("http") && !extractedLinks.contains(href)) {
+                extractedLinks.add(href)
+            }
+        }
 
         coroutineScope {
-            bollyLinks.map { link ->
+            extractedLinks.map { link ->
                 async {
                     runCatching {
                         loadExtractor(link, subtitleCallback, callback)

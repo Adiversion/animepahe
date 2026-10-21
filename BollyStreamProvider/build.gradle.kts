@@ -1,8 +1,8 @@
-version = 1
+version = 2
 
 cloudstream {
     language = "hi"
-    description = "Universal TMDB discovery frontend with asynchronous multi-storage resolvers (Bollydrive 10Gbps Google Photos CDN, HDhub4u HubCloud)."
+    description = "Universal TMDB discovery frontend with asynchronous multi-storage resolvers (V-Cloud R2 206 seekable stream, Bollydrive 10Gbps CDN, HDhub4u HubCloud)."
     authors = listOf("Adiversion")
 
     /**

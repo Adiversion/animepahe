@@ -9,8 +9,13 @@ class RogmoviesPlugin : Plugin() {
     override fun load(context: Context) {
         // Register Rogmovies MainAPI provider
         registerMainAPI(RogmoviesProvider())
-        // Register Bollydrive Extractors (both .buzz and .mom domains)
+        // Register Bollydrive Extractors
         registerExtractorAPI(BollydriveExtractor())
         registerExtractorAPI(BollydriveMomExtractor())
+        // Register High-Speed Stream & CDN Extractors
+        registerExtractorAPI(VCloudExtractor())
+        registerExtractorAPI(NexdriveExtractor())
+        registerExtractorAPI(FastDLExtractor())
+        registerExtractorAPI(DriveSeedExtractor())
     }
 }

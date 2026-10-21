@@ -1,8 +1,8 @@
-version = 3
+version = 4
 
 cloudstream {
     language = "hi"
-    description = "Official Rogmovies provider for Bollywood, Hollywood Hindi Dubbed, South Indian, and Web Series with Bollydrive 10Gbps Google Photos & FilePress resolvers."
+    description = "Official Rogmovies provider for Bollywood, Hollywood Hindi Dubbed, South Indian, and Web Series with V-Cloud R2 (seekable HTTP 206) & Bollydrive 10Gbps resolvers."
     authors = listOf("Adiversion")
 
     /**

@@ -12,5 +12,10 @@ class BollyStreamPlugin : Plugin() {
         // Register Bollydrive Extractors
         registerExtractorAPI(BollydriveExtractor())
         registerExtractorAPI(BollydriveMomExtractor())
+        // Register High-Speed Stream & CDN Extractors
+        registerExtractorAPI(VCloudExtractor())
+        registerExtractorAPI(NexdriveExtractor())
+        registerExtractorAPI(FastDLExtractor())
+        registerExtractorAPI(DriveSeedExtractor())
     }
 }

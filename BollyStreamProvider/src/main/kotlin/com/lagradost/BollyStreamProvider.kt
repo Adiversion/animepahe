@@ -15,7 +15,8 @@ import java.net.URLEncoder
 
 class BollyStreamProvider : MainAPI() {
     companion object {
-        const val TMDB_API = "https://api.themoviedb.org/3"
+        const val TMDB_API = "https://api.tmdb.org/3"
+        const val TMDB_API_BACKUP = "https://api.themoviedb.org/3"
         const val TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49"
         const val TMDB_IMG_POSTER = "https://image.tmdb.org/t/p/w500"
         const val TMDB_IMG_BACKDROP = "https://image.tmdb.org/t/p/original"
@@ -44,6 +45,19 @@ class BollyStreamProvider : MainAPI() {
         MainPageData("Global Trending Series", "$mainUrl/trending/tv/day", true)
     )
 
+    private suspend inline fun <reified T : Any> getTmdb(endpoint: String): T? {
+        val hosts = listOf(TMDB_API, TMDB_API_BACKUP)
+        for (host in hosts) {
+            val separator = if (endpoint.contains("?")) "&" else "?"
+            val fullUrl = if (endpoint.startsWith("http")) endpoint else "$host/$endpoint${separator}api_key=$TMDB_API_KEY"
+            val res = runCatching {
+                app.get(fullUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 4).parsedSafe<T>()
+            }.getOrNull()
+            if (res != null) return res
+        }
+        return null
+    }
+
     private fun parseTmdbItem(item: TmdbItem): SearchResponse? {
         val id = item.id ?: return null
         val isTv = item.mediaType == "tv" || item.title == null
@@ -63,12 +77,12 @@ class BollyStreamProvider : MainAPI() {
     }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        val separator = if (request.data.contains("?")) "&" else "?"
-        val url = "${request.data}${separator}api_key=$TMDB_API_KEY&page=$page"
+        val relPath = request.data.removePrefix(TMDB_API).removePrefix(TMDB_API_BACKUP).removePrefix("/")
+        val separator = if (relPath.contains("?")) "&" else "?"
+        val pathWithPage = "$relPath${separator}page=$page"
 
-        val response = runCatching {
-            app.get(url, headers = mapOf("User-Agent" to USER_AGENT)).parsedSafe<TmdbPageResponse>()
-        }.getOrNull() ?: return newHomePageResponse(emptyList(), false)
+        val response = getTmdb<TmdbPageResponse>(pathWithPage)
+            ?: return newHomePageResponse(emptyList(), false)
 
         val items = response.results?.mapNotNull { parseTmdbItem(it) } ?: emptyList()
         val totalPages = response.totalPages ?: 1
@@ -81,29 +95,52 @@ class BollyStreamProvider : MainAPI() {
 
     override suspend fun search(query: String): List<SearchResponse> {
         val cleanQuery = query.trim()
-        val url = "$mainUrl/search/multi?api_key=$TMDB_API_KEY&query=${URLEncoder.encode(cleanQuery, "UTF-8")}&include_adult=false"
+        val path = "search/multi?query=${URLEncoder.encode(cleanQuery, "UTF-8")}&include_adult=false"
+        val response = getTmdb<TmdbPageResponse>(path)
 
-        val response = runCatching {
-            app.get(url, headers = mapOf("User-Agent" to USER_AGENT)).parsedSafe<TmdbPageResponse>()
-        }.getOrNull() ?: return emptyList()
+        val items = response?.results?.mapNotNull { parseTmdbItem(it) } ?: emptyList()
+        if (items.isNotEmpty()) return items
 
-        return response.results?.mapNotNull { parseTmdbItem(it) } ?: emptyList()
+        return searchHDhub4uFallback(cleanQuery)
+    }
+
+    private suspend fun searchHDhub4uFallback(query: String): List<SearchResponse> {
+        return runCatching {
+            val searchUrl = "$HDHUB4U_URL/?s=${URLEncoder.encode(query, "UTF-8")}"
+            val html = app.get(searchUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+            val doc = Jsoup.parse(html)
+            doc.select(".movies-grid > a, .poster-card, article.post").mapNotNull { card ->
+                val link = card.selectFirst("a")?.attr("href") ?: card.attr("href")
+                val title = card.selectFirst("h2, .title, a")?.text()?.trim() ?: return@mapNotNull null
+                val poster = card.selectFirst("img")?.attr("src")
+                if (link.isNotBlank()) {
+                    newMovieSearchResponse(title, link, TvType.Movie) {
+                        this.posterUrl = poster
+                    }
+                } else null
+            }
+        }.getOrDefault(emptyList())
     }
 
     override suspend fun load(url: String): LoadResponse? {
+        if (url.startsWith("http")) {
+            return runCatching {
+                val html = app.get(url, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                val doc = Jsoup.parse(html)
+                val title = doc.title().trim().substringBefore("–").substringBefore("-").trim()
+                val poster = doc.selectFirst("meta[property='og:image']")?.attr("content")
+                newMovieLoadResponse(title, url, TvType.Movie, url) {
+                    this.posterUrl = poster
+                }
+            }.getOrNull()
+        }
+
         val isTv = url.startsWith("tv/") || url.contains("/tv/")
         val idStr = url.substringAfterLast("/")
         val id = idStr.toIntOrNull() ?: return null
 
-        val detailUrl = if (isTv) {
-            "$mainUrl/tv/$id?api_key=$TMDB_API_KEY&append_to_response=external_ids"
-        } else {
-            "$mainUrl/movie/$id?api_key=$TMDB_API_KEY&append_to_response=external_ids"
-        }
-
-        val detail = runCatching {
-            app.get(detailUrl, headers = mapOf("User-Agent" to USER_AGENT)).parsedSafe<TmdbDetail>()
-        }.getOrNull() ?: return null
+        val path = if (isTv) "tv/$id?append_to_response=external_ids" else "movie/$id?append_to_response=external_ids"
+        val detail = getTmdb<TmdbDetail>(path) ?: return null
 
         val title = detail.title ?: detail.name ?: return null
         val poster = detail.posterPath?.let { "$TMDB_IMG_POSTER$it" }
@@ -121,10 +158,8 @@ class BollyStreamProvider : MainAPI() {
                 seasons.map { season ->
                     async {
                         val sNum = season.seasonNumber ?: 1
-                        val sUrl = "$mainUrl/tv/$id/season/$sNum?api_key=$TMDB_API_KEY"
-                        val seasonDetail = runCatching {
-                            app.get(sUrl, headers = mapOf("User-Agent" to USER_AGENT)).parsedSafe<TmdbSeasonDetail>()
-                        }.getOrNull()
+                        val sPath = "tv/$id/season/$sNum"
+                        val seasonDetail = getTmdb<TmdbSeasonDetail>(sPath)
 
                         seasonDetail?.episodes?.forEach { ep ->
                             val epNum = ep.episodeNumber ?: 1
@@ -192,6 +227,16 @@ class BollyStreamProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
+        if (data.startsWith("http")) {
+            val res = runCatching {
+                val doc = Jsoup.parse(app.get(data, headers = mapOf("User-Agent" to USER_AGENT)).text)
+                doc.select("a[href*='bollydrive.'], a[href*='nexdrive.'], a[href*='vcloud.'], a[href*='fastdl.'], a[href*='gofile.']").forEach { a ->
+                    loadExtractor(a.attr("href").trim(), subtitleCallback, callback)
+                }
+            }
+            return res.isSuccess
+        }
+
         val payload = runCatching { parseJson<BollyStreamLinkData>(data) }.getOrNull()
 
         val title = payload?.title ?: return false
@@ -280,12 +325,20 @@ class BollyStreamProvider : MainAPI() {
             val articleDoc = Jsoup.parse(articleHtml)
 
             val bollyLinks = articleDoc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
+            val nexdriveLinks = articleDoc.select("a[href*='nexdrive.beer/']")
+            val vcloudLinks = articleDoc.select("a[href*='vcloud.beer/'], a[href*='vcloud.lol/'], a[href*='fastcloud.lol/']")
             val archiveLinks = articleDoc.select("a[href*='links.bollydrive.buzz/archives/'], a[href*='links.bollydrive.mom/archives/']")
 
             if (isMovie) {
                 bollyLinks.forEach { a ->
                     val href = a.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz")
                     loadExtractor(href, subtitleCallback, callback)
+                }
+                nexdriveLinks.forEach { a ->
+                    loadExtractor(a.attr("href").trim(), subtitleCallback, callback)
+                }
+                vcloudLinks.forEach { a ->
+                    loadExtractor(a.attr("href").trim(), subtitleCallback, callback)
                 }
             } else {
                 val epRegex = Regex("""(?:Episode|EP|E)\s*0?$episode\b""", RegexOption.IGNORE_CASE)
@@ -295,6 +348,21 @@ class BollyStreamProvider : MainAPI() {
                     directMatch.forEach { a ->
                         val href = a.attr("href").trim().replace("bollydrive.mom", "bollydrive.buzz")
                         loadExtractor(href, subtitleCallback, callback)
+                    }
+                } else if (nexdriveLinks.isNotEmpty()) {
+                    val targetNex = nexdriveLinks.firstOrNull { it.text().contains("1080p") || it.text().contains("720p") } ?: nexdriveLinks.first()
+                    val nexUrl = targetNex.attr("href").trim()
+                    val nexHtml = runCatching {
+                        app.get(nexUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                    }.getOrNull()
+
+                    if (nexHtml != null) {
+                        val nexDoc = Jsoup.parse(nexHtml)
+                        val vclouds = nexDoc.select("a[href*='vcloud.']")
+                        val epTarget = vclouds.getOrNull(episode - 1)
+                        if (epTarget != null) {
+                            loadExtractor(epTarget.attr("href").trim(), subtitleCallback, callback)
+                        }
                     }
                 } else if (archiveLinks.isNotEmpty()) {
                     archiveLinks.take(2).forEach { arch ->
