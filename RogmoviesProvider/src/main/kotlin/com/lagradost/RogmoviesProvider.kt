@@ -214,10 +214,12 @@ class RogmoviesProvider : MainAPI() {
                     )
                 }
             } else if (archiveLinks.isNotEmpty()) {
-                val archUrl = archiveLinks.first().attr("href").trim()
-                val archHtml = runCatching {
-                    app.get(archUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
-                }.getOrNull()
+                val archUrl = archiveLinks.firstOrNull()?.attr("href")?.trim()
+                val archHtml = if (!archUrl.isNullOrEmpty()) {
+                    runCatching {
+                        app.get(archUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                    }.getOrNull()
+                } else null
                 if (archHtml != null) {
                     val archDoc = Jsoup.parse(archHtml)
                     val epFiles = archDoc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
