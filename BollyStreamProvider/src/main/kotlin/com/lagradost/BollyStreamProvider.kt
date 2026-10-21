@@ -245,67 +245,71 @@ class BollyStreamProvider : MainAPI() {
         val season = payload.season ?: 1
         val episode = payload.episode ?: 1
 
+        val engineSources: List<IMirrorSource> = listOf(
+            MoviesNationSource(),
+            HDhub4uSource()
+        )
+
         coroutineScope {
-            // ── Scraper 1: MoviesNation / Rogmovies (Bollydrive 10Gbps CDN) ─────────
-            val job1 = async {
-                scrapeMoviesNation(title, year, isMovie, season, episode, subtitleCallback, callback)
-            }
-
-            // ── Scraper 2: HDhub4u (HubCloud CDN) ───────────────────────────────────
-            val job2 = async {
-                scrapeHDhub4u(title, payload.imdbId, isMovie, season, episode, subtitleCallback, callback)
-            }
-
-            job1.await()
-            job2.await()
+            engineSources.map { source ->
+                async {
+                    runCatching {
+                        source.resolve(title, year, payload.imdbId, isMovie, season, episode, subtitleCallback, callback)
+                    }.onFailure { e ->
+                        Log.e("MirrorEngine", "${source.name} error: ${e.message}")
+                    }
+                }
+            }.awaitAll()
         }
 
         return true
     }
 
-    private suspend fun scrapeMoviesNation(
-        title: String,
-        year: Int?,
-        isMovie: Boolean,
-        season: Int,
-        episode: Int,
-        subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
-    ) {
-        runCatching {
-            val query = if (isMovie) title else "$title Season $season"
-            var searchRes = app.post(
-                "$CATALOG_URL/",
-                data = mapOf(
-                    "do" to "search",
-                    "subaction" to "search",
-                    "search_start" to "0",
-                    "full_search" to "0",
-                    "story" to query
-                ),
-                headers = mapOf(
-                    "User-Agent" to USER_AGENT,
-                    "Content-Type" to "application/x-www-form-urlencoded",
-                    "Referer" to "$CATALOG_URL/"
-                )
-            ).text
+    // ═══════════════════════════════════════════════════════════════════════════
+    // MULTI-PROVIDER BACKEND ENGINE (MirrorEngine)
+    // ═══════════════════════════════════════════════════════════════════════════
 
-            var doc = Jsoup.parse(searchRes)
-            var articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
-                .map { it.attr("href") }
-                .filter { it.contains(".html") && !it.contains("/page/") }
-                .distinct()
+    interface IMirrorSource {
+        val name: String
+        suspend fun resolve(
+            title: String,
+            year: Int?,
+            imdbId: String?,
+            isMovie: Boolean,
+            season: Int,
+            episode: Int,
+            subtitleCallback: (SubtitleFile) -> Unit,
+            callback: (ExtractorLink) -> Unit
+        )
+    }
 
-            if (articleLinks.isEmpty() && !isMovie) {
-                // Fallback search with base title
-                searchRes = app.post(
+    /**
+     * Backend 1: MoviesNation / Rogmovies
+     * Resolves: Bollydrive (Cloudflare R2 Direct + 10Gbps Google CDN), Nexdrive, V-Cloud.
+     */
+    inner class MoviesNationSource : IMirrorSource {
+        override val name = "MoviesNation"
+
+        override suspend fun resolve(
+            title: String,
+            year: Int?,
+            imdbId: String?,
+            isMovie: Boolean,
+            season: Int,
+            episode: Int,
+            subtitleCallback: (SubtitleFile) -> Unit,
+            callback: (ExtractorLink) -> Unit
+        ) {
+            val query = if (isMovie && year != null) "$title $year" else if (isMovie) title else "$title Season $season"
+            var searchRes = runCatching {
+                app.post(
                     "$CATALOG_URL/",
                     data = mapOf(
                         "do" to "search",
                         "subaction" to "search",
                         "search_start" to "0",
                         "full_search" to "0",
-                        "story" to title
+                        "story" to query
                     ),
                     headers = mapOf(
                         "User-Agent" to USER_AGENT,
@@ -313,15 +317,45 @@ class BollyStreamProvider : MainAPI() {
                         "Referer" to "$CATALOG_URL/"
                     )
                 ).text
-                doc = Jsoup.parse(searchRes)
-                articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
-                    .map { it.attr("href") }
-                    .filter { it.contains(".html") && !it.contains("/page/") }
-                    .distinct()
+            }.getOrNull() ?: return
+
+            var doc = Jsoup.parse(searchRes)
+            var articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
+                .map { it.attr("href") }
+                .filter { it.contains(".html") && !it.contains("/page/") }
+                .distinct()
+
+            if (articleLinks.isEmpty()) {
+                val fbRes = runCatching {
+                    app.post(
+                        "$CATALOG_URL/",
+                        data = mapOf(
+                            "do" to "search",
+                            "subaction" to "search",
+                            "search_start" to "0",
+                            "full_search" to "0",
+                            "story" to title
+                        ),
+                        headers = mapOf(
+                            "User-Agent" to USER_AGENT,
+                            "Content-Type" to "application/x-www-form-urlencoded",
+                            "Referer" to "$CATALOG_URL/"
+                        )
+                    ).text
+                }.getOrNull()
+                if (fbRes != null) {
+                    doc = Jsoup.parse(fbRes)
+                    articleLinks = doc.select(".movies-grid > a, .poster-card, a.wp-dle-generated-card, .shortstory a[href*='.html']")
+                        .map { it.attr("href") }
+                        .filter { it.contains(".html") && !it.contains("/page/") }
+                        .distinct()
+                }
             }
 
-            val targetUrl = articleLinks.firstOrNull() ?: return@runCatching
-            val articleHtml = app.get(targetUrl, headers = mapOf("User-Agent" to USER_AGENT)).text
+            val targetUrl = articleLinks.firstOrNull() ?: return
+            val articleHtml = runCatching {
+                app.get(targetUrl, headers = mapOf("User-Agent" to USER_AGENT)).text
+            }.getOrNull() ?: return
             val articleDoc = Jsoup.parse(articleHtml)
 
             val bollyLinks = articleDoc.select("a[href*='bollydrive.buzz/file/'], a[href*='bollydrive.mom/file/']")
@@ -389,50 +423,78 @@ class BollyStreamProvider : MainAPI() {
                     }
                 }
             }
-        }.onFailure { e ->
-            Log.e("BollyStream", "MoviesNation scraper error: ${e.message}")
         }
     }
 
-    private suspend fun scrapeHDhub4u(
-        title: String,
-        imdbId: String?,
-        isMovie: Boolean,
-        season: Int,
-        episode: Int,
-        subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
-    ) {
-        runCatching {
-            val query = if (isMovie) (imdbId ?: title) else "$title Season $season"
-            val searchUrl = "$HDHUB4U_URL/?s=${URLEncoder.encode(query, "UTF-8")}"
-            val searchHtml = app.get(searchUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
-            val doc = Jsoup.parse(searchHtml)
+    /**
+     * Backend 2: HDhub4u
+     * Resolves: HubDrive, HubCloud (Cloudflare R2 Direct + 10Gbps PixelServer + BuzzServer), HDStream4u HLS, Hubstream.
+     */
+    inner class HDhub4uSource : IMirrorSource {
+        override val name = "HDhub4u"
 
-            val articleLink = doc.selectFirst(".recent-movies a[href], article a[href], h2 a[href]")?.attr("href") ?: return@runCatching
-            val pageHtml = app.get(articleLink, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+        override suspend fun resolve(
+            title: String,
+            year: Int?,
+            imdbId: String?,
+            isMovie: Boolean,
+            season: Int,
+            episode: Int,
+            subtitleCallback: (SubtitleFile) -> Unit,
+            callback: (ExtractorLink) -> Unit
+        ) {
+            val query = if (isMovie && year != null) "$title $year" else title
+
+            val postUrl = runCatching {
+                val pingoraUrl = "https://search.pingora.fyi/collections/post/documents/search?q=${URLEncoder.encode(query, "UTF-8")}&query_by=post_title,category,stars,director,imdb_id&query_by_weights=4,2,2,2,4&sort_by=sort_by_date:desc&limit=5&highlight_fields=none&use_cache=true&page=1"
+                val res = app.get(
+                    pingoraUrl,
+                    headers = mapOf(
+                        "User-Agent" to USER_AGENT,
+                        "Referer" to "$HDHUB4U_URL/",
+                        "Origin" to HDHUB4U_URL,
+                        "Accept" to "application/json, text/plain, */*"
+                    ),
+                    timeout = 8
+                ).parsedSafe<PingoraSearchResponse>()
+
+                val permalink = res?.hits?.firstOrNull()?.document?.permalink
+                permalink?.replace(Regex("""https?://[^/]+"""), HDHUB4U_URL)
+            }.getOrNull() ?: runCatching {
+                val searchUrl = "$HDHUB4U_URL/?s=${URLEncoder.encode(query, "UTF-8")}"
+                val searchHtml = app.get(searchUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                val doc = Jsoup.parse(searchHtml)
+                doc.selectFirst(".recent-movies a[href], article a[href], h2 a[href]")?.attr("href")
+            }.getOrNull() ?: return
+
+            val pageHtml = runCatching {
+                app.get(postUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 8).text
+            }.getOrNull() ?: return
             val pageDoc = Jsoup.parse(pageHtml)
 
+            val linksToLoad = mutableListOf<String>()
+
             if (isMovie) {
-                pageDoc.select("a[href*='hubcloud'], a[href*='hubstream'], a[href*='hdstream4u'], a[href*='suncdn']").forEach { a ->
+                pageDoc.select("a[href*='hubdrive.'], a[href*='hubcloud.'], a[href*='hdstream4u.'], a[href*='hubstream.'], a[href*='suncdn.']").forEach { a ->
                     val href = a.attr("href").trim()
-                    if (href.startsWith("http")) {
-                        loadExtractor(href, subtitleCallback, callback)
-                    }
+                    if (href.startsWith("http")) linksToLoad.add(href)
                 }
             } else {
                 val epRegex = Regex("""(?:Episode|EP|E)\s*0?$episode\b""", RegexOption.IGNORE_CASE)
-                pageDoc.select("a[href*='hubcloud'], a[href*='hubstream'], a[href*='hdstream4u'], a[href*='suncdn']").forEach { a ->
+                pageDoc.select("a[href*='hubdrive.'], a[href*='hubcloud.'], a[href*='hdstream4u.'], a[href*='hubstream.'], a[href*='suncdn.']").forEach { a ->
                     val text = a.text()
                     val href = a.attr("href").trim()
                     if (href.startsWith("http") && epRegex.containsMatchIn(text)) {
-                        loadExtractor(href, subtitleCallback, callback)
+                        linksToLoad.add(href)
                     }
                 }
             }
-        }.onFailure { e ->
-            Log.e("BollyStream", "HDhub4u scraper error: ${e.message}")
+
+            linksToLoad.distinct().forEach { href ->
+                loadExtractor(href, subtitleCallback, callback)
+            }
         }
+    }
     }
 
     data class BollyStreamLinkData(
@@ -505,5 +567,20 @@ class BollyStreamProvider : MainAPI() {
 
     data class TmdbExternalIds(
         @JsonProperty("imdb_id") val imdbId: String? = null
+    )
+
+    data class PingoraSearchResponse(
+        @JsonProperty("hits") val hits: List<PingoraHit>? = null,
+        @JsonProperty("found") val found: Int? = null
+    )
+
+    data class PingoraHit(
+        @JsonProperty("document") val document: PingoraDoc? = null
+    )
+
+    data class PingoraDoc(
+        @JsonProperty("post_title") val postTitle: String? = null,
+        @JsonProperty("permalink") val permalink: String? = null,
+        @JsonProperty("post_thumbnail") val postThumbnail: String? = null
     )
 }

@@ -40,15 +40,51 @@ open class BollydriveExtractor : ExtractorApi() {
         }
         val qualityBadge = qualityMatch?.let { "${it}p" } ?: "1080p"
 
-        // 1. Resolve 10Gbps Google Photos CDN stream via handle10GbpsDownload
+        // 1. Resolve Cloudflare R2 direct stream (Instant HTTP 206 Seeking)
+        val shareId = Regex("""/file/([0-9a-zA-Z]+)""").find(cleanUrl)?.groupValues?.get(1)
+            ?: Regex("""handle10GbpsDownload\(this,\s*'([^']+)'""").find(doc.html())?.groupValues?.get(1)
+            ?: Regex("""data-shareid=["']([^"']+)["']""").find(doc.html())?.groupValues?.get(1)
+
+        if (!shareId.isNullOrBlank()) {
+            val r2ReqUrl = "$mainUrl/ajax.php?ajax=r2_direct&op=request&id=$shareId&source=download"
+            val r2Json = runCatching {
+                app.get(
+                    r2ReqUrl,
+                    headers = mapOf(
+                        "User-Agent" to USER_AGENT,
+                        "X-Requested-With" to "XMLHttpRequest",
+                        "Referer" to cleanUrl
+                    ),
+                    timeout = 6
+                ).parsedSafe<Map<String, Any?>>()
+            }.getOrNull()
+
+            val status = r2Json?.get("status") as? String
+            val r2DownloadUrl = r2Json?.get("download_url") as? String
+            if (status == "ready" && !r2DownloadUrl.isNullOrBlank()) {
+                callback(
+                    newExtractorLink(
+                        source = name,
+                        name = "$name - $qualityBadge [Fast Server : Cloudflare R2]",
+                        url = r2DownloadUrl,
+                        type = ExtractorLinkType.VIDEO
+                    ) {
+                        this.referer = ""
+                        this.quality = qualityInt
+                    }
+                )
+            }
+        }
+
+        // 2. Resolve 10Gbps Google Photos CDN stream via handle10GbpsDownload
         val handleMatch = Regex("""handle10GbpsDownload\(this,\s*'([^']+)',\s*'([^']*)',\s*'([^']*)'\)""").find(doc.html())
         if (handleMatch != null) {
-            val shareId = handleMatch.groupValues[1]
+            val handleShareId = handleMatch.groupValues[1]
             var encodedUrl = handleMatch.groupValues[3].trim()
 
             // If encodedUrl is empty, query photos-stream-api.php?id={shareId}
-            if (encodedUrl.isBlank() && shareId.isNotBlank()) {
-                val prefetchUrl = "$mainUrl/photos-stream-api.php?id=$shareId"
+            if (encodedUrl.isBlank() && handleShareId.isNotBlank()) {
+                val prefetchUrl = "$mainUrl/photos-stream-api.php?id=$handleShareId"
                 val json = runCatching {
                     app.get(prefetchUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).parsedSafe<Map<String, Any?>>()
                 }.getOrNull()
@@ -63,7 +99,16 @@ open class BollydriveExtractor : ExtractorApi() {
             }
         }
 
-        // 2. Discover and resolve mirror download buttons (XCloud, FileBee, etc.)
+        // 3. Resolve Pixeldrain mirror if present
+        val pdMatch = Regex("""data-ready-url=["']([^"']+)["']""").find(doc.html())
+        val pdUrl = pdMatch?.groupValues?.get(1)
+        if (!pdUrl.isNullOrBlank()) {
+            runCatching {
+                loadExtractor(pdUrl, subtitleCallback, callback)
+            }
+        }
+
+        // 4. Discover and resolve mirror download buttons (XCloud, FileBee, etc.)
         doc.select("a.btn-dl, a.mirror-link, a[href*='xcloud'], a[href*='filebee'], a[href*='filepress']").forEach { a ->
             val href = a.attr("href").trim()
             if (href.startsWith("http") && !href.contains("bollydrive.buzz") && !href.contains("bollydrive.mom") && !href.contains("gdflix")) {

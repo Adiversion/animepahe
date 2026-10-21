@@ -228,3 +228,118 @@ open class DriveSeedExtractor : ExtractorApi() {
         }
     }
 }
+
+open class HubdriveExtractor : ExtractorApi() {
+    override val name = "HubDrive"
+    override val mainUrl = "https://hubdrive.bar"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT)).text
+        }.getOrNull() ?: return
+
+        val hubcloudMatch = Regex("""href=["'](https?://hubcloud\.[a-z]+/drive/[^"']+)["']""").find(html)?.groupValues?.get(1)
+        if (!hubcloudMatch.isNullOrBlank()) {
+            loadExtractor(hubcloudMatch, subtitleCallback, callback)
+        }
+    }
+}
+
+open class HubcloudExtractor : ExtractorApi() {
+    override val name = "HubCloud"
+    override val mainUrl = "https://hubcloud.ist"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val driveDoc = runCatching {
+            Jsoup.parse(app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT)).text)
+        }.getOrNull() ?: return
+
+        val phpBtn = driveDoc.selectFirst("a[href*='hubcloud.php']")?.attr("href") ?: return
+        val phpDoc = runCatching {
+            Jsoup.parse(
+                app.get(
+                    phpBtn,
+                    headers = mapOf(
+                        "User-Agent" to VCloudExtractor.USER_AGENT,
+                        "Referer" to url
+                    )
+                ).text
+            )
+        }.getOrNull() ?: return
+
+        phpDoc.select("a.btn, a[href*='download'], div.card-body a").forEach { btn ->
+            val href = btn.attr("href").trim()
+            when {
+                href.contains("cloudflarestorage.com") -> {
+                    callback(
+                        ExtractorLink(
+                            source = name,
+                            name = "$name - [Fast Server : Cloudflare R2]",
+                            url = href,
+                            referer = "",
+                            quality = Qualities.P1080.value,
+                            type = ExtractorLinkType.VIDEO
+                        )
+                    )
+                }
+                href.contains("pixel.hubcloud") -> {
+                    callback(
+                        ExtractorLink(
+                            source = name,
+                            name = "$name - [10Gbps PixelServer]",
+                            url = href,
+                            referer = phpBtn,
+                            quality = Qualities.P1080.value,
+                            type = ExtractorLinkType.VIDEO
+                        )
+                    )
+                }
+                href.contains("pixeldrain") -> {
+                    runCatching {
+                        loadExtractor(href, subtitleCallback, callback)
+                    }
+                }
+                href.contains("fuckingfast.net") -> {
+                    callback(
+                        ExtractorLink(
+                            source = name,
+                            name = "$name - [BuzzServer Fast]",
+                            url = href,
+                            referer = "",
+                            quality = Qualities.P1080.value,
+                            type = ExtractorLinkType.VIDEO
+                        )
+                    )
+                }
+                href.contains("hbplay.pages.dev") && href.contains("?u=") -> {
+                    val encoded = href.substringAfter("?u=").substringBefore("&")
+                    val decoded = runCatching { String(Base64.decode(encoded, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull()
+                    if (!decoded.isNullOrBlank() && decoded.startsWith("http")) {
+                        callback(
+                            ExtractorLink(
+                                source = name,
+                                name = "$name - [WebPlayer Stream ⚡]",
+                                url = decoded,
+                                referer = "",
+                                quality = Qualities.P1080.value,
+                                type = ExtractorLinkType.VIDEO
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

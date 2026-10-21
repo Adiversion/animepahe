@@ -115,6 +115,51 @@ class HDhub4uProvider : MainAPI() {
 
     override suspend fun search(query: String): List<SearchResponse> {
         syncDomain()
+        // Primary search: Pingora Typesense API (HDhub4u official search engine)
+        val pingoraResults = runCatching {
+            val pingoraUrl = "https://search.pingora.fyi/collections/post/documents/search?q=${URLEncoder.encode(query, "UTF-8")}&query_by=post_title,category,stars,director,imdb_id&query_by_weights=4,2,2,2,4&sort_by=sort_by_date:desc&limit=15&highlight_fields=none&use_cache=true&page=1"
+            val res = app.get(
+                pingoraUrl,
+                headers = mapOf(
+                    "User-Agent" to USER_AGENT,
+                    "Referer" to "$mainUrl/",
+                    "Origin" to mainUrl,
+                    "Accept" to "application/json, text/plain, */*"
+                ),
+                timeout = 6
+            ).parsedSafe<PingoraSearchResponse>()
+
+            res?.hits?.mapNotNull { hit ->
+                val doc = hit.document ?: return@mapNotNull null
+                val rawTitle = doc.postTitle ?: return@mapNotNull null
+                val permalink = doc.permalink ?: return@mapNotNull null
+                val cleanLink = fixUrlNull(permalink.replace(Regex("""https?://[^/]+"""), mainUrl)) ?: return@mapNotNull null
+                val cleanT = cleanTitle(rawTitle)
+                val poster = doc.postThumbnail
+                val quality = getQuality(rawTitle)
+                val isTv = rawTitle.contains("Season", ignoreCase = true) ||
+                        rawTitle.contains("Series", ignoreCase = true) ||
+                        rawTitle.contains("All Episodes", ignoreCase = true)
+
+                if (isTv) {
+                    newTvSeriesSearchResponse(cleanT, cleanLink, TvType.TvSeries) {
+                        this.posterUrl = poster
+                        this.quality = quality
+                    }
+                } else {
+                    newMovieSearchResponse(cleanT, cleanLink, TvType.Movie) {
+                        this.posterUrl = poster
+                        this.quality = quality
+                    }
+                }
+            }
+        }.getOrNull()
+
+        if (!pingoraResults.isNullOrEmpty()) {
+            return pingoraResults
+        }
+
+        // Secondary fallback: Native search
         val url = "$mainUrl/?s=${URLEncoder.encode(query, "UTF-8")}"
         val document = app.get(url, headers = mapOf("User-Agent" to USER_AGENT)).document
         return document.select(".recent-movies > li.thumb").mapNotNull { it.toSearchResult() }
@@ -603,6 +648,21 @@ class HDhub4uProvider : MainAPI() {
         @JsonProperty("h") val h: String? = null,
         @JsonProperty("c") val c: String? = null,
         @JsonProperty("t") val t: Long? = null
+    )
+
+    data class PingoraSearchResponse(
+        @JsonProperty("hits") val hits: List<PingoraHit>? = null,
+        @JsonProperty("found") val found: Int? = null
+    )
+
+    data class PingoraHit(
+        @JsonProperty("document") val document: PingoraDoc? = null
+    )
+
+    data class PingoraDoc(
+        @JsonProperty("post_title") val postTitle: String? = null,
+        @JsonProperty("permalink") val permalink: String? = null,
+        @JsonProperty("post_thumbnail") val postThumbnail: String? = null
     )
 }
 

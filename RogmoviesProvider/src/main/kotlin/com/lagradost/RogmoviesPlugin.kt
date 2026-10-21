@@ -17,5 +17,7 @@ class RogmoviesPlugin : Plugin() {
         registerExtractorAPI(NexdriveExtractor())
         registerExtractorAPI(FastDLExtractor())
         registerExtractorAPI(DriveSeedExtractor())
+        registerExtractorAPI(HubdriveExtractor())
+        registerExtractorAPI(HubcloudExtractor())
     }
 }
