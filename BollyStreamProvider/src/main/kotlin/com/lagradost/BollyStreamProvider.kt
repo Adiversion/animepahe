@@ -495,7 +495,6 @@ class BollyStreamProvider : MainAPI() {
             }
         }
     }
-    }
 
     data class BollyStreamLinkData(
         val title: String,
