@@ -4,3 +4,4 @@ rootProject.name = "CloudstreamPlugins"
 include("AnimePaheProvider")
 include("HDhub4uProvider")
 include("RogmoviesProvider")
+include("BollyStreamProvider")

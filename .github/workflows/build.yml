@@ -50,7 +50,7 @@ jobs:
           set +e
           for attempt in 1 2 3 4; do
             echo "Gradle build attempt $attempt of 4..."
-            ./gradlew :AnimePaheProvider:make :HDhub4uProvider:make :RogmoviesProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log
+            ./gradlew :AnimePaheProvider:make :HDhub4uProvider:make :RogmoviesProvider:make :BollyStreamProvider:make makePluginsJson --no-daemon --stacktrace 2>&1 | tee build_output.log
             BUILD_STATUS=${PIPESTATUS[0]}
             if [ $BUILD_STATUS -eq 0 ]; then
               echo "Gradle build succeeded on attempt $attempt!"
@@ -82,11 +82,13 @@ jobs:
           cp $GITHUB_WORKSPACE/builds/AnimePaheProvider.cs3 $GITHUB_WORKSPACE/builds/AnimePahe.cs3 || true
           cp $GITHUB_WORKSPACE/builds/HDhub4uProvider.cs3 $GITHUB_WORKSPACE/builds/HDhub4u.cs3 || true
           cp $GITHUB_WORKSPACE/builds/RogmoviesProvider.cs3 $GITHUB_WORKSPACE/builds/Rogmovies.cs3 || true
+          cp $GITHUB_WORKSPACE/builds/BollyStreamProvider.cs3 $GITHUB_WORKSPACE/builds/BollyStream.cs3 || true
           find . -type f -name "plugins.json" -exec cp -v {} $GITHUB_WORKSPACE/builds/ \;
           cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
           cp icon.png $GITHUB_WORKSPACE/builds/icon.png || true
           cp HDhub4uProvider/icon.png $GITHUB_WORKSPACE/builds/HDhub4u_icon.png || true
           cp RogmoviesProvider/icon.png $GITHUB_WORKSPACE/builds/Rogmovies_icon.png || true
+          cp BollyStreamProvider/icon.png $GITHUB_WORKSPACE/builds/BollyStream_icon.png || true
           cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
           echo "Builds contents:"
           ls -la $GITHUB_WORKSPACE/builds/
