@@ -664,4 +664,6 @@ class HDhub4uProvider : MainAPI() {
         @JsonProperty("permalink") val permalink: String? = null,
         @JsonProperty("post_thumbnail") val postThumbnail: String? = null
     )
+}
+
 
