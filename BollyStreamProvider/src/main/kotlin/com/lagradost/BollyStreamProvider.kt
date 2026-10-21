@@ -350,11 +350,13 @@ class BollyStreamProvider : MainAPI() {
                         loadExtractor(href, subtitleCallback, callback)
                     }
                 } else if (nexdriveLinks.isNotEmpty()) {
-                    val targetNex = nexdriveLinks.firstOrNull { it.text().contains("1080p") || it.text().contains("720p") } ?: nexdriveLinks.first()
-                    val nexUrl = targetNex.attr("href").trim()
-                    val nexHtml = runCatching {
-                        app.get(nexUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
-                    }.getOrNull()
+                    val targetNex = nexdriveLinks.firstOrNull { it.text().contains("1080p") || it.text().contains("720p") } ?: nexdriveLinks.firstOrNull()
+                    val nexUrl = targetNex?.attr("href")?.trim() ?: ""
+                    val nexHtml = if (nexUrl.isNotEmpty()) {
+                        runCatching {
+                            app.get(nexUrl, headers = mapOf("User-Agent" to USER_AGENT), timeout = 6).text
+                        }.getOrNull()
+                    } else null
 
                     if (nexHtml != null) {
                         val nexDoc = Jsoup.parse(nexHtml)
