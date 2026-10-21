@@ -32,10 +32,6 @@ Daemon will be stopped at the end of the build
 > Task :RogmoviesProvider:packageDebugResources UP-TO-DATE
 > Task :RogmoviesProvider:parseDebugLocalResources UP-TO-DATE
 > Task :RogmoviesProvider:generateDebugRFile UP-TO-DATE
-> Task :RogmoviesProvider:compileDebugKotlin UP-TO-DATE
-> Task :RogmoviesProvider:compileDex UP-TO-DATE
-> Task :RogmoviesProvider:generateManifest UP-TO-DATE
-> Task :RogmoviesProvider:make UP-TO-DATE
 > Task :BollyStreamProvider:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :BollyStreamProvider:preBuild UP-TO-DATE
 > Task :BollyStreamProvider:preDebugBuild UP-TO-DATE
@@ -44,18 +40,21 @@ Daemon will be stopped at the end of the build
 > Task :BollyStreamProvider:packageDebugResources UP-TO-DATE
 > Task :BollyStreamProvider:parseDebugLocalResources UP-TO-DATE
 > Task :BollyStreamProvider:generateDebugRFile UP-TO-DATE
+> Task :BollyStreamProvider:compileDebugKotlin UP-TO-DATE
+> Task :BollyStreamProvider:compileDex UP-TO-DATE
+> Task :BollyStreamProvider:generateManifest UP-TO-DATE
+> Task :BollyStreamProvider:make UP-TO-DATE
 > Task :AnimePaheProvider:writeCacheEntry UP-TO-DATE
+> Task :BollyStreamProvider:writeCacheEntry UP-TO-DATE
 > Task :HDhub4uProvider:writeCacheEntry UP-TO-DATE
-> Task :RogmoviesProvider:writeCacheEntry UP-TO-DATE
 
-> Task :BollyStreamProvider:compileDebugKotlin FAILED
-e: file:///home/runner/work/animepahe/animepahe/src/BollyStreamProvider/src/main/kotlin/com/lagradost/BollyStreamProvider.kt:134:33 Too many arguments for 'fun Any.toJson(): String'.
-e: file:///home/runner/work/animepahe/animepahe/src/BollyStreamProvider/src/main/kotlin/com/lagradost/BollyStreamProvider.kt:173:17 Too many arguments for 'fun Any.toJson(): String'.
+> Task :RogmoviesProvider:compileDebugKotlin FAILED
+e: file:///home/runner/work/animepahe/animepahe/src/RogmoviesProvider/src/main/kotlin/com/lagradost/RogmoviesProvider.kt:217:51 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type '@Nullable() org.jsoup.nodes.Element?'.
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':BollyStreamProvider:compileDebugKotlin'.
+Execution failed for task ':RogmoviesProvider:compileDebugKotlin'.
 > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
    > Compilation error. See log for more details
 
@@ -65,7 +64,7 @@ Execution failed for task ':BollyStreamProvider:compileDebugKotlin'.
 > Get more help at https://help.gradle.org.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':BollyStreamProvider:compileDebugKotlin'.
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':RogmoviesProvider:compileDebugKotlin'.
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:130)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:293)
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:128)
@@ -314,5 +313,5 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 	... 2 more
 
 
-BUILD FAILED in 27s
+BUILD FAILED in 24s
 36 actionable tasks: 1 executed, 35 up-to-date
