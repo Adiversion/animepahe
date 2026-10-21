@@ -49,6 +49,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class AnimePaheProvider : MainAPI() {
 
@@ -60,6 +62,7 @@ class AnimePaheProvider : MainAPI() {
         var cfCookies: String? = null
         var cfUserAgent: String? = null
 
+        private val cfMutex = Mutex()
         private var lastCfDialogAtMs = 0L
         private val isDialogShowing = AtomicBoolean(false)
 
@@ -270,6 +273,44 @@ class AnimePaheProvider : MainAPI() {
             }
         }
 
+        fun purgeCfState(appInstance: Requests) {
+            cfCookies = null
+            runCatching { appInstance.baseClient.connectionPool.evictAll() }
+            val cookieManager = runCatching { CookieManager.getInstance() }.getOrNull()
+            val targetDomains = listOf(
+                "animepahe.pw",
+                "i.animepahe.pw",
+                "animepahe.ru",
+                "i.animepahe.ru",
+                "animepahe.com",
+                "i.animepahe.com",
+                "animepahe.org",
+                "i.animepahe.org",
+                "challenges.cloudflare.com",
+                "cloudflare.com"
+            )
+            if (cookieManager != null) {
+                targetDomains.forEach { domain ->
+                    runCatching {
+                        cookieManager.setCookie("https://$domain", "cf_clearance=expired; Domain=.$domain; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
+                        cookieManager.setCookie("https://$domain", "cf_clearance=expired; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
+                        cookieManager.setCookie("http://$domain", "cf_clearance=expired; Domain=.$domain; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
+                        cookieManager.setCookie("http://$domain", "cf_clearance=expired; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
+                    }
+                }
+                cookieManager.flush()
+            }
+            targetDomains.forEach { domain ->
+                val httpUrl = "https://$domain".toHttpUrlOrNull() ?: return@forEach
+                val expiredCookies = listOfNotNull(
+                    Cookie.Builder().domain(domain).path("/").name("cf_clearance").value("expired").expiresAt(0L).build()
+                )
+                runCatching {
+                    appInstance.baseClient.cookieJar.saveFromResponse(httpUrl, expiredCookies)
+                }
+            }
+        }
+
         private fun getActivity(): Activity? {
             return CommonActivity.activity ?: runCatching {
                 val activityThreadClass = Class.forName("android.app.ActivityThread")
@@ -355,7 +396,7 @@ class AnimePaheProvider : MainAPI() {
         @SuppressLint("SetJavaScriptEnabled")
         fun solveCloudflare(
             appInstance: Requests,
-            targetUrl: String = "$MAIN_URL/",
+            targetUrl: String = "$MAIN_URL/api?m=airing&page=1",
             allowDialog: Boolean = true
         ): SolveResult {
             if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -552,16 +593,14 @@ class AnimePaheProvider : MainAPI() {
 
                         val currentCookies = extractMergedCookies(currentUrl.takeIf { it.isNotBlank() } ?: targetUrl)
                         val currentClearance = extractClearanceToken(currentCookies)
-                        val hasValidClearance = !currentClearance.isNullOrBlank()
-                        val isNewClearance = oldClearance != null && !currentClearance.isNullOrBlank() && currentClearance != oldClearance
+                        val hasNewClearance = !currentClearance.isNullOrBlank() && (oldClearance == null || currentClearance != oldClearance)
 
                         val isRealPageLoaded = !isChallenge &&
                                 !currentUrl.contains("__cf_chl") &&
-                                !currentUrl.contains("challenges.cloudflare.com") &&
-                                currentTitle.contains("animepahe", ignoreCase = true)
+                                !currentUrl.contains("challenges.cloudflare.com")
 
-                        if (hasValidClearance || isNewClearance || (isRealPageLoaded && pollElapsedMs >= 2000L)) {
-                            Log.d("AnimePahe", "Verification confirmed (title='$currentTitle', clearance=$currentClearance, isRealPage=$isRealPageLoaded)! Finishing...")
+                        if (!isChallenge && (hasNewClearance || (!currentClearance.isNullOrBlank() && pollElapsedMs >= 2000L) || (isRealPageLoaded && pollElapsedMs >= 3000L))) {
+                            Log.d("AnimePahe", "Verification confirmed (title='$currentTitle', clearance=$currentClearance)! Finishing...")
                             extractPageContentAndFinish(currentCookies)
                             return@Runnable
                         }
@@ -587,17 +626,22 @@ class AnimePaheProvider : MainAPI() {
                         override fun onPageFinished(view: WebView?, url: String?) {
                             super.onPageFinished(view, url)
                             progressBar.visibility = View.GONE
-                            val currentCookies = extractMergedCookies(url ?: targetUrl)
                             val currentTitle = view?.title ?: ""
                             val currentUrl = url ?: ""
                             val isChallenge = isChallengeTitle(currentTitle)
-                            val hasClearance = extractClearanceToken(currentCookies) != null
-                            val isRealPageLoaded = !isChallenge &&
-                                    !currentUrl.contains("__cf_chl") &&
-                                    !currentUrl.contains("challenges.cloudflare.com") &&
-                                    currentTitle.contains("animepahe", ignoreCase = true)
+                            Log.d("AnimePahe", "onPageFinished title='$currentTitle' url=$currentUrl isChallenge=$isChallenge")
 
-                            if (hasClearance || isRealPageLoaded) {
+                            if (isChallenge) {
+                                // Crucial: do not exit while still on challenge page!
+                                return
+                            }
+
+                            val currentCookies = extractMergedCookies(url ?: targetUrl)
+                            val currentClearance = extractClearanceToken(currentCookies)
+                            val hasNewClearance = !currentClearance.isNullOrBlank() && (oldClearance == null || currentClearance != oldClearance)
+
+                            if (hasNewClearance || !currentClearance.isNullOrBlank()) {
+                                Log.d("AnimePahe", "onPageFinished: Clearance verified! Saving cookies.")
                                 extractPageContentAndFinish(currentCookies)
                             }
                         }
@@ -610,19 +654,17 @@ class AnimePaheProvider : MainAPI() {
                         handler.removeCallbacks(cookiePollRunnable)
                         isDialogShowing.set(false)
                         if (!cookiesSaved) {
-                            val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
                             val finalTitle = webView.title ?: ""
-                            val finalUrl = webView.url ?: ""
-                            val hasClearance = extractClearanceToken(finalCookies) != null
-                            val isSiteLoaded = !isChallengeTitle(finalTitle) &&
-                                    !finalUrl.contains("__cf_chl") &&
-                                    finalTitle.contains("animepahe", ignoreCase = true)
-
-                            if (hasClearance || isSiteLoaded) {
-                                extractPageContentAndFinish(finalCookies)
-                            } else {
-                                latch.countDown()
+                            val isChallenge = isChallengeTitle(finalTitle)
+                            if (!isChallenge) {
+                                val finalCookies = extractMergedCookies(webView.url ?: targetUrl)
+                                val finalClearance = extractClearanceToken(finalCookies)
+                                if (!finalClearance.isNullOrBlank()) {
+                                    extractPageContentAndFinish(finalCookies)
+                                    return@setOnDismissListener
+                                }
                             }
+                            latch.countDown()
                         }
                     }
 
@@ -676,20 +718,35 @@ class AnimePaheProvider : MainAPI() {
             return initial.text
         }
 
-        Log.w("AnimePahe", "Request blocked (code=${initial?.code}). Opening verification dialog on $MAIN_URL/...")
-        // 2. Open interactive verification on $MAIN_URL/ to solve Turnstile and obtain cf_clearance
-        val res = solveCloudflare(app, "$MAIN_URL/", allowDialog = true)
-        if (!res.success && cfCookies == null) {
-            throw ErrorLoadingException("AnimePahe requires Cloudflare verification. Please complete the checkmark.")
-        }
+        Log.w("AnimePahe", "Saved CF cookies rejected on $url (code=${initial?.code}) - entering verification lock")
 
-        // 3. Retry OkHttp request with newly saved clearance cookies
-        val retry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
-        if (retry != null && !isBlocked(retry)) {
-            return retry.text
-        }
+        return cfMutex.withLock {
+            // Re-check: another coroutine might have solved Cloudflare while waiting for lock
+            val recheck = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
+            if (recheck != null && !isBlocked(recheck)) {
+                Log.d("AnimePahe", "CF already solved by sibling coroutine, continuing with code 200")
+                return@withLock recheck.text
+            }
 
-        throw ErrorLoadingException("Cloudflare challenge encountered. Please pull down to refresh.")
+            Log.w("AnimePahe", "Purging stale CF state and initiating solve...")
+            purgeCfState(app)
+
+            val solveTarget = if (url.contains("animepahe.pw/api")) url else "$MAIN_URL/api?m=airing&page=1"
+            val res = solveCloudflare(app, solveTarget, allowDialog = allowDialog)
+            if (!res.success && cfCookies == null) {
+                throw ErrorLoadingException("AnimePahe requires Cloudflare verification. Please complete the checkmark.")
+            }
+
+            // 3. Retry OkHttp request with newly saved clearance cookies
+            val retry = runCatching { app.get(url, headers = getHeaders()) }.getOrNull()
+            if (retry != null && !isBlocked(retry)) {
+                Log.d("AnimePahe", "appGet retried $url -> code=${retry.code}")
+                return@withLock retry.text
+            }
+
+            Log.e("AnimePahe", "appGet retry failed on $url (code=${retry?.code})")
+            throw ErrorLoadingException("Cloudflare challenge encountered. Please pull down to refresh.")
+        }
     }
 
     override val mainPage = listOf(
@@ -811,7 +868,9 @@ class AnimePaheProvider : MainAPI() {
         }
         val url = "${data.mainUrl}/api?m=release&id=${data.session}&sort=episode_asc&page=${data.page}"
         val jsonResponse = runCatching {
-            app.get(url, headers = getHeaders(data.mainUrl)).parsedSafe<AnimePaheReleaseResponse>()
+            val resp = app.get(url, headers = getHeaders(data.mainUrl))
+            if (isBlocked(resp)) throw Exception("CF blocked")
+            resp.parsedSafe<AnimePaheReleaseResponse>()
         }.getOrNull() ?: runCatching {
             val raw = fetchWithCloudflare(url)
             parseJson<AnimePaheReleaseResponse>(raw)
