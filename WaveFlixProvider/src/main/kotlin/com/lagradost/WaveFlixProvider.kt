@@ -643,16 +643,25 @@ class WaveFlixProvider : MainAPI() {
         }.getOrNull() ?: return
 
         val showDoc = org.jsoup.Jsoup.parse(showHtml)
-        val episodeLink = showDoc.select("a[href*='-episode-']").firstOrNull {
-            it.text().contains("episode", ignoreCase = true)
-        }?.attr("href") ?: return
+        val episodeList = mutableListOf<String>()
+        val seen = mutableSetOf<String>()
+        for (a in showDoc.select("a[href*='-episode-']")) {
+            val href = a.attr("href").trim()
+            val text = a.text().lowercase()
+            if (href.isNotBlank() && !seen.contains(href) && !text.contains("promo")) {
+                seen.add(href)
+                episodeList.add(href)
+            }
+        }
+        val chronoList = episodeList.reversed()
+        val episodeLink = if (episode in 1..chronoList.size) chronoList[episode - 1] else episodeList.firstOrNull() ?: return
 
         val epHtml = runCatching {
             app.get(episodeLink, headers = headers + ("Referer" to showUrl), timeout = 7).text
         }.getOrNull() ?: return
 
         val epDoc = org.jsoup.Jsoup.parse(epHtml)
-        epDoc.select("a[href*='tvarticles.org']").forEach { a ->
+        for (a in epDoc.select("a[href*='tvarticles.org']")) {
             val link = a.attr("href").trim()
             if (link.isNotBlank()) {
                 runCatching {
