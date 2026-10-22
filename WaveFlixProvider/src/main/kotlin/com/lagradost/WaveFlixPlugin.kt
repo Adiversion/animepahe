@@ -29,5 +29,9 @@ class WaveFlixPlugin : Plugin() {
         registerExtractorAPI(TvarticlesExtractor())
         registerExtractorAPI(CineverseExtractor())
         registerExtractorAPI(FilmuExtractor())
+
+        // KatMovieHD auxiliary extractors
+        registerExtractorAPI(FuckingfastExtractor())
+        registerExtractorAPI(KatdriveExtractor())
     }
 }

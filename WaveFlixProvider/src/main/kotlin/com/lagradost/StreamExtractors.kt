@@ -505,3 +505,126 @@ open class FilmuExtractor : ExtractorApi() {
     }
 }
 
+// ─── Bollydrive Extractors ────────────────────────────────────────────────────
+
+open class BollydriveExtractor : ExtractorApi() {
+    override val name = "Bollydrive"
+    override val mainUrl = "https://bollydrive.rest"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: mainUrl))).text
+        }.getOrNull() ?: return
+
+        val doc = Jsoup.parse(html)
+        // Bollydrive hosts links to vcloud, hubcloud, fastdl, pixeldrain etc.
+        doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fast-dl.'], a[href*='fastdl.'], a[href*='pixeldrain.'], a[href*='cloudflarestorage.com']").forEach { a ->
+            val href = a.attr("href").trim()
+            if (href.startsWith("http")) {
+                runCatching { loadExtractor(href, url, subtitleCallback, callback) }
+            }
+        }
+
+        // Also extract direct r2 / m3u8 links embedded in page script
+        Regex("""https?://[^\s"'<>]+(?:\.m3u8|cloudflarestorage\.com/[^\s"'<>]+)""")
+            .findAll(html).forEach { m ->
+                val streamUrl = m.value.trim()
+                callback.invoke(
+                    newExtractorLink(
+                        source = name,
+                        name = "$name - Direct [⚡]",
+                        url = streamUrl,
+                        type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                    ) {
+                        this.referer = url
+                        this.quality = Qualities.P1080.value
+                    }
+                )
+            }
+    }
+}
+
+class BollydriveMomExtractor : BollydriveExtractor() {
+    override val mainUrl = "https://bollydrive.mom"
+}
+
+// ─── FuckingFast (ffast_res) Extractor ───────────────────────────────────────
+
+open class FuckingfastExtractor : ExtractorApi() {
+    override val name = "FuckingFast"
+    override val mainUrl = "https://fuckingfast.net"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: mainUrl))).text
+        }.getOrNull() ?: return
+
+        // Direct download URL embedded in page or button href
+        val directMatch = Regex("""href=["'](https?://[^"']+(?:\.mp4|\.mkv|\.m3u8)[^"']*)["']""").find(html)?.groupValues?.get(1)
+            ?: Regex("""window\.location\.href\s*=\s*["'](https?://[^"']+)["']""").find(html)?.groupValues?.get(1)
+        if (!directMatch.isNullOrBlank()) {
+            callback.invoke(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - Fast CDN [⚡]",
+                    url = directMatch,
+                    type = if (directMatch.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                ) {
+                    this.referer = mainUrl
+                    this.quality = Qualities.P1080.value
+                }
+            )
+        }
+    }
+}
+
+// ─── Katdrive Extractor ───────────────────────────────────────────────────────
+
+open class KatdriveExtractor : ExtractorApi() {
+    override val name = "Katdrive"
+    override val mainUrl = "https://katdrive.click"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val fileId = Regex("""/(?:file|stream)/([0-9a-zA-Z]+)""").find(url)?.groupValues?.get(1) ?: return
+        val playUrl = "https://katdrive.click/play.php?id=$fileId"
+        val playHtml = runCatching {
+            app.get(playUrl, headers = mapOf("Referer" to "https://katdrive.click/stream/$fileId")).text
+        }.getOrNull() ?: return
+
+        val m3u8Url = Regex("""["']?(?:file|src)["']?\s*:\s*["'](https?://[^"']+\.m3u8[^"']*)["']""").find(playHtml)?.groupValues?.get(1)
+            ?: Regex("""https?://[^\s"'<>\)]+\.m3u8[^\s"'<>\)]*""").find(playHtml)?.value
+
+        if (!m3u8Url.isNullOrBlank()) {
+            callback.invoke(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - HLS [KatMovieHD ⚡]",
+                    url = m3u8Url,
+                    type = ExtractorLinkType.M3U8
+                ) {
+                    this.referer = "https://katdrive.click/"
+                    this.quality = Qualities.P1080.value
+                }
+            )
+        }
+    }
+}
+

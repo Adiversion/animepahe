@@ -446,7 +446,7 @@ class WaveFlixProvider : MainAPI() {
         // 7. Direct MultiMovies Integration (Cineverse / Filmu / Nexus / VidBolt / Vidrift)
         val multiMoviesJob = async {
             try {
-                queryMultiMovies(tmdbId, null, isMovie, season, episode, subtitleCallback, callback)
+                queryMultiMovies(tmdbId.toString(), null, isMovie, season, episode, subtitleCallback, callback)
             } catch (_: Throwable) {}
         }
 
@@ -468,7 +468,16 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
-        // 10. High-Reliability Redundant Fallback Extractors
+        // 10. KatMovieHD – Direct Indian cloud search via new.katmoviehd.top + links.kmhd.me
+        val katMovieJob = async {
+            if (!resolvedTitle.isNullOrBlank()) {
+                try {
+                    queryKatMovieHD(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 11. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
@@ -497,6 +506,7 @@ class WaveFlixProvider : MainAPI() {
         multiMoviesJob.await()
         desiSerialsJob.await()
         bollyflixJob.await()
+        katMovieJob.await()
         fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
@@ -637,6 +647,234 @@ class WaveFlixProvider : MainAPI() {
                     loadExtractor(link, episodeLink, subtitleCallback, callback)
                 }
             }
+        }
+    }
+
+    private suspend fun queryKatMovieHD(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) = coroutineScope {
+        val browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        val katHeaders = mapOf(
+            "User-Agent" to browserUA,
+            "Referer" to "https://new.katmoviehd.top/"
+        )
+
+        val cleanTitleKebab = query.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-')
+        val candidateSlugs = mutableListOf<String>()
+
+        // 1. Direct High-Probability Slug Guesses
+        if (isMovie) {
+            if (year != null) {
+                candidateSlugs.add("$cleanTitleKebab-$year-hindi")
+                candidateSlugs.add("$cleanTitleKebab-$year")
+            }
+            candidateSlugs.add("$cleanTitleKebab-hindi")
+            candidateSlugs.add(cleanTitleKebab)
+        } else {
+            candidateSlugs.add("$cleanTitleKebab-s$season-hindi")
+            candidateSlugs.add("$cleanTitleKebab-s0$season-hindi")
+            candidateSlugs.add("$cleanTitleKebab-season-$season-hindi")
+            candidateSlugs.add("$cleanTitleKebab-hindi")
+        }
+
+        // 2. Scan KatMovieHD recent posts & catalog SSR pages for matching title tokens
+        val tokens = cleanTitleKebab.split("-").filter { it.length > 2 }
+        if (tokens.isNotEmpty()) {
+            val pagesToScan = listOf("https://new.katmoviehd.top/", "https://new.katmoviehd.top/?page=2")
+            pagesToScan.forEach { pageUrl ->
+                val pageHtml = runCatching {
+                    app.get(pageUrl, headers = katHeaders, timeout = 7).text
+                }.getOrNull()
+                if (!pageHtml.isNullOrBlank()) {
+                    Regex("""slug:"([a-z0-9\-]+)"""").findAll(pageHtml).forEach { m ->
+                        val slug = m.groupValues[1]
+                        if (tokens.any { slug.contains(it) }) {
+                            candidateSlugs.add(slug)
+                        }
+                    }
+                }
+            }
+        }
+
+        val uniqueSlugs = candidateSlugs.distinct().take(4)
+        if (uniqueSlugs.isEmpty()) return@coroutineScope
+
+        // 3. For each candidate slug, fetch post HTML & resolve kmhd.me play/file/pack links
+        val slugJobs = uniqueSlugs.map { slug ->
+            async {
+                try {
+                    val postUrl = "https://new.katmoviehd.top/$slug/"
+                    val postHtml = runCatching {
+                        app.get(postUrl, headers = katHeaders, timeout = 8).text
+                    }.getOrNull() ?: return@async
+
+                    // Extract all kmhd.me play links, file links, and pack links
+                    val playIds = Regex("""links\.kmhd\.me/play\?id=([a-zA-Z0-9_\-]+)""").findAll(postHtml)
+                        .map { it.groupValues[1] }.distinct().toList()
+                    val fileIds = Regex("""links\.kmhd\.me/file/([a-zA-Z0-9_\-]+)""").findAll(postHtml)
+                        .map { it.groupValues[1] }.distinct().toList()
+                    val packIds = Regex("""links\.kmhd\.me/pack/([a-zA-Z0-9_\-]+)""").findAll(postHtml)
+                        .map { it.groupValues[1] }.distinct().toList()
+
+                    // Resolve TV pack pages first if it's a TV show
+                    if (!isMovie && packIds.isNotEmpty()) {
+                        packIds.take(3).forEach { packId ->
+                            try {
+                                resolveKmhdPack(packId, season, episode, katHeaders, callback)
+                            } catch (_: Throwable) {}
+                        }
+                    }
+
+                    // Resolve play?id pages
+                    val playJobs = playIds.take(4).map { packId ->
+                        async {
+                            try {
+                                resolveKmhdPlay(packId, isMovie, season, episode, katHeaders, callback)
+                            } catch (_: Throwable) {}
+                        }
+                    }
+
+                    // Resolve individual file links directly
+                    val fileJobs = fileIds.take(6).map { fileId ->
+                        async {
+                            try {
+                                resolveKmhdFile(fileId, katHeaders, callback)
+                            } catch (_: Throwable) {}
+                        }
+                    }
+
+                    (playJobs + fileJobs).forEach { it.await() }
+                } catch (_: Throwable) {}
+            }
+        }
+        slugJobs.forEach { it.await() }
+    }
+
+    /**
+     * Resolves a links.kmhd.me/pack/{packId} TV pack page.
+     * Maps episodes to file IDs and queries touchme API for matching episode.
+     */
+    private suspend fun resolveKmhdPack(
+        packId: String,
+        season: Int,
+        episode: Int,
+        katHeaders: Map<String, String>,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val packUrl = "https://links.kmhd.me/pack/$packId"
+        val packHtml = runCatching {
+            app.get(packUrl, headers = katHeaders, timeout = 8).text
+        }.getOrNull() ?: return
+
+        // Pattern matching for target episode e.g. S03E01, 3x01, or Episode 01
+        val epPattern = Regex("""(?:S0?${season}E0?${episode}|${season}x0?${episode}|E0?${episode}\b|Episode\s*0?${episode}\b)""", RegexOption.IGNORE_CASE)
+
+        // Parse info object: info:{ FileId: { name: "..." }, ... }
+        val infoMatches = Regex("""([a-zA-Z0-9_\-]+)\s*:\s*\{\s*name\s*:\s*"([^"]+)"""").findAll(packHtml)
+        var matchedFileId: String? = null
+        for (m in infoMatches) {
+            val fileId = m.groupValues[1]
+            val fileName = m.groupValues[2]
+            if (epPattern.containsMatchIn(fileName)) {
+                matchedFileId = fileId
+                break
+            }
+        }
+
+        if (matchedFileId != null) {
+            resolveKmhdFile(matchedFileId, katHeaders, callback)
+        }
+    }
+
+    /**
+     * Resolves a links.kmhd.me/play?id={playId} page.
+     */
+    private suspend fun resolveKmhdPlay(
+        playId: String,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        katHeaders: Map<String, String>,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val playUrl = "https://links.kmhd.me/play?id=$playId"
+        val playHtml = runCatching {
+            app.get(playUrl, headers = katHeaders, timeout = 8).text
+        }.getOrNull() ?: return
+
+        // Direct Streamtape embed resolution from inline script
+        Regex("""streamtape_res\s*:\s*"([a-zA-Z0-9_\-]+)"""").findAll(playHtml).forEach { m ->
+            val tapeId = m.groupValues[1]
+            if (tapeId != "None" && tapeId.isNotBlank()) {
+                runCatching {
+                    loadExtractor("https://streamtape.com/e/$tapeId", playUrl, { _ -> }, callback)
+                }
+            }
+        }
+
+        // Direct Streamwish embed resolution from inline script
+        Regex("""streamwish_res\s*:\s*"([a-zA-Z0-9_\-]+)"""").findAll(playHtml).forEach { m ->
+            val wishId = m.groupValues[1]
+            if (wishId != "None" && wishId.isNotBlank()) {
+                runCatching {
+                    loadExtractor("https://hglink.to/e/$wishId", playUrl, { _ -> }, callback)
+                }
+            }
+        }
+
+        // Extract FileIds embedded in info block
+        val fileIds = Regex("""([a-zA-Z0-9_\-]+)\s*:\s*\{[^}]*name""").findAll(playHtml)
+            .map { it.groupValues[1] }
+            .filter { it != "info" && it != "data" && it != "page_ads" }
+            .distinct()
+            .toList()
+
+        fileIds.take(4).forEach { fileId ->
+            resolveKmhdFile(fileId, katHeaders, callback)
+        }
+    }
+
+    /**
+     * Resolves a links.kmhd.me fileId via the touchme API.
+     * Hubdrive (Hubcloud R2/PixelServer), Streamtape, Streamwish, and Katdrive.
+     */
+    private suspend fun resolveKmhdFile(
+        fileId: String,
+        katHeaders: Map<String, String>,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val resolvers = listOf(
+            "hubdrive_res"   to "https://hubcloud.ist/drive/",
+            "streamtape_res" to "https://streamtape.com/e/",
+            "streamwish_res" to "https://hglink.to/e/",
+            "katdrive_res"   to "https://katdrive.click/file/"
+        )
+
+        resolvers.forEach { (resolver, baseUrl) ->
+            try {
+                val touchmeUrl = "https://links.kmhd.me/api/touchme/$fileId?c=$resolver"
+                val resp = app.post(
+                    touchmeUrl,
+                    headers = katHeaders + mapOf("Content-Type" to "application/json", "X-Requested-With" to "XMLHttpRequest"),
+                    timeout = 7
+                ).text
+
+                if (Regex(""""status"\s*:\s*"Done"""").containsMatchIn(resp)) {
+                    val linkId = Regex(""""linkId"\s*:\s*"([^"]+)"""").find(resp)?.groupValues?.get(1)
+                    if (!linkId.isNullOrBlank() && linkId != "None") {
+                        val fullUrl = if (linkId.startsWith("http")) linkId else baseUrl + linkId
+                        runCatching {
+                            loadExtractor(fullUrl, "https://links.kmhd.me/", { _ -> }, callback)
+                        }
+                    }
+                }
+            } catch (_: Throwable) {}
         }
     }
 
