@@ -85,7 +85,7 @@ jobs:
           cp repo.json $GITHUB_WORKSPACE/builds/repo.json || true
           cp icon.png $GITHUB_WORKSPACE/builds/icon.png || true
           cp logo.png $GITHUB_WORKSPACE/builds/logo.png || true
-          cp icon.png $GITHUB_WORKSPACE/builds/AnimePahe_icon.png || true
+          cp AnimePaheProvider/icon.png $GITHUB_WORKSPACE/builds/AnimePahe_icon.png || true
           cp build_output.log $GITHUB_WORKSPACE/builds/build_output.log || true
           echo "Builds contents:"
           ls -la $GITHUB_WORKSPACE/builds/
