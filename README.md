@@ -1,12 +1,16 @@
-# AnimePahe CloudStream Extension
+# csext — CloudStream Extensions
 
-AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/cloudstream).
+Production-grade CloudStream 3 provider extensions repository featuring:
+- **AnimePahe**: Fast anime streaming and downloads via unpacked Kwik and Pahe stream resolvers.
+- **WaveFlix**: Full Movies, TV Series, and Anime streaming via multi-server playback engine (Nxsha, ScreenScape, Peachify, VidSrc, AutoEmbed).
+
+---
 
 ## Features
-- **Browse**: Airing releases and latest episodes on the main page.
-- **Search**: Fast anime search with titles and poster thumbnails.
-- **Details**: Synopses, air years, episode counts, genres, MAL and AniList external IDs.
-- **Playback & Downloads**: High-speed streaming and downloads via unpacked Kwik (`.m3u8` / `.mp4`) and Pahe stream resolvers.
+- **Browse**: Airing anime, trending movies, TV shows, and top-rated media catalog feeds.
+- **Search**: High-speed search with TMDB poster thumbnails and synopses.
+- **Details**: Full season and episode listings, synopsis, release years, and artwork.
+- **Multi-Server Streams**: Redundant stream extraction across multiple high-speed hosts.
 
 ---
 
@@ -14,8 +18,7 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
 
 1. **Host on GitHub**:
    - Repository: `https://github.com/Adiversion/csext`
-   - Go to your repository **Settings** > **Actions** > **General** > **Workflow permissions** and select **Read and write permissions**.
-   - Trigger the build workflow by pushing a commit. GitHub Actions will compile the extension and publish it to the `builds` branch.
+   - Trigger the build workflow by pushing a commit. GitHub Actions will compile the extensions and publish them to the `builds` branch.
 
 2. **Add Repository to CloudStream**:
    - Open CloudStream on your Android device / Android TV.
@@ -42,7 +45,7 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
      Tap this link on your Android phone or tablet:  
      [cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/csext/builds/repo.json](cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/csext/builds/repo.json)
 
-   - Tap **Download**, locate **AnimePahe** in the extension list, and click **Install**.
+   - Tap **Download**, locate **AnimePahe** or **WaveFlix** in the extension list, and click **Install**.
 
 ---
 
