@@ -22,17 +22,19 @@ Daemon will be stopped at the end of the build
 > Task :WaveFlixProvider:generateDebugRFile UP-TO-DATE
 > Task :AnimePaheProvider:writeCacheEntry UP-TO-DATE
 
-> Task :WaveFlixProvider:compileDebugKotlin
-e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/BollydriveExtractor.kt:10:12 Redeclaration:
-class BollydriveExtractor : ExtractorApi
-e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/BollydriveExtractor.kt:100:7 Redeclaration:
-class BollydriveMomExtractor : BollydriveExtractor
-e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/StreamExtractors.kt:510:12 Redeclaration:
-class BollydriveExtractor : ExtractorApi
-e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/StreamExtractors.kt:553:7 Redeclaration:
-class BollydriveMomExtractor : BollydriveExtractor
-
 > Task :WaveFlixProvider:compileDebugKotlin FAILED
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:913:19 Unresolved reference 'Jsoup'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:916:42 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:917:27 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:918:51 Return type mismatch: expected 'ERROR CLASS: Cannot infer type variable TypeVariable(_L)', actual 'kotlin.Unit'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:919:27 Unresolved reference 'attr'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:919:46 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:919:62 Unresolved reference 'selectFirst'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:966:39 Unresolved reference 'Jsoup'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:967:61 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:968:42 Unresolved reference 'attr'.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:973:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/csext/csext/src/WaveFlixProvider/src/main/kotlin/com/lagradost/WaveFlixProvider.kt:1014:18 Unresolved reference 'awaitAll'.
 
 FAILURE: Build failed with an exception.
 
