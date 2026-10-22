@@ -506,55 +506,6 @@ open class FilmuExtractor : ExtractorApi() {
     }
 }
 
-// ─── Bollydrive Extractors ────────────────────────────────────────────────────
-
-open class BollydriveExtractor : ExtractorApi() {
-    override val name = "Bollydrive"
-    override val mainUrl = "https://bollydrive.rest"
-    override val requiresReferer = false
-
-    override suspend fun getUrl(
-        url: String,
-        referer: String?,
-        subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
-    ) {
-        val html = runCatching {
-            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: mainUrl))).text
-        }.getOrNull() ?: return
-
-        val doc = Jsoup.parse(html)
-        // Bollydrive hosts links to vcloud, hubcloud, fastdl, pixeldrain etc.
-        doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fast-dl.'], a[href*='fastdl.'], a[href*='pixeldrain.'], a[href*='cloudflarestorage.com']").forEach { a ->
-            val href = a.attr("href").trim()
-            if (href.startsWith("http")) {
-                runCatching { loadExtractor(href, url, subtitleCallback, callback) }
-            }
-        }
-
-        // Also extract direct r2 / m3u8 links embedded in page script
-        Regex("""https?://[^\s"'<>]+(?:\.m3u8|cloudflarestorage\.com/[^\s"'<>]+)""")
-            .findAll(html).forEach { m ->
-                val streamUrl = m.value.trim()
-                callback.invoke(
-                    newExtractorLink(
-                        source = name,
-                        name = "$name - Direct [⚡]",
-                        url = streamUrl,
-                        type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                    ) {
-                        this.referer = url
-                        this.quality = Qualities.P1080.value
-                    }
-                )
-            }
-    }
-}
-
-class BollydriveMomExtractor : BollydriveExtractor() {
-    override val mainUrl = "https://bollydrive.mom"
-}
-
 // ─── FuckingFast (ffast_res) Extractor ───────────────────────────────────────
 
 open class FuckingfastExtractor : ExtractorApi() {
