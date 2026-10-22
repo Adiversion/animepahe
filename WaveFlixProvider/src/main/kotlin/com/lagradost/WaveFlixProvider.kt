@@ -177,12 +177,46 @@ class WaveFlixProvider : MainAPI() {
             "https://nxsha.space/embed/tv/$tmdbId/$season/$episode"
         }
 
+        val browserUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
         val nxshaHeaders = mapOf(
-            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "User-Agent" to browserUserAgent,
             "Referer" to nxshaReferer
         )
 
-        // 1. Query Nxsha Multi-Server Backbone Engine
+        // 1. Fetch Multi-Language Subtitles from Nxsha Subtitles Engine
+        val subtitleJob = async {
+            try {
+                val subPayload = """{"tmdbId":"$tmdbId","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+                val encSubQuery = NxshaCrypto.encrypt(subPayload)
+                val subUrl = "https://nxsha.space/api/subtitles?q=${URLEncoder.encode(encSubQuery, "UTF-8")}"
+
+                val subRes = app.get(subUrl, headers = nxshaHeaders, timeout = 7).text
+                val subHash = parseJson<NxshaHashResponse>(subRes).hash
+                if (!subHash.isNullOrBlank()) {
+                    val decryptedSubJson = NxshaCrypto.decrypt(subHash)
+                    if (!decryptedSubJson.isNullOrBlank()) {
+                        val subObj = parseJson<NxshaSubtitlesResponse>(decryptedSubJson)
+                        subObj.subtitles?.forEach { sub ->
+                            val trackUrl = sub.url ?: sub.uri
+                            if (!trackUrl.isNullOrBlank()) {
+                                val langLabel = sub.title ?: sub.label ?: sub.language ?: sub.srclang ?: "English"
+                                subtitleCallback(
+                                    newSubtitleFile(
+                                        lang = langLabel,
+                                        url = trackUrl.trim()
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            } catch (_: Throwable) {
+                // Graceful fallback if subtitles fail
+            }
+        }
+
+        // 2. Query Nxsha Multi-Server Playback Engine
         try {
             val serverPayload = """{"tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
             val encServerQuery = NxshaCrypto.encrypt(serverPayload)
@@ -195,11 +229,11 @@ class WaveFlixProvider : MainAPI() {
                 val decryptedServerJson = NxshaCrypto.decrypt(serverHash)
                 if (!decryptedServerJson.isNullOrBlank()) {
                     val serverList = parseJson<NxshaServerList>(decryptedServerJson)
+                    // Query all available online web servers concurrently
                     val activeServers = serverList.servers?.filter {
                         it.webSupport != false && !it.scraper.isNullOrBlank() && it.status != "offline"
-                    }?.take(14) ?: emptyList()
+                    } ?: emptyList()
 
-                    // Concurrently fetch sources from active servers
                     val serverJobs = activeServers.map { srv ->
                         async {
                             try {
@@ -221,9 +255,11 @@ class WaveFlixProvider : MainAPI() {
                                         val qualityInt = parseQuality(qualityLabel)
                                         val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
 
+                                        val streamReferer = src.headers?.get("Referer") ?: nxshaReferer
+
                                         if (src.isEmbed == true || src.type?.lowercase() == "embed") {
                                             try {
-                                                loadExtractor(streamUrl, nxshaReferer, subtitleCallback, callback)
+                                                loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
                                             } catch (_: Throwable) {}
                                         } else {
                                             val link = newExtractorLink(
@@ -232,7 +268,12 @@ class WaveFlixProvider : MainAPI() {
                                                 url = streamUrl,
                                                 type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                                             ) {
-                                                this.referer = src.headers?.get("Referer") ?: nxshaReferer
+                                                this.referer = streamReferer
+                                                this.headers = mapOf(
+                                                    "User-Agent" to browserUserAgent,
+                                                    "Referer" to streamReferer,
+                                                    "Origin" to "https://nxsha.space"
+                                                )
                                                 this.quality = qualityInt
                                             }
                                             callback(link)
@@ -240,7 +281,7 @@ class WaveFlixProvider : MainAPI() {
                                     }
                                 }
                             } catch (_: Throwable) {
-                                // Gracefully skip failed server
+                                // Skip individual server failure silently
                             }
                         }
                     }
@@ -252,7 +293,7 @@ class WaveFlixProvider : MainAPI() {
             // Nxsha backbone error handled
         }
 
-        // 2. High-Reliability Redundant Fallback Extractors
+        // 3. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
@@ -271,6 +312,7 @@ class WaveFlixProvider : MainAPI() {
         }
 
         fallbackJobs.forEach { it.await() }
+        subtitleJob.await()
         true
     }
 
@@ -394,6 +436,21 @@ class WaveFlixProvider : MainAPI() {
         @JsonProperty("label") val label: String? = null,
         @JsonProperty("isEmbed") val isEmbed: Boolean? = null,
         @JsonProperty("type") val type: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaSubtitlesResponse(
+        @JsonProperty("subtitles") val subtitles: List<NxshaSubtitleItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaSubtitleItem(
+        @JsonProperty("language") val language: String? = null,
+        @JsonProperty("srclang") val srclang: String? = null,
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("label") val label: String? = null,
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("uri") val uri: String? = null
     )
 
     // Nxsha AES-256-CBC Crypto Implementation (OpenSSL EVP_BytesToKey)
