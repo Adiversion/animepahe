@@ -254,29 +254,43 @@ class WaveFlixProvider : MainAPI() {
                                         val qualityLabel = src.label ?: src.quality ?: "Auto"
                                         val qualityInt = parseQuality(qualityLabel)
                                         val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
-
                                         val streamReferer = src.headers?.get("Referer") ?: nxshaReferer
+
+                                        val streamHeaders = mapOf(
+                                            "User-Agent" to browserUserAgent,
+                                            "Referer" to streamReferer,
+                                            "Origin" to "https://nxsha.space"
+                                        )
 
                                         if (src.isEmbed == true || src.type?.lowercase() == "embed") {
                                             try {
                                                 loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
                                             } catch (_: Throwable) {}
                                         } else {
-                                            val link = newExtractorLink(
-                                                source = "WaveFlix [$serverDisplayName]",
-                                                name = "$serverDisplayName - $qualityLabel",
-                                                url = streamUrl,
-                                                type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                                            ) {
-                                                this.referer = streamReferer
-                                                this.headers = mapOf(
-                                                    "User-Agent" to browserUserAgent,
-                                                    "Referer" to streamReferer,
-                                                    "Origin" to "https://nxsha.space"
-                                                )
-                                                this.quality = qualityInt
+                                            // Pre-validate stream to filter out 403 / 404 dead links
+                                            val isPlayable = try {
+                                                val check = app.get(streamUrl, headers = streamHeaders, timeout = 3)
+                                                check.code in 200..299
+                                            } catch (_: Throwable) {
+                                                // If probe times out, still give stream benefit of the doubt
+                                                true
                                             }
-                                            callback(link)
+
+                                            if (isPlayable) {
+                                                val link = newExtractorLink(
+                                                    source = "WaveFlix [$serverDisplayName]",
+                                                    name = "$serverDisplayName - $qualityLabel",
+                                                    url = streamUrl,
+                                                    type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                                ) {
+                                                    this.referer = streamReferer
+                                                    this.headers = streamHeaders
+                                                    this.quality = qualityInt
+                                                }
+                                                synchronized(callback) {
+                                                    callback(link)
+                                                }
+                                            }
                                         }
                                     }
                                 }
