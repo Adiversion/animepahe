@@ -35,7 +35,7 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
      Tap this link on your Android phone or tablet:  
      [cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json](cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
 
-   - Tap **Download**, locate **AnimePahe** or **HDhub4u** in the extension list, and click **Install**.
+   - Tap **Download**, locate **AnimePahe** in the extension list, and click **Install**.
 
 ---
 

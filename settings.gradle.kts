@@ -1,7 +1,4 @@
 rootProject.name = "CloudstreamPlugins"
 
-// Explicitly include AnimePaheProvider, HDhub4uProvider, and RogmoviesProvider plugin modules
+// Explicitly include AnimePaheProvider plugin module
 include("AnimePaheProvider")
-include("HDhub4uProvider")
-include("RogmoviesProvider")
-include("BollyStreamProvider")
