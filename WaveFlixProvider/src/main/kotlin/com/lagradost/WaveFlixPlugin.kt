@@ -33,5 +33,11 @@ class WaveFlixPlugin : Plugin() {
         // KatMovieHD auxiliary extractors
         registerExtractorAPI(FuckingfastExtractor())
         registerExtractorAPI(KatdriveExtractor())
+
+        // HDHub4u & Greenmotors auxiliary extractors
+        registerExtractorAPI(GreenmotorsExtractor())
+        registerExtractorAPI(GreenmotorsClubExtractor())
+        registerExtractorAPI(HblinksExtractor())
+        registerExtractorAPI(HubcdnExtractor())
     }
 }

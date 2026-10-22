@@ -477,7 +477,16 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
-        // 11. High-Reliability Redundant Fallback Extractors
+        // 11. HDHub4u – Direct Indian cloud search via new8.hdhub4u.cl + greenmotors
+        val hdhub4uJob = async {
+            if (!resolvedTitle.isNullOrBlank()) {
+                try {
+                    queryHDHub4u(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 12. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
@@ -507,6 +516,7 @@ class WaveFlixProvider : MainAPI() {
         desiSerialsJob.await()
         bollyflixJob.await()
         katMovieJob.await()
+        hdhub4uJob.await()
         fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
@@ -876,6 +886,132 @@ class WaveFlixProvider : MainAPI() {
                 }
             } catch (_: Throwable) {}
         }
+    }
+
+    private suspend fun queryHDHub4u(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) = coroutineScope {
+        val browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        val hdhubHeaders = mapOf(
+            "User-Agent" to browserUA,
+            "Referer" to "https://new8.hdhub4u.cl/"
+        )
+
+        val cleanQuery = query.replace(Regex("""[^a-zA-Z0-9\s]"""), " ").trim()
+        val searchUrl = "https://new8.hdhub4u.cl/?s=${cleanQuery.replace(" ", "+")}"
+
+        val searchHtml = runCatching {
+            app.get(searchUrl, headers = hdhubHeaders, timeout = 8).text
+        }.getOrNull() ?: return@coroutineScope
+
+        val doc = Jsoup.parse(searchHtml)
+        val posts = mutableListOf<Pair<String, String>>() // (url, title)
+
+        doc.select("li.thumb").forEach { thumb ->
+            val a = thumb.selectFirst("figure a, figcaption a")
+            val href = a?.attr("href")?.trim() ?: return@forEach
+            val title = a.attr("aria-label").ifBlank { thumb.selectFirst("figcaption p")?.text() ?: "" }.trim()
+            if (href.isNotBlank() && title.isNotBlank()) {
+                val fullUrl = if (href.startsWith("http")) href else "https://new8.hdhub4u.cl" + (if (href.startsWith("/")) href else "/$href")
+                posts.add(fullUrl to title)
+            }
+        }
+
+        if (posts.isEmpty()) return@coroutineScope
+
+        val queryTokens = cleanQuery.lowercase().split(" ").filter { it.length > 2 }
+
+        val matchingPosts = posts.filter { (_, title) ->
+            val lower = title.lowercase()
+            val matchesTokens = if (queryTokens.isEmpty()) true else {
+                queryTokens.all { lower.contains(it) } || (queryTokens.size >= 2 && queryTokens.count { lower.contains(it) } >= queryTokens.size - 1)
+            }
+            if (!matchesTokens) return@filter false
+
+            if (isMovie) {
+                val isTvTitle = lower.contains("season") || lower.contains("all episode") || Regex("""\bs\d{1,2}\b""").containsMatchIn(lower)
+                if (isTvTitle) return@filter false
+                if (year != null) {
+                    val yearMatches = lower.contains(year.toString()) || lower.contains((year - 1).toString()) || lower.contains((year + 1).toString())
+                    yearMatches || queryTokens.size >= 2
+                } else true
+            } else {
+                val seasonPatterns = listOf(
+                    "season $season",
+                    "season 0$season",
+                    "s0$season",
+                    "s$season",
+                    "s $season"
+                )
+                seasonPatterns.any { lower.contains(it) }
+            }
+        }.take(3)
+
+        if (matchingPosts.isEmpty()) return@coroutineScope
+
+        val postJobs = matchingPosts.map { (postUrl, _) ->
+            async {
+                try {
+                    val postHtml = runCatching {
+                        app.get(postUrl, headers = hdhubHeaders, timeout = 8).text
+                    }.getOrNull() ?: return@async
+
+                    if (isMovie) {
+                        val docPost = Jsoup.parse(postHtml)
+                        docPost.select("a[href]").forEach { a ->
+                            val href = a.attr("href").trim()
+                            if (href.contains("greenmotors.") || href.contains("hubdrive.") ||
+                                href.contains("hubcloud.") || href.contains("hblinks.") ||
+                                href.contains("hubcdn.")) {
+                                runCatching {
+                                    loadExtractor(href, postUrl, subtitleCallback, callback)
+                                }
+                            }
+                        }
+                    } else {
+                        val padEp = episode.toString().padStart(2, '0')
+                        val rawEp = episode.toString()
+                        val epRegex = Regex("""(?:E|Episode|EP)[\s.-]*(?:0?$rawEp|$padEp)\b[^<]*?(?:<a[\s\S]*?<\/h[1-6]>|<a[\s\S]*?<\/p>|<a[\s\S]*?<\/div>|$)""", RegexOption.IGNORE_CASE)
+                        val epMatches = epRegex.findAll(postHtml).toList()
+
+                        if (epMatches.isNotEmpty()) {
+                            epMatches.forEach { m ->
+                                val aRegex = Regex("""href=["'](https?://[^"']+)["']""", RegexOption.IGNORE_CASE)
+                                aRegex.findAll(m.value).forEach { aMatch ->
+                                    val linkUrl = aMatch.groupValues[1]
+                                    if (linkUrl.contains("greenmotors.") || linkUrl.contains("hubdrive.") ||
+                                        linkUrl.contains("hubcloud.") || linkUrl.contains("hblinks.") ||
+                                        linkUrl.contains("hubcdn.")) {
+                                        runCatching {
+                                            loadExtractor(linkUrl, postUrl, subtitleCallback, callback)
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            val epHrefRegex = Regex("""<a[^>]*href=["'](https?://[^"']+)["'][^>]*>[\s\S]*?(?:E|Episode|EP)[\s.-]*(?:0?$rawEp|$padEp)\b[\s\S]*?<\/a>""", RegexOption.IGNORE_CASE)
+                            epHrefRegex.findAll(postHtml).forEach { m ->
+                                val linkUrl = m.groupValues[1]
+                                if (linkUrl.contains("greenmotors.") || linkUrl.contains("hubdrive.") ||
+                                    linkUrl.contains("hubcloud.") || linkUrl.contains("hblinks.") ||
+                                    linkUrl.contains("hubcdn.")) {
+                                    runCatching {
+                                        loadExtractor(linkUrl, postUrl, subtitleCallback, callback)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (_: Throwable) {}
+            }
+        }
+        postJobs.awaitAll()
     }
 
     private suspend fun queryBollyflix(

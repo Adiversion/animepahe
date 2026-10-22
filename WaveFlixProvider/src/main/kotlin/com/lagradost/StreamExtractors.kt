@@ -3,6 +3,7 @@ package com.lagradost
 import android.util.Base64
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.*
+import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import org.jsoup.Jsoup
 
 open class VCloudExtractor : ExtractorApi() {
@@ -627,4 +628,149 @@ open class KatdriveExtractor : ExtractorApi() {
         }
     }
 }
+
+// ─── Greenmotors Extractor ───────────────────────────────────────────────────
+
+data class GreenmotorsPayload(
+    val o: String? = null,
+    val l: String? = null,
+    val w: Int? = null
+)
+
+open class GreenmotorsExtractor : ExtractorApi() {
+    override val name = "Greenmotors"
+    override val mainUrl = "https://greenmotors.cc"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: "https://new8.hdhub4u.cl/"))).text
+        }.getOrNull() ?: return
+
+        // Extract inline s('o', '<ENCRYPTED_STRING>', 180*1000);
+        val match = Regex("""s\(['"]o['"],\s*['"]([A-Za-z0-9+/=]+)['"]""").find(html)?.groupValues?.get(1) ?: return
+        val s1 = runCatching { String(Base64.decode(match, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull() ?: return
+        val s2 = runCatching { String(Base64.decode(s1, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull() ?: return
+        val s3 = rot13(s2)
+        val s4 = runCatching { String(Base64.decode(s3, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull() ?: return
+        val json = runCatching { parseJson<GreenmotorsPayload>(s4) }.getOrNull() ?: return
+        val encO = json.o ?: return
+        val targetUrl = runCatching { String(Base64.decode(encO, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull() ?: return
+
+        if (targetUrl.startsWith("http")) {
+            if (targetUrl.endsWith(".mkv") || targetUrl.endsWith(".mp4") || targetUrl.contains("workers.dev")) {
+                callback.invoke(
+                    newExtractorLink(
+                        source = name,
+                        name = "$name - Direct Stream [⚡]",
+                        url = targetUrl,
+                        type = ExtractorLinkType.VIDEO
+                    ) {
+                        this.referer = ""
+                        this.quality = Qualities.P720.value
+                    }
+                )
+            } else {
+                loadExtractor(targetUrl, url, subtitleCallback, callback)
+            }
+        }
+    }
+
+    private fun rot13(str: String): String {
+        return str.map { c ->
+            when (c) {
+                in 'a'..'z' -> if (c <= 'm') c + 13 else c - 13
+                in 'A'..'Z' -> if (c <= 'M') c + 13 else c - 13
+                else -> c
+            }
+        }.joinToString("")
+    }
+}
+
+class GreenmotorsClubExtractor : GreenmotorsExtractor() {
+    override val mainUrl = "https://greenmotors.club"
+}
+
+// ─── HBLinks Extractor ───────────────────────────────────────────────────────
+
+open class HblinksExtractor : ExtractorApi() {
+    override val name = "HBLinks"
+    override val mainUrl = "https://hblinks.lol"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: mainUrl))).text
+        }.getOrNull() ?: return
+
+        val doc = Jsoup.parse(html)
+        doc.select("a[href]").forEach { a ->
+            val href = a.attr("href").trim()
+            if (href.startsWith("http") && !href.contains("hblinks.lol/category") && !href.contains("wp-admin")) {
+                when {
+                    href.contains("hubcloud.") || href.contains("hubdrive.") || href.contains("hubcdn.") ||
+                    href.contains("pixeldrain.") || href.contains("fastdl.") || href.contains("fuckingfast.") ||
+                    href.contains("gdtot.") || href.contains(".workers.dev") -> {
+                        loadExtractor(href, url, subtitleCallback, callback)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ─── HubCDN Extractor ────────────────────────────────────────────────────────
+
+open class HubcdnExtractor : ExtractorApi() {
+    override val name = "HubCDN"
+    override val mainUrl = "https://hubcdn.club"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: "https://hblinks.lol/"))).text
+        }.getOrNull() ?: return
+
+        val reurlParam = Regex("""[?&]r=([A-Za-z0-9+/=]+)""").find(html)?.groupValues?.get(1)
+        val decodedParam = if (!reurlParam.isNullOrBlank()) {
+            runCatching { String(Base64.decode(reurlParam, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull()
+        } else null
+
+        val streamUrl = (decodedParam ?: html).let { text ->
+            Regex("""[?&]link=(https?://[^"'\s&]+)""").find(text)?.groupValues?.get(1)
+                ?: Regex("""https?://[a-zA-Z0-9.-]+\.r2\.dev/[a-zA-Z0-9]+""").find(text)?.value
+                ?: Regex("""https?://[a-zA-Z0-9.-]+\.cloudflarestorage\.com/[^\s"'<>]+""").find(text)?.value
+        }
+
+        if (!streamUrl.isNullOrBlank()) {
+            callback.invoke(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - Direct [R2 Dev ⚡]",
+                    url = streamUrl,
+                    type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                ) {
+                    this.referer = ""
+                    this.quality = Qualities.P1080.value
+                }
+            )
+        }
+    }
+}
+
 
