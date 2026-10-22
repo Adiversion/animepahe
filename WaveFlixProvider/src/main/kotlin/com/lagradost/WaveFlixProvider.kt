@@ -269,11 +269,11 @@ class WaveFlixProvider : MainAPI() {
                                         } else {
                                             // Pre-validate stream to filter out 403 / 404 dead links
                                             val isPlayable = try {
-                                                val check = app.get(streamUrl, headers = streamHeaders, timeout = 3)
-                                                check.code in 200..299
+                                                val probeHeaders = streamHeaders + ("Range" to "bytes=0-1024")
+                                                val check = app.get(streamUrl, headers = probeHeaders, timeout = 5)
+                                                check.isSuccessful || check.code in 200..299
                                             } catch (_: Throwable) {
-                                                // If probe times out, still give stream benefit of the doubt
-                                                true
+                                                false
                                             }
 
                                             if (isPlayable) {
