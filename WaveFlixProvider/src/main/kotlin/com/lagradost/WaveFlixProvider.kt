@@ -8,7 +8,9 @@ import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import org.jsoup.Jsoup
 import java.net.URLEncoder
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -964,7 +966,7 @@ class WaveFlixProvider : MainAPI() {
 
                     if (isMovie) {
                         val docPost = Jsoup.parse(postHtml)
-                        docPost.select("a[href]").forEach { a ->
+                        for (a in docPost.select("a[href]")) {
                             val href = a.attr("href").trim()
                             if (href.contains("greenmotors.") || href.contains("hubdrive.") ||
                                 href.contains("hubcloud.") || href.contains("hblinks.") ||
@@ -981,9 +983,9 @@ class WaveFlixProvider : MainAPI() {
                         val epMatches = epRegex.findAll(postHtml).toList()
 
                         if (epMatches.isNotEmpty()) {
-                            epMatches.forEach { m ->
-                                val aRegex = Regex("""href=["'](https?://[^"']+)["']""", RegexOption.IGNORE_CASE)
-                                aRegex.findAll(m.value).forEach { aMatch ->
+                            val aRegex = Regex("""href=["'](https?://[^"']+)["']""", RegexOption.IGNORE_CASE)
+                            for (m in epMatches) {
+                                for (aMatch in aRegex.findAll(m.value)) {
                                     val linkUrl = aMatch.groupValues[1]
                                     if (linkUrl.contains("greenmotors.") || linkUrl.contains("hubdrive.") ||
                                         linkUrl.contains("hubcloud.") || linkUrl.contains("hblinks.") ||
@@ -996,7 +998,7 @@ class WaveFlixProvider : MainAPI() {
                             }
                         } else {
                             val epHrefRegex = Regex("""<a[^>]*href=["'](https?://[^"']+)["'][^>]*>[\s\S]*?(?:E|Episode|EP)[\s.-]*(?:0?$rawEp|$padEp)\b[\s\S]*?<\/a>""", RegexOption.IGNORE_CASE)
-                            epHrefRegex.findAll(postHtml).forEach { m ->
+                            for (m in epHrefRegex.findAll(postHtml)) {
                                 val linkUrl = m.groupValues[1]
                                 if (linkUrl.contains("greenmotors.") || linkUrl.contains("hubdrive.") ||
                                     linkUrl.contains("hubcloud.") || linkUrl.contains("hblinks.") ||
