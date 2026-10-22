@@ -23,10 +23,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/csext/builds/WaveFlix_icon.png",
-        "fileHash": "sha256-10ae2707be48780cd11f9690b1007a1033484cebc5a79d053ca1b8e9944603c0",
+        "fileHash": "sha256-55cc05b76391409c97069fa8724ec47b298c8f750d984d11225e44f808bcd78e",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/csext",
-        "fileSize": 40547,
+        "fileSize": 40598,
         "status": 1,
         "language": "en",
         "authors": [
@@ -37,7 +37,7 @@
             "TvSeries",
             "Anime"
         ],
-        "version": 4,
+        "version": 5,
         "internalName": "WaveFlixProvider",
         "description": "WaveFlix TMDB discovery frontend with multi-server playback engine (Nxsha, ScreenScape, Peachify).",
         "url": "https://raw.githubusercontent.com/Adiversion/csext/builds/WaveFlixProvider.cs3",
