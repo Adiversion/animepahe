@@ -229,9 +229,9 @@ class WaveFlixProvider : MainAPI() {
                 val decryptedServerJson = NxshaCrypto.decrypt(serverHash)
                 if (!decryptedServerJson.isNullOrBlank()) {
                     val serverList = parseJson<NxshaServerList>(decryptedServerJson)
-                    // Query all available online web servers concurrently
+                    // Query all 33 available servers concurrently (including 4K UHD & direct cloud scrapers)
                     val activeServers = serverList.servers?.filter {
-                        it.webSupport != false && !it.scraper.isNullOrBlank() && it.status != "offline"
+                        !it.scraper.isNullOrBlank() && it.status != "offline"
                     } ?: emptyList()
 
                     val serverJobs = activeServers.map { srv ->
