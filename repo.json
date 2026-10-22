@@ -1,9 +1,9 @@
 {
-  "name": "Adiversion",
-  "iconUrl": "https://raw.githubusercontent.com/Adiversion/animepahe/builds/logo.png",
-  "description": "Adiversion's CloudStream repository with clean, open-source extensions.",
+  "name": "csext",
+  "iconUrl": "https://raw.githubusercontent.com/Adiversion/csext/builds/logo.png",
+  "description": "csext CloudStream repository with clean, open-source extensions.",
   "manifestVersion": 1,
   "pluginLists": [
-    "https://raw.githubusercontent.com/Adiversion/animepahe/builds/plugins.json"
+    "https://raw.githubusercontent.com/Adiversion/csext/builds/plugins.json"
   ]
 }
