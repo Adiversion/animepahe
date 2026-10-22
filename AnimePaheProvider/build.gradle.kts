@@ -18,5 +18,5 @@ cloudstream {
         "Anime",
         "OVA"
     )
-    iconUrl = "https://raw.githubusercontent.com/Adiversion/animepahe/builds/logo.png"
+    iconUrl = "https://raw.githubusercontent.com/Adiversion/csext/builds/logo.png"
 }

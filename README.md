@@ -13,7 +13,7 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
 ## How to Install in CloudStream
 
 1. **Host on GitHub**:
-   - Repository: `https://github.com/Adiversion/animepahe`
+   - Repository: `https://github.com/Adiversion/csext`
    - Go to your repository **Settings** > **Actions** > **General** > **Workflow permissions** and select **Read and write permissions**.
    - Trigger the build workflow by pushing a commit. GitHub Actions will compile the extension and publish it to the `builds` branch.
 
@@ -35,12 +35,12 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
 
    - **Method C (Direct Full URL):**
      ```text
-     https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json
+     https://raw.githubusercontent.com/Adiversion/csext/builds/repo.json
      ```
    
    - **Method D (One-Click Auto-Add on Android):**  
      Tap this link on your Android phone or tablet:  
-     [cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json](cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
+     [cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/csext/builds/repo.json](cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/csext/builds/repo.json)
 
    - Tap **Download**, locate **AnimePahe** in the extension list, and click **Install**.
 
