@@ -3,15 +3,12 @@ package com.lagradost
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
-import com.lagradost.cloudstream3.LoadResponse.Companion.addAniListId
-import com.lagradost.cloudstream3.LoadResponse.Companion.addMalId
-import com.lagradost.cloudstream3.LoadResponse.Companion.addTrailer
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import org.jsoup.Jsoup
+import java.net.URLEncoder
 
 class WaveFlixProvider : MainAPI() {
     override var name = "WaveFlix"
@@ -62,7 +59,8 @@ class WaveFlixProvider : MainAPI() {
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
-        val searchUrl = "$mainUrl/api/search?q=${query.encodeUri()}"
+        val encodedQuery = URLEncoder.encode(query, "UTF-8")
+        val searchUrl = "$mainUrl/api/search?q=$encodedQuery"
         val res = app.get(searchUrl, headers = commonHeaders)
             .parsedSafe<WaveSearchResponse>() ?: return emptyList()
 
@@ -98,7 +96,7 @@ class WaveFlixProvider : MainAPI() {
                 tmdbId = tmdbId,
                 isMovie = true
             )
-            return newMovieLoadResponse(cleanTitle, url, TvType.Movie, toJson(linkData)) {
+            return newMovieLoadResponse(cleanTitle, url, TvType.Movie, linkData.toJson()) {
                 this.posterUrl = poster
                 this.plot = plot
                 this.year = year
@@ -134,7 +132,7 @@ class WaveFlixProvider : MainAPI() {
                     } else poster
 
                     episodes.add(
-                        newEpisode(toJson(epData)) {
+                        newEpisode(epData.toJson()) {
                             this.name = ep.name ?: "Episode ${ep.episodeNumber}"
                             this.season = seasonNum
                             this.episode = ep.episodeNumber
@@ -248,16 +246,16 @@ class WaveFlixProvider : MainAPI() {
                     val m3u8Matches = Regex("""https?://[^\s"'<>]+\.m3u8[^\s"'<>]*""").findAll(html)
                     for (m3u8 in m3u8Matches) {
                         val streamUrl = m3u8.value
-                        callback(
-                            ExtractorLink(
-                                source = serverName,
-                                name = "$serverName Auto HLS",
-                                url = streamUrl,
-                                referer = embedUrl,
-                                quality = Qualities.P1080.value,
-                                isM3u8 = true
-                            )
-                        )
+                        val link = newExtractorLink(
+                            source = serverName,
+                            name = "$serverName Auto HLS",
+                            url = streamUrl,
+                            type = ExtractorLinkType.M3U8
+                        ) {
+                            this.referer = embedUrl
+                            this.quality = Qualities.P1080.value
+                        }
+                        callback(link)
                     }
                 } catch (_: Throwable) {
                     // Fail gracefully per server
@@ -282,12 +280,10 @@ class WaveFlixProvider : MainAPI() {
         return if (isMovie) {
             newMovieSearchResponse(titleVal, targetUrl, TvType.Movie) {
                 this.posterUrl = poster
-                this.rating = this@toSearchResponse.rating?.times(10)?.toInt()
             }
         } else {
             newTvSeriesSearchResponse(titleVal, targetUrl, TvType.TvSeries) {
                 this.posterUrl = poster
-                this.rating = this@toSearchResponse.rating?.times(10)?.toInt()
             }
         }
     }
