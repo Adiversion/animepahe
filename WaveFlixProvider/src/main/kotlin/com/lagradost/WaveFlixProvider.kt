@@ -252,6 +252,15 @@ class WaveFlixProvider : MainAPI() {
                                     val streamUrl = src.url?.trim()
                                     if (!streamUrl.isNullOrBlank()) {
                                         val qualityLabel = src.label ?: src.quality ?: "Auto"
+
+                                        // Skip 10Gbps Google CDN download links that fail HTTP Range seeking and resume
+                                        if (streamUrl.contains("video-downloads.googleusercontent.com") ||
+                                            qualityLabel.contains("10Gbps", ignoreCase = true) ||
+                                            serverDisplayName.contains("10Gbps", ignoreCase = true)
+                                        ) {
+                                            return@forEach
+                                        }
+
                                         val qualityInt = parseQuality(qualityLabel)
                                         val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
                                         val streamReferer = src.headers?.get("Referer") ?: nxshaReferer
@@ -267,11 +276,11 @@ class WaveFlixProvider : MainAPI() {
                                                 loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
                                             } catch (_: Throwable) {}
                                         } else {
-                                            // Pre-validate stream to filter out 403 / 404 dead links
+                                            // Pre-validate stream to filter out 400 / 403 / 404 links and ensure Range seek support
                                             val isPlayable = try {
                                                 val probeHeaders = streamHeaders + ("Range" to "bytes=0-1024")
                                                 val check = app.get(streamUrl, headers = probeHeaders, timeout = 5)
-                                                check.isSuccessful || check.code in 200..299
+                                                (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403
                                             } catch (_: Throwable) {
                                                 false
                                             }

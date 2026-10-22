@@ -65,37 +65,7 @@ open class VCloudExtractor : ExtractorApi() {
             }
         }
 
-        val cdn10g = finalDoc.select("a:contains(10Gbps), a[href*='hubcloud.ist']")
-        cdn10g.forEach { a ->
-            val href = a.attr("href").trim()
-            if (href.startsWith("http")) {
-                runCatching {
-                    val resp = app.get(
-                        href,
-                        headers = mapOf("User-Agent" to USER_AGENT, "Referer" to url),
-                        allowRedirects = false,
-                        timeout = 6
-                    )
-                    val loc = resp.headers["Location"] ?: resp.headers["location"]
-                    val targetUrl = loc ?: href
-                    val directCdn = Regex("""link=([^&]+)""").find(targetUrl)?.groupValues?.get(1) ?: targetUrl
-                    if (directCdn.startsWith("http")) {
-                        callback.invoke(
-                            newExtractorLink(
-                                source = name,
-                                name = "$name - 10Gbps [Google CDN]",
-                                url = directCdn,
-                                type = ExtractorLinkType.VIDEO
-                            ) {
-                                this.referer = ""
-                                this.quality = Qualities.P1080.value
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
+        // Pixeldrain mirror resolution (supports HTTP Range seeking)
         finalDoc.select("a[href*='pixeldrain.dev'], a[href*='pixeldrain.com']").forEach { a ->
             val href = a.attr("href").trim()
             if (href.startsWith("http")) {
@@ -153,16 +123,16 @@ open class FastDLExtractor : ExtractorApi() {
             app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: mainUrl))).text
         }.getOrNull() ?: return
 
-        // 1. Direct reurl script detection
+        // 1. Direct reurl script detection (exclude non-seekable Google download links)
         val reurlMatch = Regex("""var\s+reurl\s*=\s*["']([^"']+)["']""").find(html)?.groupValues?.get(1)
-        if (!reurlMatch.isNullOrBlank()) {
-            val cdnMatch = Regex("""link=(https://video-downloads\.googleusercontent\.com/[^"'\s&]+)""").find(reurlMatch)
+        if (!reurlMatch.isNullOrBlank() && !reurlMatch.contains("video-downloads.googleusercontent.com")) {
+            val cdnMatch = Regex("""link=(https?://[^"'\s&]+)""").find(reurlMatch)
             val streamTarget = cdnMatch?.groupValues?.get(1) ?: reurlMatch
-            if (streamTarget.startsWith("http")) {
+            if (streamTarget.startsWith("http") && !streamTarget.contains("video-downloads.googleusercontent.com")) {
                 callback.invoke(
                     newExtractorLink(
                         source = name,
-                        name = "$name - Instant [Google CDN ⚡]",
+                        name = "$name - Instant Stream [⚡]",
                         url = streamTarget,
                         type = ExtractorLinkType.VIDEO
                     ) {
@@ -174,7 +144,7 @@ open class FastDLExtractor : ExtractorApi() {
             }
         }
 
-        // 2. Direct download button extraction
+        // 2. Direct download button extraction (exclude non-seekable Google download links)
         val btnMatch = Regex("""href=["'](dl\.php\?code=[^"']+)["']""").find(html)?.groupValues?.get(1)
         if (!btnMatch.isNullOrBlank()) {
             val cleanBtn = btnMatch.replace("&amp;", "&")
@@ -190,7 +160,7 @@ open class FastDLExtractor : ExtractorApi() {
                     timeout = 6
                 ).parsedSafe<Map<String, Any?>>()
                 val target = jsonRes?.get("url") as? String
-                if (!target.isNullOrBlank() && target.startsWith("http")) {
+                if (!target.isNullOrBlank() && target.startsWith("http") && !target.contains("video-downloads.googleusercontent.com")) {
                     callback.invoke(
                         newExtractorLink(
                             source = name,
