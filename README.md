@@ -18,20 +18,27 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
    - Trigger the build workflow by pushing a commit. GitHub Actions will compile the extension and publish it to the `builds` branch.
 
 2. **Add Repository to CloudStream**:
-   - Open CloudStream on your Android device.
+   - Open CloudStream on your Android device / Android TV.
    - Go to **Settings** > **Extensions** > **Add Repository**.
    
-   - **Method A (Short URL - Recommended & easiest to type):**
+   - **Method A (CloudStream Numeric Shortcode - Remote Keypad Friendly):**
+     In the **Repository URL or Shortcode** field, simply enter:
+     ```text
+     8966
+     ```
+     *(Resolves via `https://cutt.ly/8966` to the repository manifest)*
+
+   - **Method B (Short URL):**
      ```text
      https://tinyurl.com/2xr6vygq
      ```
-   
-   - **Method B (Full URL):**
+
+   - **Method C (Direct Full URL):**
      ```text
      https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json
      ```
    
-   - **Method C (One-Click Auto-Add on Android):**  
+   - **Method D (One-Click Auto-Add on Android):**  
      Tap this link on your Android phone or tablet:  
      [cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json](cloudstreamrepo://https://raw.githubusercontent.com/Adiversion/animepahe/builds/repo.json)
 
