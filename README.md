@@ -24,9 +24,9 @@ AnimePahe provider plugin for [CloudStream 3](https://github.com/recloudstream/c
    - **Method A (CloudStream Numeric Shortcode - Remote Keypad Friendly):**
      In the **Repository URL or Shortcode** field, simply enter:
      ```text
-     8966
+     3253
      ```
-     *(Resolves via `https://cutt.ly/8966` to the repository manifest)*
+     *(Resolves via `https://cutt.ly/3253` to the repository manifest)*
 
    - **Method B (Short URL):**
      ```text
