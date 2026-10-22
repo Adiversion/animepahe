@@ -16,6 +16,8 @@ class WaveFlixPlugin : Plugin() {
         registerExtractorAPI(NexdriveYouExtractor())
         registerExtractorAPI(NexdriveStoreExtractor())
         registerExtractorAPI(FastDLExtractor())
+        registerExtractorAPI(FastDlBeerExtractor())
+        registerExtractorAPI(FastDlLolExtractor())
         registerExtractorAPI(ZeeDlExtractor())
         registerExtractorAPI(DriveSeedExtractor())
         registerExtractorAPI(HubdriveExtractor())

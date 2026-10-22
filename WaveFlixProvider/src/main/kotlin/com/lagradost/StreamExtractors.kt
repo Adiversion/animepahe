@@ -91,7 +91,7 @@ open class NexdriveExtractor : ExtractorApi() {
         }.getOrNull() ?: return
 
         val doc = Jsoup.parse(html)
-        doc.select("a[href*='vcloud.'], a[href*='fast-dl.'], a[href*='zee-dl.'], a[href*='gofile.io'], a[href*='filebee.'], a[href*='filepress.'], a[href*='one.vegadrive']").forEach { a ->
+        doc.select("a[href*='vcloud.'], a[href*='fast-dl.'], a[href*='fastdl.'], a[href*='zee-dl.'], a[href*='zeedl.'], a[href*='gofile.io'], a[href*='filebee.'], a[href*='filepress.'], a[href*='one.vegadrive']").forEach { a ->
             val href = a.attr("href").trim()
             if (href.startsWith("http")) {
                 loadExtractor(href, url, subtitleCallback, callback)
@@ -181,6 +181,14 @@ open class FastDLExtractor : ExtractorApi() {
 class ZeeDlExtractor : FastDLExtractor() {
     override val name = "Zee-DL"
     override val mainUrl = "https://zee-dl.lol"
+}
+
+class FastDlBeerExtractor : FastDLExtractor() {
+    override val mainUrl = "https://fastdl.beer"
+}
+
+class FastDlLolExtractor : FastDLExtractor() {
+    override val mainUrl = "https://fastdl.lol"
 }
 
 open class DriveSeedExtractor : ExtractorApi() {

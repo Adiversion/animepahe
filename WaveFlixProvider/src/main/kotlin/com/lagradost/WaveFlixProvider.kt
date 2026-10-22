@@ -100,7 +100,9 @@ class WaveFlixProvider : MainAPI() {
         if (isMovie) {
             val linkData = WaveLinkData(
                 tmdbId = tmdbId,
-                isMovie = true
+                isMovie = true,
+                title = cleanTitle,
+                year = year
             )
             return newMovieLoadResponse(cleanTitle, url, TvType.Movie, linkData.toJson()) {
                 this.posterUrl = poster
@@ -130,7 +132,9 @@ class WaveFlixProvider : MainAPI() {
                         tmdbId = tmdbId,
                         isMovie = false,
                         season = seasonNum,
-                        episode = ep.episodeNumber
+                        episode = ep.episodeNumber,
+                        title = cleanTitle,
+                        year = year
                     )
 
                     val epPoster = if (!ep.stillPath.isNullOrBlank()) {
@@ -413,7 +417,22 @@ class WaveFlixProvider : MainAPI() {
             } catch (_: Throwable) {}
         }
 
-        // 5. High-Reliability Redundant Fallback Extractors
+        // 5. Direct RogMovies Indian Cloud & Multi-Audio Integration
+        val rogMoviesJob = async {
+            try {
+                val titleToSearch = linkData.title ?: runCatching {
+                    val tmdbMetaUrl = "https://api.themoviedb.org/3/${if (isMovie) "movie" else "tv"}/$tmdbId?api_key=e6c2364656962cbcb82dd76660285f39"
+                    val json = app.get(tmdbMetaUrl, timeout = 5).parsedSafe<Map<String, Any?>>()
+                    (json?.get("title") ?: json?.get("name")) as? String
+                }.getOrNull()
+
+                if (!titleToSearch.isNullOrBlank()) {
+                    queryRogMovies(titleToSearch, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                }
+            } catch (_: Throwable) {}
+        }
+
+        // 6. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
@@ -437,9 +456,56 @@ class WaveFlixProvider : MainAPI() {
 
         netMirrorJob.await()
         vidlinkJob.await()
+        rogMoviesJob.await()
         fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
+    }
+
+    private suspend fun queryRogMovies(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val searchUrl = "https://rogmovies.one/ts-search.php?q=${URLEncoder.encode(query, "UTF-8")}&page=1"
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "https://rogmovies.one/?s="
+        )
+        val jsonRes = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7).text
+        }.getOrNull() ?: return
+
+        val data = runCatching { parseJson<RogSearchResponse>(jsonRes) }.getOrNull() ?: return
+        val hits = data.hits ?: return
+
+        val cleanQuery = query.lowercase().trim()
+        val relevantHits = hits.filter { hit ->
+            val hitTitle = hit.document?.post_title?.lowercase() ?: ""
+            hitTitle.contains(cleanQuery)
+        }
+
+        relevantHits.take(2).forEach { hit ->
+            val permalink = hit.document?.permalink ?: return@forEach
+            val postUrl = if (permalink.startsWith("http")) permalink else "https://rogmovies.one$permalink"
+            val postHtml = runCatching {
+                app.get(postUrl, headers = headers, timeout = 8).text
+            }.getOrNull() ?: return@forEach
+
+            val doc = org.jsoup.Jsoup.parse(postHtml)
+            doc.select("a[href*='nexdrive.'], a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
+                val href = a.attr("href").trim()
+                if (href.startsWith("http")) {
+                    runCatching {
+                        loadExtractor(href, postUrl, subtitleCallback, callback)
+                    }
+                }
+            }
+        }
     }
 
     private fun parseQuality(qualityStr: String?): Int {
@@ -523,7 +589,27 @@ class WaveFlixProvider : MainAPI() {
         val tmdbId: Long,
         val isMovie: Boolean,
         val season: Int? = null,
-        val episode: Int? = null
+        val episode: Int? = null,
+        val title: String? = null,
+        val year: Int? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class RogSearchResponse(
+        @JsonProperty("found") val found: Int? = null,
+        @JsonProperty("hits") val hits: List<RogHitItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class RogHitItem(
+        @JsonProperty("document") val document: RogDocument? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class RogDocument(
+        @JsonProperty("id") val id: String? = null,
+        @JsonProperty("post_title") val post_title: String? = null,
+        @JsonProperty("permalink") val permalink: String? = null
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
