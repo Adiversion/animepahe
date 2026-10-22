@@ -26,5 +26,8 @@ class WaveFlixPlugin : Plugin() {
         registerExtractorAPI(BollydriveMomExtractor())
         registerExtractorAPI(GroundbanksExtractor())
         registerExtractorAPI(TvlogyExtractor())
+        registerExtractorAPI(TvarticlesExtractor())
+        registerExtractorAPI(CineverseExtractor())
+        registerExtractorAPI(FilmuExtractor())
     }
 }

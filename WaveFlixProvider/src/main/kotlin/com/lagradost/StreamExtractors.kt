@@ -415,3 +415,93 @@ open class TvlogyExtractor : ExtractorApi() {
         }
     }
 }
+
+open class TvarticlesExtractor : ExtractorApi() {
+    override val name = "Tvarticles"
+    override val mainUrl = "https://tvarticles.org"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("Referer" to (referer ?: "https://www.desi-serials.to/"))).text
+        }.getOrNull() ?: return
+
+        val iframe = Regex("""<iframe[^>]*src=["']([^"']+)["']""").find(html)?.groupValues?.get(1)
+        if (!iframe.isNullOrBlank()) {
+            loadExtractor(iframe, url, subtitleCallback, callback)
+        }
+    }
+}
+
+open class CineverseExtractor : ExtractorApi() {
+    override val name = "Cineverse"
+    override val mainUrl = "https://rozgarlelo.modiplay.xyz"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("Referer" to (referer ?: "https://m1.multimovies.courses/"))).text
+        }.getOrNull() ?: return
+
+        val iframeSrc = Regex("""<iframe[^>]*src=["']([^"']+)["']""").find(html)?.groupValues?.get(1)
+        val targetUrl = if (!iframeSrc.isNullOrBlank()) {
+            if (iframeSrc.startsWith("http")) iframeSrc else "https://rozgarlelo.modiplay.xyz$iframeSrc"
+        } else url
+
+        val proxyHtml = if (targetUrl != url) {
+            runCatching {
+                app.get(targetUrl, headers = mapOf("Referer" to url)).text
+            }.getOrNull() ?: html
+        } else html
+
+        val embedUrl = Regex("""EMBED_URL\s*=\s*['"]([^'"]+)['"]""").find(proxyHtml)?.groupValues?.get(1)
+            ?: Regex("""https?://vidara\.[a-z]+/e/[a-zA-Z0-9]+""").find(proxyHtml)?.value
+
+        if (!embedUrl.isNullOrBlank()) {
+            loadExtractor(embedUrl, targetUrl, subtitleCallback, callback)
+        }
+    }
+}
+
+open class FilmuExtractor : ExtractorApi() {
+    override val name = "Filmu"
+    override val mainUrl = "https://embed.filmu.in"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(url, headers = mapOf("Referer" to (referer ?: "https://m1.multimovies.courses/"))).text
+        }.getOrNull() ?: return
+
+        val m3u8Url = Regex("""https?://[^\s"'<>\)]+\.m3u8[^\s"'<>\)]*""").find(html)?.value
+        if (!m3u8Url.isNullOrBlank()) {
+            callback.invoke(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - HLS [MultiMovies ⚡]",
+                    url = m3u8Url,
+                    type = ExtractorLinkType.M3U8
+                ) {
+                    this.referer = "https://embed.filmu.in/"
+                    this.quality = Qualities.P1080.value
+                }
+            )
+        }
+    }
+}
+

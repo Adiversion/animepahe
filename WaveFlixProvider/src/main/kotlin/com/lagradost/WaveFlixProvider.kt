@@ -419,39 +419,56 @@ class WaveFlixProvider : MainAPI() {
             } catch (_: Throwable) {}
         }
 
+        val resolvedTitle = linkData.title ?: runCatching {
+            val tmdbMetaUrl = "https://api.themoviedb.org/3/${if (isMovie) "movie" else "tv"}/$tmdbId?api_key=e6c2364656962cbcb82dd76660285f39"
+            val json = app.get(tmdbMetaUrl, timeout = 5).parsedSafe<Map<String, Any?>>()
+            (json?.get("title") ?: json?.get("name")) as? String
+        }.getOrNull()
+
         // 5. Direct RogMovies Indian Cloud & Multi-Audio Integration
         val rogMoviesJob = async {
-            try {
-                val titleToSearch = linkData.title ?: runCatching {
-                    val tmdbMetaUrl = "https://api.themoviedb.org/3/${if (isMovie) "movie" else "tv"}/$tmdbId?api_key=e6c2364656962cbcb82dd76660285f39"
-                    val json = app.get(tmdbMetaUrl, timeout = 5).parsedSafe<Map<String, Any?>>()
-                    (json?.get("title") ?: json?.get("name")) as? String
-                }.getOrNull()
-
-                if (!titleToSearch.isNullOrBlank()) {
-                    queryRogMovies(titleToSearch, linkData.year, isMovie, season, episode, subtitleCallback, callback)
-                }
-            } catch (_: Throwable) {}
-        }
-
-        // 6. Direct BollyZone Daily Indian TV Serial Integration
-        val bollyZoneJob = async {
-            if (!isMovie) {
+            if (!resolvedTitle.isNullOrBlank()) {
                 try {
-                    val titleToSearch = linkData.title ?: runCatching {
-                        val tmdbMetaUrl = "https://api.themoviedb.org/3/tv/$tmdbId?api_key=e6c2364656962cbcb82dd76660285f39"
-                        val json = app.get(tmdbMetaUrl, timeout = 5).parsedSafe<Map<String, Any?>>()
-                        (json?.get("title") ?: json?.get("name")) as? String
-                    }.getOrNull()
-
-                    if (!titleToSearch.isNullOrBlank()) {
-                        queryBollyZone(titleToSearch, season, episode, subtitleCallback, callback)
-                    }
+                    queryRogMovies(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
-        // 7. High-Reliability Redundant Fallback Extractors
+        // 6. Direct BollyZone Daily Indian TV Serial Integration
+        val bollyZoneJob = async {
+            if (!isMovie && !resolvedTitle.isNullOrBlank()) {
+                try {
+                    queryBollyZone(resolvedTitle, season, episode, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 7. Direct MultiMovies Integration (Cineverse / Filmu / Nexus / VidBolt / Vidrift)
+        val multiMoviesJob = async {
+            try {
+                queryMultiMovies(tmdbId, null, isMovie, season, episode, subtitleCallback, callback)
+            } catch (_: Throwable) {}
+        }
+
+        // 8. Direct Desi Serials Daily Indian TV Serial Integration
+        val desiSerialsJob = async {
+            if (!isMovie && !resolvedTitle.isNullOrBlank()) {
+                try {
+                    queryDesiSerials(resolvedTitle, season, episode, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 9. Direct Bollyflix Indian Cloud Integration
+        val bollyflixJob = async {
+            if (!resolvedTitle.isNullOrBlank()) {
+                try {
+                    queryBollyflix(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 10. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
@@ -477,6 +494,9 @@ class WaveFlixProvider : MainAPI() {
         vidlinkJob.await()
         rogMoviesJob.await()
         bollyZoneJob.await()
+        multiMoviesJob.await()
+        desiSerialsJob.await()
+        bollyflixJob.await()
         fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
@@ -524,6 +544,138 @@ class WaveFlixProvider : MainAPI() {
                     runCatching {
                         loadExtractor(gbUrl, postUrl, subtitleCallback, callback)
                     }
+                }
+            }
+        }
+    }
+
+    private suspend fun queryMultiMovies(
+        tmdbId: String,
+        imdbId: String?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) = coroutineScope {
+        val servers = mutableListOf<String>()
+        if (isMovie) {
+            servers.add("https://embed.filmu.in/movie/$tmdbId")
+            servers.add("https://rozgarlelo.modiplay.xyz/embed/tmdb/movie?id=$tmdbId")
+            servers.add("https://vidbolt.xyz/movie/$tmdbId")
+            servers.add("https://embed.vidrift.net/embed/movie/$tmdbId")
+            servers.add("https://www.moviesnexus.fun/movie/$tmdbId?sv=multi-audio")
+            if (!imdbId.isNullOrBlank()) {
+                servers.add("https://streams.iqsmartgames.com/embed/movie/$imdbId?key=e11a7debaaa4f5d25b671706ffe4d2acb56efbd4")
+                servers.add("https://vidout.pages.dev/movie/$imdbId")
+            }
+        } else {
+            servers.add("https://embed.filmu.in/tv/$tmdbId/$season/$episode")
+            servers.add("https://rozgarlelo.modiplay.xyz/embed/tmdb/tv?id=$tmdbId&s=$season&e=$episode")
+            servers.add("https://vidbolt.xyz/tv/$tmdbId/$season/$episode")
+            servers.add("https://embed.vidrift.net/embed/tv/$tmdbId/$season/$episode")
+            servers.add("https://www.moviesnexus.fun/tv/$tmdbId/$season/$episode")
+            servers.add("https://streams.iqsmartgames.com/embed/tv/$tmdbId/$season/$episode?key=e11a7debaaa4f5d25b671706ffe4d2acb56efbd4")
+            servers.add("https://vidout.pages.dev/tv/$tmdbId/s$season/e$episode")
+        }
+
+        val jobs = servers.map { sUrl ->
+            async {
+                try {
+                    loadExtractor(sUrl, "https://m1.multimovies.courses/", subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+        jobs.forEach { it.await() }
+    }
+
+    private suspend fun queryDesiSerials(
+        query: String,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val cleanQuery = query.lowercase().replace(Regex("[^a-z0-9 ]"), " ").trim()
+        val tokens = cleanQuery.split(" ").filter { it.length > 2 }
+        if (tokens.isEmpty()) return
+
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+        val homeHtml = runCatching {
+            app.get("https://www.desi-serials.to/", headers = headers, timeout = 7).text
+        }.getOrNull() ?: return
+
+        val doc = org.jsoup.Jsoup.parse(homeHtml)
+        val matchingShow = doc.select("a[href*='/watch-online/']").firstOrNull { a ->
+            val text = a.text().lowercase()
+            tokens.any { text.contains(it) }
+        } ?: return
+
+        val showUrl = matchingShow.attr("href")
+        if (showUrl.isBlank()) return
+
+        val showHtml = runCatching {
+            app.get(showUrl, headers = headers + ("Referer" to "https://www.desi-serials.to/"), timeout = 7).text
+        }.getOrNull() ?: return
+
+        val showDoc = org.jsoup.Jsoup.parse(showHtml)
+        val episodeLink = showDoc.select("a[href*='-episode-']").firstOrNull {
+            it.text().contains("episode", ignoreCase = true)
+        }?.attr("href") ?: return
+
+        val epHtml = runCatching {
+            app.get(episodeLink, headers = headers + ("Referer" to showUrl), timeout = 7).text
+        }.getOrNull() ?: return
+
+        val epDoc = org.jsoup.Jsoup.parse(epHtml)
+        epDoc.select("a[href*='tvarticles.org']").forEach { a ->
+            val link = a.attr("href").trim()
+            if (link.isNotBlank()) {
+                runCatching {
+                    loadExtractor(link, episodeLink, subtitleCallback, callback)
+                }
+            }
+        }
+    }
+
+    private suspend fun queryBollyflix(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val cleanQuery = query.replace(Regex("[^a-zA-Z0-9 ]"), " ").trim()
+        val searchUrl = "https://bollyflix.co.za/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "https://bollyflix.co.za/"
+        )
+        val searchRes = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7).text
+        }.getOrNull() ?: return
+
+        val doc = org.jsoup.Jsoup.parse(searchRes)
+        val posts = doc.select("article, div.post-item, div.post-content, h2.entry-title a, a[href*='-movie/'], a[href*='-series/']")
+        val postLinks = posts.mapNotNull { el ->
+            if (el.tagName() == "a") el.attr("href") else el.selectFirst("a")?.attr("href")
+        }.distinct().filter { it.isNotBlank() }
+
+        val targetPost = postLinks.firstOrNull() ?: return
+        val postHtml = runCatching {
+            app.get(targetPost, headers = headers + ("Referer" to searchUrl), timeout = 7).text
+        }.getOrNull() ?: return
+
+        val postDoc = org.jsoup.Jsoup.parse(postHtml)
+        postDoc.select("a[href*='fastdl.'], a[href*='hubcloud.'], a[href*='vcloud.'], a[href*='gofile.'], a[href*='pixeldrain.']").forEach { a ->
+            val href = a.attr("href").trim()
+            if (href.startsWith("http")) {
+                runCatching {
+                    loadExtractor(href, targetPost, subtitleCallback, callback)
                 }
             }
         }
