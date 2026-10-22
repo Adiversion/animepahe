@@ -45,6 +45,8 @@ jobs:
           set -o pipefail
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
+          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.pom" -o /dev/null || true
+          curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.jar" -o /dev/null || true
           curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/-32895aedb6-1/gradle--32895aedb6-1.pom" -o /dev/null || true
           curl -s -L -f "https://jitpack.io/com/github/recloudstream/gradle/-32895aedb6-1/gradle--32895aedb6-1.jar" -o /dev/null || true
           set +e
@@ -57,7 +59,7 @@ jobs:
               break
             fi
             echo "Attempt $attempt failed with code $BUILD_STATUS, waiting 15s before retry..."
-            curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/-32895aedb6-1/gradle--32895aedb6-1.pom" -o /dev/null || true
+            curl -s -L "https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.pom" -o /dev/null || true
             sleep 15
           done
           set -e

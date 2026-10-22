@@ -267,7 +267,7 @@ class WaveFlixProvider : MainAPI() {
 
                                         val qualityInt = parseQuality(qualityLabel)
                                         val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
-                                        val streamReferer = src.headers?.get("Referer") ?: nxshaReferer
+                                        val streamReferer = src.headers?.get("Referer") ?: "https://nxsha.space/"
 
                                         val streamHeaders = mapOf(
                                             "User-Agent" to browserUserAgent,
@@ -280,9 +280,9 @@ class WaveFlixProvider : MainAPI() {
                                                 loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
                                             } catch (_: Throwable) {}
                                         } else {
-                                            // Pre-validate stream to filter out 400 / 403 / 404 links and ensure Range seek support
+                                            // Pre-validate stream to filter out expired 403 / 400 / 404 links and ensure Range seek support
                                             val isPlayable = try {
-                                                val probeHeaders = streamHeaders + ("Range" to "bytes=0-1024")
+                                                val probeHeaders = if (isHls) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
                                                 val check = app.get(streamUrl, headers = probeHeaders, timeout = 5)
                                                 (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403
                                             } catch (_: Throwable) {
