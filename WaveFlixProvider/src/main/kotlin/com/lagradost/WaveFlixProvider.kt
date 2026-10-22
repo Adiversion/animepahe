@@ -434,7 +434,24 @@ class WaveFlixProvider : MainAPI() {
             } catch (_: Throwable) {}
         }
 
-        // 6. High-Reliability Redundant Fallback Extractors
+        // 6. Direct BollyZone Daily Indian TV Serial Integration
+        val bollyZoneJob = async {
+            if (!isMovie) {
+                try {
+                    val titleToSearch = linkData.title ?: runCatching {
+                        val tmdbMetaUrl = "https://api.themoviedb.org/3/tv/$tmdbId?api_key=e6c2364656962cbcb82dd76660285f39"
+                        val json = app.get(tmdbMetaUrl, timeout = 5).parsedSafe<Map<String, Any?>>()
+                        (json?.get("title") ?: json?.get("name")) as? String
+                    }.getOrNull()
+
+                    if (!titleToSearch.isNullOrBlank()) {
+                        queryBollyZone(titleToSearch, season, episode, subtitleCallback, callback)
+                    }
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 7. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
@@ -459,9 +476,57 @@ class WaveFlixProvider : MainAPI() {
         netMirrorJob.await()
         vidlinkJob.await()
         rogMoviesJob.await()
+        bollyZoneJob.await()
         fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
+    }
+
+    private suspend fun queryBollyZone(
+        query: String,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val cleanQuery = query.replace("Dhamaal with ", "", ignoreCase = true)
+            .replace("Dhamaal", "", ignoreCase = true)
+            .trim()
+            .ifBlank { query }
+
+        val searchUrl = "https://www.bollyzone.to/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+        val searchHtml = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7).text
+        }.getOrNull() ?: return
+
+        val doc = org.jsoup.Jsoup.parse(searchHtml)
+        val posts = doc.select("a[href*='/series/']").map { a ->
+            a.attr("href").trim() to a.text().trim()
+        }.filter { it.second.length > 5 }
+
+        // Find episode posts matching query
+        val targetPosts = posts.filter { (_, text) ->
+            text.contains("panga", ignoreCase = true) || text.contains(cleanQuery, ignoreCase = true)
+        }.distinctBy { it.first }
+
+        targetPosts.take(2).forEach { (postUrl, _) ->
+            val postHtml = runCatching {
+                app.get(postUrl, headers = headers, timeout = 8).text
+            }.getOrNull() ?: return@forEach
+
+            val pDoc = org.jsoup.Jsoup.parse(postHtml)
+            pDoc.select("a[href*='groundbanks.net/item.php']").forEach { a ->
+                val gbUrl = a.attr("href").trim()
+                if (gbUrl.startsWith("http")) {
+                    runCatching {
+                        loadExtractor(gbUrl, postUrl, subtitleCallback, callback)
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun queryRogMovies(

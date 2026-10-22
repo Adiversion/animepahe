@@ -1,8 +1,8 @@
-version = 9
+version = 10
 
 cloudstream {
     language = "en"
-    description = "WaveFlix TMDB streaming engine with 40+ servers including RogMovies, NetMirror direct CDN, Vidlink Pro, and Nxsha multi-server playback."
+    description = "WaveFlix TMDB streaming engine with 45+ servers including BollyZone, RogMovies, NetMirror direct CDN, Vidlink Pro, and Nxsha multi-server playback."
     authors = listOf("Cloudstream Community")
 
     /**
