@@ -531,7 +531,8 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        val cleanQuery = query.replace("Dhamaal with ", "", ignoreCase = true)
+        val cleanQuery = query.substringBefore("–").substringBefore("-")
+            .replace("Dhamaal with ", "", ignoreCase = true)
             .replace("Dhamaal", "", ignoreCase = true)
             .trim()
             .ifBlank { query }
@@ -545,27 +546,33 @@ class WaveFlixProvider : MainAPI() {
         }.getOrNull() ?: return
 
         val doc = org.jsoup.Jsoup.parse(searchHtml)
-        val posts = doc.select("a[href*='/series/']").map { a ->
-            a.attr("href").trim() to a.text().trim()
-        }.filter { it.second.length > 5 }
+        val articles = doc.select("article")
+        val posts = mutableListOf<Pair<String, String>>()
+        for (art in articles) {
+            val href = art.selectFirst("a[href*='/series/']")?.attr("href")?.trim() ?: continue
+            val title = art.selectFirst(".Title, h2, h3, a")?.text()?.trim() ?: ""
+            if (href.isNotBlank()) posts.add(href to title)
+        }
 
-        // Find episode posts matching query
+        // Find episode posts matching query & season
         val targetPosts = posts.filter { (_, text) ->
-            text.contains("panga", ignoreCase = true) || text.contains(cleanQuery, ignoreCase = true)
+            val lower = text.lowercase()
+            lower.contains("panga") && if (season == 2) (lower.contains(" 2 ") || lower.contains("2026")) else !lower.contains(" 2 ")
         }.distinctBy { it.first }
 
-        targetPosts.take(2).forEach { (postUrl, _) ->
-            val postHtml = runCatching {
-                app.get(postUrl, headers = headers, timeout = 8).text
-            }.getOrNull() ?: return@forEach
+        val chronoPosts = targetPosts.reversed()
+        val targetPost = if (episode in 1..chronoPosts.size) chronoPosts[episode - 1] else targetPosts.firstOrNull() ?: return
 
-            val pDoc = org.jsoup.Jsoup.parse(postHtml)
-            pDoc.select("a[href*='groundbanks.net/item.php']").forEach { a ->
-                val gbUrl = a.attr("href").trim()
-                if (gbUrl.startsWith("http")) {
-                    runCatching {
-                        loadExtractor(gbUrl, postUrl, subtitleCallback, callback)
-                    }
+        val postHtml = runCatching {
+            app.get(targetPost.first, headers = headers, timeout = 8).text
+        }.getOrNull() ?: return
+
+        val pDoc = org.jsoup.Jsoup.parse(postHtml)
+        for (a in pDoc.select("a[href*='groundbanks.net/item.php']")) {
+            val gbUrl = a.attr("href").trim()
+            if (gbUrl.startsWith("http")) {
+                runCatching {
+                    loadExtractor(gbUrl, targetPost.first, subtitleCallback, callback)
                 }
             }
         }
@@ -618,9 +625,10 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        val cleanQuery = query.lowercase().replace(Regex("[^a-z0-9 ]"), " ").trim()
-        val tokens = cleanQuery.split(" ").filter { it.length > 2 }
-        if (tokens.isEmpty()) return
+        val cleanQuery = query.substringBefore("–").substringBefore("-").lowercase().replace(Regex("[^a-z0-9 ]"), " ").trim()
+        val stopWords = setOf("aur", "the", "and", "with", "all", "season", "episode")
+        val significantTokens = cleanQuery.split(" ").filter { it.length > 2 && it !in stopWords }
+        if (significantTokens.isEmpty()) return
 
         val headers = mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -630,9 +638,12 @@ class WaveFlixProvider : MainAPI() {
         }.getOrNull() ?: return
 
         val doc = org.jsoup.Jsoup.parse(homeHtml)
-        val matchingShow = doc.select("a[href*='/watch-online/']").firstOrNull { a ->
+        val matchingShow = doc.select("a[href*='/watch-online/']").maxByOrNull { a ->
             val text = a.text().lowercase()
-            tokens.any { text.contains(it) }
+            significantTokens.count { text.contains(it) }
+        }?.takeIf { a ->
+            val text = a.text().lowercase()
+            significantTokens.any { text.contains(it) }
         } ?: return
 
         val showUrl = matchingShow.attr("href")
