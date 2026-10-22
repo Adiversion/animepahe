@@ -1,5 +1,6 @@
 package com.lagradost
 
+import android.util.Base64
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
@@ -9,6 +10,11 @@ import com.lagradost.cloudstream3.utils.AppUtils.toJson
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.net.URLEncoder
+import java.security.MessageDigest
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 class WaveFlixProvider : MainAPI() {
     override var name = "WaveFlix"
@@ -81,7 +87,7 @@ class WaveFlixProvider : MainAPI() {
             ?: doc.selectFirst("meta[property=og:title]")?.attr("content")
             ?: doc.selectFirst("h1")?.text()
             ?: "Media #$tmdbId"
-        
+
         val cleanTitle = rawTitle.removePrefix("Watch ").replace(Regex("""\s*\(\d{4}\).*"""), "").trim()
         val plot = doc.selectFirst("meta[property=og:description]")?.attr("content")
             ?: doc.selectFirst("meta[name=description]")?.attr("content")
@@ -110,7 +116,7 @@ class WaveFlixProvider : MainAPI() {
                 val seasonUrl = "$mainUrl/api/season?tvId=$tmdbId&season=$seasonNum"
                 val seasonRes = try {
                     app.get(seasonUrl, headers = commonHeaders).parsedSafe<WaveSeasonResponse>()
-                } catch (e: Exception) {
+                } catch (_: Throwable) {
                     null
                 }
 
@@ -165,106 +171,126 @@ class WaveFlixProvider : MainAPI() {
         val season = linkData.season ?: 1
         val episode = linkData.episode ?: 1
 
-        // 1. Build all embed provider endpoints supported by WaveFlix
-        val servers = mutableListOf<Pair<String, String>>()
-
-        // Nxsha embed (primary WaveFlix engine)
-        val nxshaUrl = if (isMovie) {
+        val nxshaReferer = if (isMovie) {
             "https://nxsha.space/embed/movie/$tmdbId"
         } else {
             "https://nxsha.space/embed/tv/$tmdbId/$season/$episode"
         }
-        servers.add("Nxsha" to nxshaUrl)
 
-        // ScreenScape embed
-        val screenscapeUrl = if (isMovie) {
-            "https://screenscape.me/embed?tmdb=$tmdbId&type=movie"
-        } else {
-            "https://screenscape.me/embed?tmdb=$tmdbId&type=tv&s=$season&e=$episode"
+        val nxshaHeaders = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to nxshaReferer
+        )
+
+        // 1. Query Nxsha Multi-Server Backbone Engine
+        try {
+            val serverPayload = """{"tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+            val encServerQuery = NxshaCrypto.encrypt(serverPayload)
+            val serverUrl = "https://nxsha.space/api/servers?q=${URLEncoder.encode(encServerQuery, "UTF-8")}"
+
+            val serverRes = app.get(serverUrl, headers = nxshaHeaders, timeout = 10).text
+            val serverHash = parseJson<NxshaHashResponse>(serverRes).hash
+
+            if (!serverHash.isNullOrBlank()) {
+                val decryptedServerJson = NxshaCrypto.decrypt(serverHash)
+                if (!decryptedServerJson.isNullOrBlank()) {
+                    val serverList = parseJson<NxshaServerList>(decryptedServerJson)
+                    val activeServers = serverList.servers?.filter {
+                        it.webSupport != false && !it.scraper.isNullOrBlank() && it.status != "offline"
+                    }?.take(14) ?: emptyList()
+
+                    // Concurrently fetch sources from active servers
+                    val serverJobs = activeServers.map { srv ->
+                        async {
+                            try {
+                                val sourcePayload = """{"ex_lang":false,"provider":"${srv.scraper}","tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+                                val encSourceQuery = NxshaCrypto.encrypt(sourcePayload)
+                                val sourceUrl = "https://nxsha.space/api/sources?q=${URLEncoder.encode(encSourceQuery, "UTF-8")}"
+
+                                val sourceRes = app.get(sourceUrl, headers = nxshaHeaders, timeout = 8).text
+                                val sourceHash = parseJson<NxshaHashResponse>(sourceRes).hash ?: return@async
+                                val decryptedSourceJson = NxshaCrypto.decrypt(sourceHash) ?: return@async
+                                val sourcesObj = parseJson<NxshaSourcesResponse>(decryptedSourceJson)
+
+                                val serverDisplayName = srv.name ?: srv.scraper ?: "Server"
+
+                                sourcesObj.sources?.forEach { src ->
+                                    val streamUrl = src.url?.trim()
+                                    if (!streamUrl.isNullOrBlank()) {
+                                        val qualityLabel = src.label ?: src.quality ?: "Auto"
+                                        val qualityInt = parseQuality(qualityLabel)
+                                        val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
+
+                                        if (src.isEmbed == true || src.type?.lowercase() == "embed") {
+                                            try {
+                                                loadExtractor(streamUrl, nxshaReferer, subtitleCallback, callback)
+                                            } catch (_: Throwable) {}
+                                        } else {
+                                            val link = newExtractorLink(
+                                                source = "WaveFlix [$serverDisplayName]",
+                                                name = "$serverDisplayName - $qualityLabel",
+                                                url = streamUrl,
+                                                type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                            ) {
+                                                this.referer = src.headers?.get("Referer") ?: nxshaReferer
+                                                this.quality = qualityInt
+                                            }
+                                            callback(link)
+                                        }
+                                    }
+                                }
+                            } catch (_: Throwable) {
+                                // Gracefully skip failed server
+                            }
+                        }
+                    }
+
+                    serverJobs.forEach { it.await() }
+                }
+            }
+        } catch (_: Throwable) {
+            // Nxsha backbone error handled
         }
-        servers.add("ScreenScape" to screenscapeUrl)
 
-        // Peachify embed
-        val peachifyUrl = if (isMovie) {
-            "https://peachify.pro/embed/movie/$tmdbId"
+        // 2. High-Reliability Redundant Fallback Extractors
+        val fallbackUrls = mutableListOf<String>()
+        if (isMovie) {
+            fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
+            fallbackUrls.add("https://multiembed.mov/?video_id=$tmdbId&tmdb=1")
         } else {
-            "https://peachify.pro/embed/tv/$tmdbId/$season/$episode"
+            fallbackUrls.add("https://2embed.cc/embedtv/$tmdbId&s=$season&e=$episode")
+            fallbackUrls.add("https://multiembed.mov/?video_id=$tmdbId&tmdb=1&s=$season&e=$episode")
         }
-        servers.add("Peachify" to peachifyUrl)
 
-        // High-reliability universal mirror fallbacks
-        val vidsrcUrl = if (isMovie) {
-            "https://vidsrc.to/embed/movie/$tmdbId"
-        } else {
-            "https://vidsrc.to/embed/tv/$tmdbId/$season/$episode"
-        }
-        servers.add("VidSrc" to vidsrcUrl)
-
-        val autoembedUrl = if (isMovie) {
-            "https://player.autoembed.cc/embed/movie/$tmdbId"
-        } else {
-            "https://player.autoembed.cc/embed/tv/$tmdbId/$season/$episode"
-        }
-        servers.add("AutoEmbed" to autoembedUrl)
-
-        // 2. Query all servers asynchronously in parallel
-        val jobs = servers.map { (serverName, embedUrl) ->
+        val fallbackJobs = fallbackUrls.map { url ->
             async {
                 try {
-                    // Try built-in CloudStream extractor directly
-                    loadExtractor(embedUrl, "$mainUrl/", subtitleCallback, callback)
-
-                    // Also inspect embed HTML for iframes and direct m3u8 streams
-                    val res = app.get(
-                        embedUrl,
-                        headers = mapOf(
-                            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                            "Referer" to "$mainUrl/"
-                        ),
-                        timeout = 10
-                    )
-                    val html = res.text
-
-                    // Check for nested iframes
-                    val iframeMatches = Regex("""<iframe[^>]+src=["']([^"']+)["']""", RegexOption.IGNORE_CASE).findAll(html)
-                    for (match in iframeMatches) {
-                        val iframeSrc = match.groupValues[1]
-                        val fullIframeUrl = if (iframeSrc.startsWith("//")) {
-                            "https:$iframeSrc"
-                        } else if (iframeSrc.startsWith("/")) {
-                            val baseHost = embedUrl.substringBefore("/", "").ifEmpty { embedUrl }
-                            "$baseHost$iframeSrc"
-                        } else {
-                            iframeSrc
-                        }
-                        try {
-                            loadExtractor(fullIframeUrl, embedUrl, subtitleCallback, callback)
-                        } catch (_: Throwable) {}
-                    }
-
-                    // Check for direct m3u8 playlists
-                    val m3u8Matches = Regex("""https?://[^\s"'<>]+\.m3u8[^\s"'<>]*""").findAll(html)
-                    for (m3u8 in m3u8Matches) {
-                        val streamUrl = m3u8.value
-                        val link = newExtractorLink(
-                            source = serverName,
-                            name = "$serverName Auto HLS",
-                            url = streamUrl,
-                            type = ExtractorLinkType.M3U8
-                        ) {
-                            this.referer = embedUrl
-                            this.quality = Qualities.P1080.value
-                        }
-                        callback(link)
-                    }
-                } catch (_: Throwable) {
-                    // Fail gracefully per server
-                }
+                    loadExtractor(url, "$mainUrl/", subtitleCallback, callback)
+                } catch (_: Throwable) {}
             }
         }
 
-        jobs.forEach { it.await() }
+        fallbackJobs.forEach { it.await() }
         true
+    }
+
+    private fun parseQuality(qualityStr: String?): Int {
+        if (qualityStr.isNullOrBlank()) return Qualities.Unknown.value
+        val match = Regex("""(\d{3,4})p?""").find(qualityStr)
+        return when (match?.groupValues?.get(1)?.toIntOrNull()) {
+            2160, 4 -> Qualities.P2160.value
+            1440 -> Qualities.P1440.value
+            1080 -> Qualities.P1080.value
+            720 -> Qualities.P720.value
+            480 -> Qualities.P480.value
+            360 -> Qualities.P360.value
+            else -> when {
+                qualityStr.contains("4k", ignoreCase = true) -> Qualities.P2160.value
+                qualityStr.contains("1080", ignoreCase = true) || qualityStr.contains("fhd", ignoreCase = true) -> Qualities.P1080.value
+                qualityStr.contains("720", ignoreCase = true) || qualityStr.contains("hd", ignoreCase = true) -> Qualities.P720.value
+                else -> Qualities.Unknown.value
+            }
+        }
     }
 
     private fun WaveMediaItem.toSearchResponse(): SearchResponse? {
@@ -331,4 +357,141 @@ class WaveFlixProvider : MainAPI() {
         val season: Int? = null,
         val episode: Int? = null
     )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaHashResponse(
+        @JsonProperty("_hash") val hash: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaServerList(
+        @JsonProperty("servers") val servers: List<NxshaServerItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaServerItem(
+        @JsonProperty("id") val id: Any? = null,
+        @JsonProperty("name") val name: String? = null,
+        @JsonProperty("scraper") val scraper: String? = null,
+        @JsonProperty("status") val status: String? = null,
+        @JsonProperty("web_support") val webSupport: Boolean? = null,
+        @JsonProperty("quality") val quality: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaSourcesResponse(
+        @JsonProperty("sources") val sources: List<NxshaSourceItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NxshaSourceItem(
+        @JsonProperty("id") val id: String? = null,
+        @JsonProperty("provider") val provider: String? = null,
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("org_uri") val orgUri: String? = null,
+        @JsonProperty("headers") val headers: Map<String, String>? = null,
+        @JsonProperty("quality") val quality: String? = null,
+        @JsonProperty("label") val label: String? = null,
+        @JsonProperty("isEmbed") val isEmbed: Boolean? = null,
+        @JsonProperty("type") val type: String? = null
+    )
+
+    // Nxsha AES-256-CBC Crypto Implementation (OpenSSL EVP_BytesToKey)
+    object NxshaCrypto {
+        private const val KEY = "f4488ab4da401203d23baa129fc546153898162524635d6776826d0c867ccaa3"
+
+        private fun b64Encode(bytes: ByteArray): String {
+            return try {
+                Base64.encodeToString(bytes, Base64.NO_WRAP)
+            } catch (_: Throwable) {
+                java.util.Base64.getEncoder().encodeToString(bytes)
+            }
+        }
+
+        private fun b64Decode(str: String): ByteArray {
+            return try {
+                Base64.decode(str, Base64.DEFAULT)
+            } catch (_: Throwable) {
+                java.util.Base64.getDecoder().decode(str)
+            }
+        }
+
+        private fun evpBytesToKey(password: ByteArray, salt: ByteArray, keyLen: Int = 32, ivLen: Int = 16): Pair<ByteArray, ByteArray> {
+            val md5 = MessageDigest.getInstance("MD5")
+            val totalLen = keyLen + ivLen
+            val combined = ByteArray(totalLen)
+            var currentLen = 0
+            var d = ByteArray(0)
+
+            while (currentLen < totalLen) {
+                md5.reset()
+                if (d.isNotEmpty()) {
+                    md5.update(d)
+                }
+                md5.update(password)
+                md5.update(salt)
+                d = md5.digest()
+
+                val copyLen = minOf(d.size, totalLen - currentLen)
+                System.arraycopy(d, 0, combined, currentLen, copyLen)
+                currentLen += copyLen
+            }
+
+            val key = combined.copyOfRange(0, keyLen)
+            val iv = combined.copyOfRange(keyLen, totalLen)
+            return Pair(key, iv)
+        }
+
+        fun encrypt(jsonString: String): String {
+            val ts = System.currentTimeMillis()
+            val chars = "0123456789abcdefghijklmnopqrstuvwxyz"
+            val saltRandom = (1..10).map { chars.random() }.joinToString("")
+            val payload = if (jsonString.endsWith("}")) {
+                jsonString.dropLast(1) + ""","_req_ts":$ts,"_req_salt":"$saltRandom"}"""
+            } else {
+                """{"_req_ts":$ts,"_req_salt":"$saltRandom"}"""
+            }
+
+            val salt = ByteArray(8)
+            SecureRandom().nextBytes(salt)
+
+            val (key, iv) = evpBytesToKey(KEY.toByteArray(Charsets.UTF_8), salt)
+            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
+            val encrypted = cipher.doFinal(payload.toByteArray(Charsets.UTF_8))
+
+            val header = "Salted__".toByteArray(Charsets.UTF_8)
+            val total = ByteArray(header.size + salt.size + encrypted.size)
+            System.arraycopy(header, 0, total, 0, header.size)
+            System.arraycopy(salt, 0, total, header.size, salt.size)
+            System.arraycopy(encrypted, 0, total, header.size + salt.size, encrypted.size)
+
+            val base64 = b64Encode(total)
+            return base64.replace('+', '-').replace('/', '_').trimEnd('=')
+        }
+
+        fun decrypt(encryptedBase64Url: String): String? {
+            return try {
+                var b64 = encryptedBase64Url.replace('-', '+').replace('_', '/')
+                val remainder = b64.length % 4
+                if (remainder != 0) {
+                    b64 += "=".repeat(4 - remainder)
+                }
+                val raw = b64Decode(b64)
+                if (raw.size < 16) return null
+                val header = String(raw.copyOfRange(0, 8), Charsets.UTF_8)
+                if (header != "Salted__") return null
+                val salt = raw.copyOfRange(8, 16)
+                val ciphertext = raw.copyOfRange(16, raw.size)
+
+                val (key, iv) = evpBytesToKey(KEY.toByteArray(Charsets.UTF_8), salt)
+                val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+                cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
+                val decryptedBytes = cipher.doFinal(ciphertext)
+                String(decryptedBytes, Charsets.UTF_8)
+            } catch (_: Throwable) {
+                null
+            }
+        }
+    }
 }
