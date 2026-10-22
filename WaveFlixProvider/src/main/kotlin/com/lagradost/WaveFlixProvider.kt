@@ -280,11 +280,13 @@ class WaveFlixProvider : MainAPI() {
                                                 loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
                                             } catch (_: Throwable) {}
                                         } else {
-                                            // Pre-validate stream to filter out expired 403 / 400 / 404 links and ensure Range seek support
+                                            // Pre-validate stream to filter out expired 403 / 400 / 404 links, ensure Range seek support, and prevent ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED
                                             val isPlayable = try {
                                                 val probeHeaders = if (isHls) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
                                                 val check = app.get(streamUrl, headers = probeHeaders, timeout = 5)
-                                                (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403
+                                                val cType = (check.headers["Content-Type"] ?: check.headers["content-type"])?.lowercase() ?: ""
+                                                val isNotHtml = !cType.contains("text/html")
+                                                (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403 && isNotHtml
                                             } catch (_: Throwable) {
                                                 false
                                             }
