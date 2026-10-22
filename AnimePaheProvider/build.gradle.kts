@@ -1,4 +1,4 @@
-version = 76
+version = 77
 
 cloudstream {
     language = "en"
@@ -18,5 +18,5 @@ cloudstream {
         "Anime",
         "OVA"
     )
-    iconUrl = "https://raw.githubusercontent.com/Adiversion/animepahe/builds/icon.png"
+    iconUrl = "https://raw.githubusercontent.com/Adiversion/animepahe/builds/logo.png"
 }
