@@ -23,10 +23,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/csext/builds/WaveFlix_icon.png",
-        "fileHash": "sha256-796de3df06739c94e944fb508200d848c1d7492f182fde1da846a0948a535612",
+        "fileHash": "sha256-04b933131f7c0f237a4077fbf9e6095862198f399026ca02f035925620d656df",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/csext",
-        "fileSize": 72863,
+        "fileSize": 73061,
         "status": 1,
         "language": "en",
         "authors": [
@@ -37,7 +37,7 @@
             "TvSeries",
             "Anime"
         ],
-        "version": 8,
+        "version": 9,
         "internalName": "WaveFlixProvider",
         "description": "WaveFlix TMDB streaming engine with 40+ servers including RogMovies, NetMirror direct CDN, Vidlink Pro, and Nxsha multi-server playback.",
         "url": "https://raw.githubusercontent.com/Adiversion/csext/builds/WaveFlixProvider.cs3",
