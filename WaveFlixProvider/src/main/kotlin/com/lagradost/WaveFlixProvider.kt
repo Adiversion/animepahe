@@ -307,14 +307,115 @@ class WaveFlixProvider : MainAPI() {
             // Nxsha backbone error handled
         }
 
-        // 3. High-Reliability Redundant Fallback Extractors
+        // 3. Direct NetMirror Stream Provider (Multi-Resolution Direct MP4 + Subtitles)
+        val netMirrorJob = async {
+            try {
+                val netMirrorUrl = if (isMovie) {
+                    "https://net27.cc/api/embed-tmdb/$tmdbId"
+                } else {
+                    "https://net27.cc/api/embed-tmdb/$tmdbId?type=tv&se=$season&ep=$episode"
+                }
+                val netHeaders = mapOf(
+                    "User-Agent" to browserUserAgent,
+                    "Referer" to "https://net27.cc/"
+                )
+                val netRes = app.get(netMirrorUrl, headers = netHeaders, timeout = 7).text
+                val netObj = parseJson<NetMirrorResponse>(netRes)
+                if (netObj.ok == true) {
+                    netObj.streams?.forEach { s ->
+                        val streamUrl = s.url?.trim()
+                        if (!streamUrl.isNullOrBlank()) {
+                            val resLabel = s.resolution?.toString() ?: "720"
+                            val streamHeaders = mapOf(
+                                "User-Agent" to browserUserAgent,
+                                "Referer" to "https://videodownloader.site/"
+                            )
+                            val link = newExtractorLink(
+                                source = "WaveFlix [NetMirror]",
+                                name = "NetMirror - ${resLabel}p [Fast CDN ⚡]",
+                                url = streamUrl,
+                                type = ExtractorLinkType.VIDEO
+                            ) {
+                                this.referer = "https://videodownloader.site/"
+                                this.headers = streamHeaders
+                                this.quality = parseQuality("${resLabel}p")
+                            }
+                            synchronized(callback) {
+                                callback(link)
+                            }
+                        }
+                    }
+                    netObj.captions?.forEach { cap ->
+                        val capUrl = cap.url?.trim()
+                        if (!capUrl.isNullOrBlank()) {
+                            subtitleCallback(
+                                newSubtitleFile(
+                                    lang = cap.name ?: cap.lang ?: "English",
+                                    url = capUrl
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (_: Throwable) {}
+        }
+
+        // 4. Direct Vidlink Pro Stream Provider
+        val vidlinkJob = async {
+            try {
+                val encUrl = "https://enc-dec.app/api/enc-vidlink?text=$tmdbId"
+                val encRes = app.get(encUrl, headers = mapOf("User-Agent" to browserUserAgent), timeout = 6).text
+                val encHash = parseJson<VidlinkEncResponse>(encRes).result
+                if (!encHash.isNullOrBlank()) {
+                    val vidUrl = if (isMovie) {
+                        "https://vidlink.pro/api/b/movie/$encHash?multiLang=1"
+                    } else {
+                        "https://vidlink.pro/api/b/tv/$encHash/$season/$episode?multiLang=1"
+                    }
+                    val vidHeaders = mapOf(
+                        "User-Agent" to browserUserAgent,
+                        "Referer" to "https://vidlink.pro/"
+                    )
+                    val vidRes = app.get(vidUrl, headers = vidHeaders, timeout = 7).text
+                    val vidObj = parseJson<VidlinkResponse>(vidRes)
+                    vidObj.stream?.qualities?.forEach { (qKey, entry) ->
+                        val streamUrl = entry.url?.trim()
+                        if (!streamUrl.isNullOrBlank()) {
+                            val streamHeaders = mapOf(
+                                "User-Agent" to browserUserAgent,
+                                "Referer" to "https://vidlink.pro/"
+                            )
+                            val link = newExtractorLink(
+                                source = "WaveFlix [Vidlink]",
+                                name = "Vidlink - ${qKey}p [Direct Stream ⚡]",
+                                url = streamUrl,
+                                type = ExtractorLinkType.VIDEO
+                            ) {
+                                this.referer = "https://vidlink.pro/"
+                                this.headers = streamHeaders
+                                this.quality = parseQuality("${qKey}p")
+                            }
+                            synchronized(callback) {
+                                callback(link)
+                            }
+                        }
+                    }
+                }
+            } catch (_: Throwable) {}
+        }
+
+        // 5. High-Reliability Redundant Fallback Extractors
         val fallbackUrls = mutableListOf<String>()
         if (isMovie) {
             fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
             fallbackUrls.add("https://multiembed.mov/?video_id=$tmdbId&tmdb=1")
+            fallbackUrls.add("https://vidsrc.net/embed/movie/$tmdbId")
+            fallbackUrls.add("https://player.smashystream.com/movie/$tmdbId")
         } else {
             fallbackUrls.add("https://2embed.cc/embedtv/$tmdbId&s=$season&e=$episode")
             fallbackUrls.add("https://multiembed.mov/?video_id=$tmdbId&tmdb=1&s=$season&e=$episode")
+            fallbackUrls.add("https://vidsrc.net/embed/tv/$tmdbId/$season/$episode")
+            fallbackUrls.add("https://player.smashystream.com/tv/$tmdbId/$season/$episode")
         }
 
         val fallbackJobs = fallbackUrls.map { url ->
@@ -325,6 +426,8 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
+        netMirrorJob.await()
+        vidlinkJob.await()
         fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
@@ -465,6 +568,49 @@ class WaveFlixProvider : MainAPI() {
         @JsonProperty("label") val label: String? = null,
         @JsonProperty("url") val url: String? = null,
         @JsonProperty("uri") val uri: String? = null
+    )
+
+    // NetMirror DTOs
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NetMirrorResponse(
+        @JsonProperty("ok") val ok: Boolean? = null,
+        @JsonProperty("streams") val streams: List<NetMirrorStreamItem>? = null,
+        @JsonProperty("captions") val captions: List<NetMirrorCaptionItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NetMirrorStreamItem(
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("resolution") val resolution: Any? = null,
+        @JsonProperty("size") val size: Long? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NetMirrorCaptionItem(
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("lang") val lang: String? = null,
+        @JsonProperty("name") val name: String? = null
+    )
+
+    // Vidlink DTOs
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class VidlinkEncResponse(
+        @JsonProperty("result") val result: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class VidlinkResponse(
+        @JsonProperty("stream") val stream: VidlinkStreamObj? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class VidlinkStreamObj(
+        @JsonProperty("qualities") val qualities: Map<String, VidlinkQualityEntry>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class VidlinkQualityEntry(
+        @JsonProperty("url") val url: String? = null
     )
 
     // Nxsha AES-256-CBC Crypto Implementation (OpenSSL EVP_BytesToKey)

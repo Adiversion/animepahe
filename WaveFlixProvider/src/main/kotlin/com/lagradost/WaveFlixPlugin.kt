@@ -9,5 +9,18 @@ class WaveFlixPlugin : Plugin() {
     override fun load(context: Context) {
         // Register the WaveFlix MainAPI provider
         registerMainAPI(WaveFlixProvider())
+
+        // Register direct Indian CDN & Cloud Extractors
+        registerExtractorAPI(VCloudExtractor())
+        registerExtractorAPI(NexdriveExtractor())
+        registerExtractorAPI(NexdriveYouExtractor())
+        registerExtractorAPI(NexdriveStoreExtractor())
+        registerExtractorAPI(FastDLExtractor())
+        registerExtractorAPI(ZeeDlExtractor())
+        registerExtractorAPI(DriveSeedExtractor())
+        registerExtractorAPI(HubdriveExtractor())
+        registerExtractorAPI(HubcloudExtractor())
+        registerExtractorAPI(BollydriveExtractor())
+        registerExtractorAPI(BollydriveMomExtractor())
     }
 }
