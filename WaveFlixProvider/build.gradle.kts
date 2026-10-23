@@ -1,4 +1,4 @@
-version = 17
+version = 17 // Optimized v17 build
 
 cloudstream {
     language = "en"
