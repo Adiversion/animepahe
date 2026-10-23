@@ -30,8 +30,8 @@ Fetching JAR: cloudstream.jar
 > Task :WaveFlixProvider:generateDebugResValues
 > Task :WaveFlixProvider:generateDebugResources
 > Task :WaveFlixProvider:packageDebugResources
-> Task :AnimePaheProvider:parseDebugLocalResources
 > Task :WaveFlixProvider:parseDebugLocalResources
+> Task :AnimePaheProvider:parseDebugLocalResources
 > Task :AnimePaheProvider:generateDebugRFile
 > Task :WaveFlixProvider:generateDebugRFile
 
@@ -4113,5 +4113,5 @@ Made CloudStream package at /home/runner/work/csext/csext/src/WaveFlixProvider/b
 > Task :makePluginsJson
 Created /home/runner/work/csext/csext/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 55s
+BUILD SUCCESSFUL in 1m 52s
 21 actionable tasks: 21 executed
