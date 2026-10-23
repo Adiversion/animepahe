@@ -10,6 +10,15 @@ class WaveFlixPlugin : Plugin() {
         // Register the WaveFlix MainAPI provider
         registerMainAPI(WaveFlixProvider())
 
+        // Register dedicated OTT platform providers with individual homepages
+        registerMainAPI(NetflixProvider())
+        registerMainAPI(JioHotstarProvider())
+        registerMainAPI(PrimeVideoProvider())
+        registerMainAPI(Zee5Provider())
+        registerMainAPI(SonyLivProvider())
+        registerMainAPI(AppleTvProvider())
+        registerMainAPI(CrunchyrollProvider())
+
         // Register direct Indian CDN & Cloud Extractors
         registerExtractorAPI(VCloudExtractor())
         registerExtractorAPI(NexdriveExtractor())
