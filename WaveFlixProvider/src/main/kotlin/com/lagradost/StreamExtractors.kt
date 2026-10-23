@@ -6,6 +6,35 @@ import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import org.jsoup.Jsoup
 
+fun extractResolution(vararg sources: String?): Int {
+    for (s in sources) {
+        if (s.isNullOrBlank()) continue
+        val lower = s.lowercase()
+        when {
+            lower.contains("2160p") || lower.contains("4k") || lower.contains("uhd") -> return Qualities.P2160.value
+            lower.contains("1440p") || lower.contains("2k") -> return Qualities.P1440.value
+            lower.contains("1080p") || lower.contains("fhd") -> return Qualities.P1080.value
+            lower.contains("720p") || (lower.contains("hd") && !lower.contains("hdtv") && !lower.contains("hdhub")) -> return Qualities.P720.value
+            lower.contains("480p") || lower.contains("sd") -> return Qualities.P480.value
+            lower.contains("360p") -> return Qualities.P360.value
+        }
+    }
+    return Qualities.Unknown.value
+}
+
+fun formatQualityTag(q: Int): String {
+    return when (q) {
+        Qualities.P2160.value -> "4K"
+        Qualities.P1440.value -> "1440p"
+        Qualities.P1080.value -> "1080p"
+        Qualities.P720.value -> "720p"
+        Qualities.P480.value -> "480p"
+        Qualities.P360.value -> "360p"
+        else -> ""
+    }
+}
+
+
 open class VCloudExtractor : ExtractorApi() {
     override val name = "V-Cloud"
     override val mainUrl = "https://vcloud.beer"
@@ -47,20 +76,33 @@ open class VCloudExtractor : ExtractorApi() {
             Jsoup.parse(html)
         }
 
+        val detectedQuality = extractResolution(
+            url.substringAfter("#", ""),
+            finalDoc.select(".card-title, .card-header, .header, h1, h2, h3, h4, h5, title").text(),
+            tokenUrl,
+            url,
+            html
+        )
+
         val fslLinks = finalDoc.select("a[href*='r2.dev'], a[href*='r2.cloudflarestorage.com'], a:contains(FSL)")
         fslLinks.forEach { a ->
             val href = a.attr("href").trim()
             if (href.startsWith("http")) {
                 val isFsl2 = a.text().contains("FSLv2", ignoreCase = true)
+                val linkQ = extractResolution(a.text(), a.parent()?.text(), href, formatQualityTag(detectedQuality))
+                val finalQ = if (linkQ != Qualities.Unknown.value) linkQ else detectedQuality
+                val qTag = formatQualityTag(finalQ)
+                val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
+
                 callback.invoke(
                     newExtractorLink(
                         source = name,
-                        name = "$name - ${if (isFsl2) "FSLv2" else "FSL"} [Fast R2 Stream ⚡]",
+                        name = "$name - ${if (isFsl2) "FSLv2" else "FSL"} [Fast R2 Stream ⚡]$displayQ",
                         url = href,
                         type = ExtractorLinkType.VIDEO
                     ) {
                         this.referer = ""
-                        this.quality = Qualities.P1080.value
+                        this.quality = finalQ
                     }
                 )
             }
@@ -279,19 +321,32 @@ open class HubcloudExtractor : ExtractorApi() {
             )
         }.getOrNull() ?: return
 
+        val detectedQuality = extractResolution(
+            url.substringAfter("#", ""),
+            phpDoc.select("h1, h2, h3, h4, h5, .card-title, .card-header, .header, title").text(),
+            driveDoc.select("h1, h2, h3, h4, h5, .card-title, .card-header, .header, title").text(),
+            phpBtn,
+            url
+        )
+
         phpDoc.select("a.btn, a[href*='download'], div.card-body a").forEach { btn ->
             val href = btn.attr("href").trim()
+            val linkQ = extractResolution(btn.text(), href, formatQualityTag(detectedQuality))
+            val finalQ = if (linkQ != Qualities.Unknown.value) linkQ else detectedQuality
+            val qTag = formatQualityTag(finalQ)
+            val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
+
             when {
                 href.contains("cloudflarestorage.com") -> {
                     callback(
                         newExtractorLink(
                             source = name,
-                            name = "$name - [Fast Server : Cloudflare R2 ⚡]",
+                            name = "$name - [Fast Server : Cloudflare R2 ⚡]$displayQ",
                             url = href,
                             type = ExtractorLinkType.VIDEO
                         ) {
                             this.referer = ""
-                            this.quality = Qualities.P1080.value
+                            this.quality = finalQ
                         }
                     )
                 }
@@ -299,12 +354,12 @@ open class HubcloudExtractor : ExtractorApi() {
                     callback(
                         newExtractorLink(
                             source = name,
-                            name = "$name - [10Gbps PixelServer ⚡]",
+                            name = "$name - [10Gbps PixelServer ⚡]$displayQ",
                             url = href,
                             type = ExtractorLinkType.VIDEO
                         ) {
                             this.referer = phpBtn
-                            this.quality = Qualities.P1080.value
+                            this.quality = finalQ
                         }
                     )
                 }
@@ -317,12 +372,12 @@ open class HubcloudExtractor : ExtractorApi() {
                     callback(
                         newExtractorLink(
                             source = name,
-                            name = "$name - [BuzzServer Fast]",
+                            name = "$name - [BuzzServer Fast]$displayQ",
                             url = href,
                             type = ExtractorLinkType.VIDEO
                         ) {
                             this.referer = ""
-                            this.quality = Qualities.P1080.value
+                            this.quality = finalQ
                         }
                     )
                 }
@@ -333,12 +388,12 @@ open class HubcloudExtractor : ExtractorApi() {
                         callback(
                             newExtractorLink(
                                 source = name,
-                                name = "$name - [WebPlayer Stream ⚡]",
+                                name = "$name - [WebPlayer Stream ⚡]$displayQ",
                                 url = decoded,
                                 type = ExtractorLinkType.VIDEO
                             ) {
                                 this.referer = ""
-                                this.quality = Qualities.P1080.value
+                                this.quality = finalQ
                             }
                         )
                     }
@@ -536,17 +591,21 @@ open class GreenmotorsExtractor : ExtractorApi() {
         val encO = json.o ?: return
         val targetUrl = runCatching { String(Base64.decode(encO, Base64.DEFAULT), Charsets.UTF_8) }.getOrNull() ?: return
 
+        val detectedQuality = extractResolution(url.substringAfter("#", ""), targetUrl, url)
+        val qTag = formatQualityTag(detectedQuality)
+        val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
+
         if (targetUrl.startsWith("http")) {
             if (targetUrl.endsWith(".mkv") || targetUrl.endsWith(".mp4") || targetUrl.contains("workers.dev")) {
                 callback.invoke(
                     newExtractorLink(
                         source = name,
-                        name = "$name - Direct Stream [⚡]",
+                        name = "$name - Direct Stream [⚡]$displayQ",
                         url = targetUrl,
                         type = ExtractorLinkType.VIDEO
                     ) {
                         this.referer = ""
-                        this.quality = Qualities.P720.value
+                        this.quality = detectedQuality
                     }
                 )
             } else {
@@ -631,16 +690,27 @@ open class HubcdnExtractor : ExtractorApi() {
                 ?: Regex("""https?://[a-zA-Z0-9.-]+\.cloudflarestorage\.com/[^\s"'<>]+""").find(text)?.value
         }
 
+        val detectedQuality = extractResolution(
+            url.substringAfter("#", ""),
+            reurlParam,
+            decodedParam,
+            html,
+            url,
+            streamUrl
+        )
+        val qTag = formatQualityTag(detectedQuality)
+        val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
+
         if (!streamUrl.isNullOrBlank()) {
             callback.invoke(
                 newExtractorLink(
                     source = name,
-                    name = "$name - Direct [R2 Dev ⚡]",
+                    name = "$name - Direct [R2 Dev ⚡]$displayQ",
                     url = streamUrl,
                     type = if (streamUrl.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                 ) {
                     this.referer = ""
-                    this.quality = Qualities.P1080.value
+                    this.quality = detectedQuality
                 }
             )
         }

@@ -712,7 +712,7 @@ class WaveFlixProvider : MainAPI() {
         val epPattern = Regex("""(?:S0?${season}E0?${episode}|${season}x0?${episode}|E0?${episode}\b|Episode\s*0?${episode}\b)""", RegexOption.IGNORE_CASE)
 
         // Parse info object: info:{ FileId: { name: "..." }, ... }
-        val infoMatches = Regex("""([a-zA-Z0-9_\-]+)\s*:\s*\{\s*name\s*:\s*"([^"]+)"""").findAll(packHtml)
+        val infoMatches = Regex("""([a-zA-Z0-9_\-]+)\s*:\s*\{\s*name\s*:\s*"([^"]+)"\s*\}""").findAll(packHtml)
         var matchedFileId: String? = null
         for (m in infoMatches) {
             val fileId = m.groupValues[1]
@@ -902,11 +902,23 @@ class WaveFlixProvider : MainAPI() {
                         val docPost = Jsoup.parse(postHtml)
                         for (a in docPost.select("a[href]")) {
                             val href = a.attr("href").trim()
+                            val btnText = a.text().trim()
+                            val prevHeading = a.parents().select("h1, h2, h3, h4, h5, p, strong").firstOrNull()?.text() ?: ""
+                            val context = "$btnText $prevHeading"
+                            val qualityTag = when {
+                                context.contains("2160p", ignoreCase = true) || context.contains("4k", ignoreCase = true) -> "2160p"
+                                context.contains("1080p", ignoreCase = true) -> "1080p"
+                                context.contains("720p", ignoreCase = true) -> "720p"
+                                context.contains("480p", ignoreCase = true) -> "480p"
+                                else -> null
+                            }
+                            val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
+
                             if (href.contains("greenmotors.") || href.contains("hubdrive.") ||
                                 href.contains("hubcloud.") || href.contains("hblinks.") ||
                                 href.contains("hubcdn.")) {
                                 runCatching {
-                                    loadExtractor(href, postUrl, subtitleCallback, callback)
+                                    loadExtractor(taggedHref, postUrl, subtitleCallback, callback)
                                 }
                             }
                         }
@@ -919,13 +931,22 @@ class WaveFlixProvider : MainAPI() {
                         if (epMatches.isNotEmpty()) {
                             val aRegex = Regex("""href=["'](https?://[^"']+)["']""", RegexOption.IGNORE_CASE)
                             for (m in epMatches) {
+                                val matchText = m.value
+                                val qualityTag = when {
+                                    matchText.contains("2160p", ignoreCase = true) || matchText.contains("4k", ignoreCase = true) -> "2160p"
+                                    matchText.contains("1080p", ignoreCase = true) -> "1080p"
+                                    matchText.contains("720p", ignoreCase = true) -> "720p"
+                                    matchText.contains("480p", ignoreCase = true) -> "480p"
+                                    else -> null
+                                }
                                 for (aMatch in aRegex.findAll(m.value)) {
                                     val linkUrl = aMatch.groupValues[1]
+                                    val taggedUrl = if (qualityTag != null && !linkUrl.contains("#")) "$linkUrl#$qualityTag" else linkUrl
                                     if (linkUrl.contains("greenmotors.") || linkUrl.contains("hubdrive.") ||
                                         linkUrl.contains("hubcloud.") || linkUrl.contains("hblinks.") ||
                                         linkUrl.contains("hubcdn.")) {
                                         runCatching {
-                                            loadExtractor(linkUrl, postUrl, subtitleCallback, callback)
+                                            loadExtractor(taggedUrl, postUrl, subtitleCallback, callback)
                                         }
                                     }
                                 }
@@ -934,11 +955,20 @@ class WaveFlixProvider : MainAPI() {
                             val epHrefRegex = Regex("""<a[^>]*href=["'](https?://[^"']+)["'][^>]*>[\s\S]*?(?:E|Episode|EP)[\s.-]*(?:0?$rawEp|$padEp)\b[\s\S]*?<\/a>""", RegexOption.IGNORE_CASE)
                             for (m in epHrefRegex.findAll(postHtml)) {
                                 val linkUrl = m.groupValues[1]
+                                val fullMatch = m.value
+                                val qualityTag = when {
+                                    fullMatch.contains("2160p", ignoreCase = true) || fullMatch.contains("4k", ignoreCase = true) -> "2160p"
+                                    fullMatch.contains("1080p", ignoreCase = true) -> "1080p"
+                                    fullMatch.contains("720p", ignoreCase = true) -> "720p"
+                                    fullMatch.contains("480p", ignoreCase = true) -> "480p"
+                                    else -> null
+                                }
+                                val taggedUrl = if (qualityTag != null && !linkUrl.contains("#")) "$linkUrl#$qualityTag" else linkUrl
                                 if (linkUrl.contains("greenmotors.") || linkUrl.contains("hubdrive.") ||
                                     linkUrl.contains("hubcloud.") || linkUrl.contains("hblinks.") ||
                                     linkUrl.contains("hubcdn.")) {
                                     runCatching {
-                                        loadExtractor(linkUrl, postUrl, subtitleCallback, callback)
+                                        loadExtractor(taggedUrl, postUrl, subtitleCallback, callback)
                                     }
                                 }
                             }
@@ -1146,9 +1176,21 @@ class WaveFlixProvider : MainAPI() {
             val doc = org.jsoup.Jsoup.parse(postHtml)
             doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
                 val href = a.attr("href").trim()
+                val btnText = a.text().trim()
+                val prevHeading = a.parents().select("h1, h2, h3, h4, h5, p, strong").firstOrNull()?.text() ?: ""
+                val context = "$btnText $prevHeading"
+                val qualityTag = when {
+                    context.contains("2160p", ignoreCase = true) || context.contains("4k", ignoreCase = true) -> "2160p"
+                    context.contains("1080p", ignoreCase = true) -> "1080p"
+                    context.contains("720p", ignoreCase = true) -> "720p"
+                    context.contains("480p", ignoreCase = true) -> "480p"
+                    else -> null
+                }
+                val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
+
                 if (href.startsWith("http") && !href.contains("filepress") && !href.contains("filebee") && !href.contains("nexdrive")) {
                     runCatching {
-                        loadExtractor(href, postUrl, subtitleCallback, callback)
+                        loadExtractor(taggedHref, postUrl, subtitleCallback, callback)
                     }
                 }
             }
