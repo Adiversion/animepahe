@@ -48,6 +48,28 @@ open class StremioOttProvider(
         private const val CACHE_TTL_MS = 15 * 60 * 1000L // 15 mins cache
         private val sharedEngine = WaveFlixProvider()
         private val idCache = ConcurrentHashMap<String, Long>()
+
+        private val COP_UNIVERSE_QUERIES = listOf(
+            "Singham Again",
+            "Sooryavanshi",
+            "Simmba",
+            "Singham Returns",
+            "Singham",
+            "Indian Police Force",
+            "Dahaad",
+            "Paatal Lok"
+        )
+
+        private val PEACOCK_QUERIES = listOf(
+            "Oppenheimer",
+            "The Office",
+            "Suits",
+            "Fast X",
+            "Jurassic World",
+            "Ted",
+            "Brooklyn Nine-Nine",
+            "Banshee"
+        )
     }
 
     private val commonHeaders = mapOf(
@@ -138,21 +160,35 @@ open class StremioOttProvider(
         }
     }
 
+    private suspend fun fetchCuratedTitles(queries: List<String>, pkg: String, country: String): List<SearchResponse> {
+        return coroutineScope {
+            queries.map { q ->
+                async {
+                    searchJustWatch(q, pkg, country).firstOrNull()
+                }
+            }.awaitAll().filterNotNull().distinctBy { it.url }
+        }
+    }
+
     private suspend fun fetchJustWatchCatalog(
         pkg: String,
         isMovie: Boolean,
         country: String,
         count: Int,
-        genres: List<String>? = null
+        genres: List<String>? = null,
+        productionCountries: List<String>? = null,
+        sortBy: String = "TRENDING",
+        minScore: Double? = null,
+        searchQuery: String? = null
     ): List<SearchResponse> {
         return try {
             val gql = """
-                query GetPopularTitles(${"$"}country: Country!, ${"$"}language: Language!, ${"$"}first: Int!, ${"$"}filter: TitleFilter) {
-                  popularTitles(country: ${"$"}country, first: ${"$"}first, filter: ${"$"}filter) {
+                query GetPopularTitles(${"$" + "country"}: Country!, ${"$" + "language"}: Language!, ${"$" + "first"}: Int!, ${"$" + "filter"}: TitleFilter, ${"$" + "sortBy"}: PopularTitlesSorting!) {
+                  popularTitles(country: ${"$" + "country"}, first: ${"$" + "first"}, filter: ${"$" + "filter"}, sortBy: ${"$" + "sortBy"}) {
                     edges {
                       node {
                         objectType
-                        content(country: ${"$"}country, language: ${"$"}language) {
+                        content(country: ${"$" + "country"}, language: ${"$" + "language"}) {
                           title
                           originalReleaseYear
                           posterUrl
@@ -178,6 +214,15 @@ open class StremioOttProvider(
             if (!genres.isNullOrEmpty()) {
                 filterMap["genres"] = genres
             }
+            if (!productionCountries.isNullOrEmpty()) {
+                filterMap["productionCountries"] = productionCountries
+            }
+            if (minScore != null && minScore > 0) {
+                filterMap["imdbScore"] = mapOf("min" to minScore)
+            }
+            if (!searchQuery.isNullOrBlank()) {
+                filterMap["searchQuery"] = searchQuery
+            }
 
             val payloadMap = mapOf(
                 "operationName" to "GetPopularTitles",
@@ -186,7 +231,8 @@ open class StremioOttProvider(
                     "country" to country,
                     "language" to "en",
                     "first" to count,
-                    "filter" to filterMap
+                    "filter" to filterMap,
+                    "sortBy" to sortBy
                 )
             )
 
@@ -257,39 +303,108 @@ open class StremioOttProvider(
             request.data.startsWith("LIVE_SPORTS") -> {
                 fetchCncChannels("SPORTS")
             }
-            request.data.startsWith("SHOW_GENRE:") -> {
-                val parts = request.data.removePrefix("SHOW_GENRE:").split(":")
-                val genreList = parts.getOrNull(0)?.split(",")?.map { it.trim() }?.filter { it.isNotBlank() }
-                val count = parts.getOrNull(1)?.toIntOrNull() ?: 12
+            request.data.startsWith("COP_UNIVERSE") -> {
+                fetchCuratedTitles(COP_UNIVERSE_QUERIES, jwPackage, country)
+            }
+            request.data.startsWith("PEACOCK") -> {
+                fetchCuratedTitles(PEACOCK_QUERIES, jwPackage, country)
+            }
+            request.data.startsWith("SHOW_IN:") -> {
+                val parts = request.data.removePrefix("SHOW_IN:").split(":")
+                val count = parts.getOrNull(0)?.toIntOrNull() ?: 10
+                val offset = parts.getOrNull(1)?.toIntOrNull() ?: 0
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = false,
+                    country = country,
+                    count = count + offset,
+                    productionCountries = listOf("IN"),
+                    sortBy = "TRENDING",
+                    minScore = 6.0
+                ).drop(offset).take(count)
+            }
+            request.data.startsWith("MOVIE_IN:") -> {
+                val parts = request.data.removePrefix("MOVIE_IN:").split(":")
+                val count = parts.getOrNull(0)?.toIntOrNull() ?: 10
+                val offset = parts.getOrNull(1)?.toIntOrNull() ?: 0
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = true,
+                    country = country,
+                    count = count + offset,
+                    productionCountries = listOf("IN"),
+                    sortBy = "TRENDING",
+                    minScore = 6.0
+                ).drop(offset).take(count)
+            }
+            request.data.startsWith("SHOW_GLOBAL:") -> {
+                val parts = request.data.removePrefix("SHOW_GLOBAL:").split(":")
+                val count = parts.getOrNull(0)?.toIntOrNull() ?: 12
+                val offset = parts.getOrNull(1)?.toIntOrNull() ?: 0
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = false,
+                    country = country,
+                    count = count + offset,
+                    sortBy = "POPULAR",
+                    minScore = 7.5
+                ).drop(offset).take(count)
+            }
+            request.data.startsWith("MOVIE_GLOBAL:") -> {
+                val parts = request.data.removePrefix("MOVIE_GLOBAL:").split(":")
+                val count = parts.getOrNull(0)?.toIntOrNull() ?: 12
+                val offset = parts.getOrNull(1)?.toIntOrNull() ?: 0
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = true,
+                    country = country,
+                    count = count + offset,
+                    sortBy = "POPULAR",
+                    minScore = 7.0
+                ).drop(offset).take(count)
+            }
+            request.data.startsWith("SHOW_KOREAN:") -> {
+                val count = request.data.substringAfter("SHOW_KOREAN:").toIntOrNull() ?: 12
                 fetchJustWatchCatalog(
                     pkg = jwPackage,
                     isMovie = false,
                     country = country,
                     count = count,
-                    genres = genreList
+                    productionCountries = listOf("KR"),
+                    sortBy = "POPULAR",
+                    minScore = 7.0
                 )
+            }
+            request.data.startsWith("SHOW_GENRE:") -> {
+                val parts = request.data.removePrefix("SHOW_GENRE:").split(":")
+                val genreList = parts.getOrNull(0)?.split(",")?.map { it.trim() }?.filter { it.isNotBlank() }
+                val count = parts.getOrNull(1)?.toIntOrNull() ?: 12
+                val offset = parts.getOrNull(2)?.toIntOrNull() ?: 0
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = false,
+                    country = country,
+                    count = count + offset,
+                    genres = genreList,
+                    minScore = 7.0
+                ).drop(offset).take(count)
             }
             request.data.startsWith("MOVIE_GENRE:") -> {
                 val parts = request.data.removePrefix("MOVIE_GENRE:").split(":")
                 val genreList = parts.getOrNull(0)?.split(",")?.map { it.trim() }?.filter { it.isNotBlank() }
                 val count = parts.getOrNull(1)?.toIntOrNull() ?: 12
+                val offset = parts.getOrNull(2)?.toIntOrNull() ?: 0
                 fetchJustWatchCatalog(
                     pkg = jwPackage,
                     isMovie = true,
                     country = country,
-                    count = count,
-                    genres = genreList
-                )
+                    count = count + offset,
+                    genres = genreList,
+                    minScore = 6.5
+                ).drop(offset).take(count)
             }
             request.data.startsWith("MOVIE_COP") -> {
-                val count = request.data.substringAfter(":").toIntOrNull() ?: 15
-                fetchJustWatchCatalog(
-                    pkg = jwPackage,
-                    isMovie = true,
-                    country = country,
-                    count = count,
-                    genres = listOf("act", "crm")
-                )
+                fetchCuratedTitles(COP_UNIVERSE_QUERIES, jwPackage, country)
             }
             else -> {
                 val parts = request.data.split(":")
@@ -616,11 +731,12 @@ class NetflixProvider : StremioOttProvider(
     providerId = "nfx",
     jwPackage = "nfx",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on Netflix Today",
-        "MOVIE:10:0" to "Top 10 Movies on Netflix Today",
-        "SHOW:15:10" to "Popular Series on Netflix",
-        "MOVIE:15:10" to "Popular Movies on Netflix",
-        "MOVIE_GENRE:drm,cmy:12" to "Bollywood & Indian Cinema on Netflix"
+        "SHOW_IN:10:0" to "Top 10 TV Shows in India Today",
+        "MOVIE_IN:10:0" to "Top 10 Movies in India Today",
+        "SHOW_GLOBAL:12:0" to "Popular on Netflix (Global Hits)",
+        "MOVIE_GLOBAL:12:0" to "Trending Movies Worldwide",
+        "SHOW_KOREAN:12" to "K-Dramas & Asian Cinema",
+        "SHOW_GENRE:act,adv:12:0" to "Action & Adventure Series"
     )
 )
 
@@ -631,11 +747,10 @@ class JioHotstarProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
         "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
-        "SHOW_GENRE:rly:10" to "Top 10 in India Today - Hindi",
-        "SHOW:12:0" to "New on JioHotstar",
-        "MOVIE_GENRE:rma,drm:12" to "Peacock's Finest & Blockbusters",
-        "SHOW_GENRE:fml,ani:12" to "Kids Shows & Animation",
-        "MOVIE:12:0" to "Popular Movies on JioHotstar"
+        "SHOW_IN:10:0" to "Top 10 in India Today - Hotstar Specials",
+        "MOVIE_IN:10:0" to "Blockbuster Movies on JioHotstar",
+        "PEACOCK:10" to "Peacock's Finest & Universal Hits",
+        "SHOW_GENRE:fml,ani:12:0" to "Kids Shows & Animation"
     )
 )
 
@@ -644,12 +759,12 @@ class PrimeVideoProvider : StremioOttProvider(
     providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on Prime Video Today",
-        "MOVIE:10:0" to "Top 10 Movies on Prime Video Today",
-        "SHOW:15:10" to "Popular Series on Prime Video",
-        "MOVIE:15:10" to "Popular Movies on Prime Video",
-        "MOVIE_COP:15" to "Cop Universe & Action Thrillers",
-        "SHOW_GENRE:crm,trl:12" to "Crime & Mystery Series on Prime"
+        "SHOW_IN:10:0" to "Top 10 Series on Prime Video Today",
+        "MOVIE_IN:10:0" to "Top 10 Movies on Prime Video Today",
+        "SHOW_GLOBAL:12:0" to "Prime Video Global Bestsellers",
+        "MOVIE_GLOBAL:12:0" to "Worldwide Blockbusters",
+        "COP_UNIVERSE:10" to "Cop Universe & High-Octane Action",
+        "SHOW_GENRE:crm,trl:12:2" to "Crime & Mystery Series on Prime"
     )
 )
 
@@ -658,10 +773,10 @@ class Zee5Provider : StremioOttProvider(
     providerId = "zee",
     jwPackage = "zee",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on Zee5 Today",
-        "MOVIE:10:0" to "Top 10 Movies on Zee5 Today",
-        "SHOW:15:10" to "Popular Shows on Zee5",
-        "MOVIE:15:10" to "Popular Movies on Zee5"
+        "SHOW_IN:10:0" to "Top 10 Shows on Zee5 Today",
+        "MOVIE_IN:10:0" to "Top 10 Movies on Zee5 Today",
+        "SHOW_IN:15:10" to "Popular Zee5 Originals",
+        "MOVIE_IN:15:10" to "Popular Movies on Zee5"
     )
 )
 
@@ -670,10 +785,10 @@ class SonyLivProvider : StremioOttProvider(
     providerId = "snl",
     jwPackage = "snl",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on SonyLIV Today",
-        "MOVIE:10:0" to "Top 10 Movies on SonyLIV Today",
-        "SHOW:15:10" to "Popular Shows on SonyLIV",
-        "MOVIE:15:10" to "Popular Movies on SonyLIV"
+        "SHOW_IN:10:0" to "Top 10 Shows on SonyLIV Today",
+        "MOVIE_IN:10:0" to "Top 10 Movies on SonyLIV Today",
+        "SHOW_IN:15:10" to "Popular SonyLIV Originals",
+        "MOVIE_IN:15:10" to "Popular Movies on SonyLIV"
     )
 )
 
@@ -682,10 +797,10 @@ class AppleTvProvider : StremioOttProvider(
     providerId = "atp",
     jwPackage = "atp",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on Apple TV+ Today",
-        "MOVIE:10:0" to "Top 10 Movies on Apple TV+ Today",
-        "SHOW:15:10" to "Popular Shows on Apple TV+",
-        "MOVIE:15:10" to "Popular Movies on Apple TV+"
+        "SHOW_GLOBAL:10:0" to "Top 10 Shows on Apple TV+ Today",
+        "MOVIE_GLOBAL:10:0" to "Top 10 Movies on Apple TV+ Today",
+        "SHOW_GLOBAL:15:10" to "Popular Shows on Apple TV+",
+        "MOVIE_GLOBAL:15:10" to "Popular Movies on Apple TV+"
     )
 )
 
