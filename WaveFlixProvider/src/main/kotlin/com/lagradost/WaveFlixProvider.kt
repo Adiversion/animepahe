@@ -30,6 +30,11 @@ class WaveFlixProvider : MainAPI() {
 
     override val hasMainPage = true
 
+    companion object {
+        private val homeCache = mutableMapOf<String, Pair<Long, HomePageResponse>>()
+        private const val CACHE_TTL_MS = 15 * 60 * 1000L // 15 minutes cache for smooth UI
+    }
+
     override val mainPage = mainPageOf(
         "movie/trending" to "Trending Movies",
         "movie/now_playing" to "Now Playing Movies",
@@ -45,6 +50,15 @@ class WaveFlixProvider : MainAPI() {
     )
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
+        val cacheKey = "${request.data}/$page"
+        val now = System.currentTimeMillis()
+        synchronized(homeCache) {
+            val cached = homeCache[cacheKey]
+            if (cached != null && (now - cached.first) < CACHE_TTL_MS) {
+                return cached.second
+            }
+        }
+
         val parts = request.data.split("/")
         val mediaType = parts.getOrNull(0) ?: "movie"
         val category = parts.getOrNull(1) ?: "trending"
@@ -55,7 +69,7 @@ class WaveFlixProvider : MainAPI() {
             "$mainUrl/api/discover?mediaType=$mediaType&category=$category&page=$page"
         }
 
-        val res = app.get(endpoint, headers = commonHeaders)
+        val res = app.get(endpoint, headers = commonHeaders, timeout = 8)
             .parsedSafe<WaveSearchResponse>() ?: throw ErrorLoadingException("Failed to fetch WaveFlix discover catalog")
 
         val homeItems = res.results?.mapNotNull { item ->
@@ -63,7 +77,11 @@ class WaveFlixProvider : MainAPI() {
         } ?: emptyList()
 
         val hasNext = page < (res.totalPages ?: 1)
-        return newHomePageResponse(request.name, homeItems, hasNext)
+        val response = newHomePageResponse(request.name, homeItems, hasNext)
+        synchronized(homeCache) {
+            homeCache[cacheKey] = now to response
+        }
+        return response
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
@@ -113,22 +131,8 @@ class WaveFlixProvider : MainAPI() {
             }
         } else {
             val episodes = mutableListOf<Episode>()
-            var seasonNum = 1
-            val maxSeasons = 30 // Prevent runaway loop
 
-            while (seasonNum <= maxSeasons) {
-                val seasonUrl = "$mainUrl/api/season?tvId=$tmdbId&season=$seasonNum"
-                val seasonRes = try {
-                    app.get(seasonUrl, headers = commonHeaders).parsedSafe<WaveSeasonResponse>()
-                } catch (_: Throwable) {
-                    null
-                }
-
-                val epList = seasonRes?.episodes
-                if (epList.isNullOrEmpty()) {
-                    break
-                }
-
+            fun addSeasonEpisodes(seasonNum: Int, epList: List<WaveEpisodeItem>) {
                 epList.forEachIndexed { idx, ep ->
                     val epNum = ep.episodeNumber ?: (idx + 1)
                     val epData = WaveLinkData(
@@ -141,7 +145,7 @@ class WaveFlixProvider : MainAPI() {
                     )
 
                     val epPoster = if (!ep.stillPath.isNullOrBlank()) {
-                        "https://image.tmdb.org/t/p/w500${ep.stillPath}"
+                        "https://image.tmdb.org/t/p/w300${ep.stillPath}"
                     } else poster
 
                     episodes.add(
@@ -154,8 +158,49 @@ class WaveFlixProvider : MainAPI() {
                         }
                     )
                 }
+            }
 
-                seasonNum++
+            // 1. Fetch Season 1 first
+            val s1Res = try {
+                app.get("$mainUrl/api/season?tvId=$tmdbId&season=1", headers = commonHeaders, timeout = 7)
+                    .parsedSafe<WaveSeasonResponse>()
+            } catch (_: Throwable) {
+                null
+            }
+
+            val s1List = s1Res?.episodes
+            if (!s1List.isNullOrEmpty()) {
+                addSeasonEpisodes(1, s1List)
+
+                // 2. Fetch subsequent seasons in concurrent batches of 4
+                coroutineScope {
+                    var nextBatchStart = 2
+                    var hasMore = true
+                    while (hasMore && nextBatchStart <= 25) {
+                        val batchRange = nextBatchStart until (nextBatchStart + 4)
+                        val seasonJobs = batchRange.map { sNum ->
+                            async {
+                                val sRes = try {
+                                    app.get("$mainUrl/api/season?tvId=$tmdbId&season=$sNum", headers = commonHeaders, timeout = 7)
+                                        .parsedSafe<WaveSeasonResponse>()
+                                } catch (_: Throwable) {
+                                    null
+                                }
+                                sNum to (sRes?.episodes ?: emptyList())
+                            }
+                        }
+                        val results = seasonJobs.awaitAll().sortedBy { it.first }
+                        for ((sNum, eps) in results) {
+                            if (eps.isNotEmpty()) {
+                                addSeasonEpisodes(sNum, eps)
+                            } else {
+                                hasMore = false
+                                break
+                            }
+                        }
+                        nextBatchStart += 4
+                    }
+                }
             }
 
             return newTvSeriesLoadResponse(cleanTitle, url, TvType.TvSeries, episodes) {
@@ -256,41 +301,44 @@ class WaveFlixProvider : MainAPI() {
 
                                     val serverDisplayName = srv.name ?: srv.scraper ?: "Server"
 
-                                    sourcesObj.sources?.forEach { src ->
+                                    val streamJobs = sourcesObj.sources?.mapNotNull { src ->
                                         val streamUrl = src.url?.trim()
-                                        if (!streamUrl.isNullOrBlank()) {
-                                            val qualityLabel = src.label ?: src.quality ?: "Auto"
+                                        if (streamUrl.isNullOrBlank()) return@mapNotNull null
+                                        val qualityLabel = src.label ?: src.quality ?: "Auto"
 
-                                            // Skip 10Gbps Google CDN download links that fail HTTP Range seeking and resume
-                                            if (streamUrl.contains("video-downloads.googleusercontent.com") ||
-                                                qualityLabel.contains("10Gbps", ignoreCase = true) ||
-                                                serverDisplayName.contains("10Gbps", ignoreCase = true)
-                                            ) {
-                                                return@forEach
-                                            }
+                                        // Skip 10Gbps Google CDN download links that fail HTTP Range seeking and resume
+                                        if (streamUrl.contains("video-downloads.googleusercontent.com") ||
+                                            qualityLabel.contains("10Gbps", ignoreCase = true) ||
+                                            serverDisplayName.contains("10Gbps", ignoreCase = true)
+                                        ) {
+                                            return@mapNotNull null
+                                        }
 
-                                            val qualityInt = parseQuality(qualityLabel)
-                                            val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
-                                            val streamReferer = src.headers?.get("Referer") ?: "https://nxsha.space/"
+                                        val qualityInt = parseQuality(qualityLabel)
+                                        val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
+                                        val streamReferer = src.headers?.get("Referer") ?: "https://nxsha.space/"
 
-                                            val streamHeaders = mapOf(
-                                                "User-Agent" to browserUserAgent,
-                                                "Referer" to streamReferer,
-                                                "Origin" to "https://nxsha.space"
-                                            )
+                                        val streamHeaders = mapOf(
+                                            "User-Agent" to browserUserAgent,
+                                            "Referer" to streamReferer,
+                                            "Origin" to "https://nxsha.space"
+                                        )
 
-                                            if (src.isEmbed == true || src.type?.lowercase() == "embed") {
-                                                // Avoid slow blocking WebViews for known Cloudflare/captcha-walled hosts
-                                                if (!streamUrl.contains("filepress") && !streamUrl.contains("filebee")) {
+                                        if (src.isEmbed == true || src.type?.lowercase() == "embed") {
+                                            // Avoid slow blocking WebViews for known Cloudflare/captcha-walled hosts
+                                            if (!streamUrl.contains("filepress") && !streamUrl.contains("filebee")) {
+                                                async {
                                                     try {
                                                         loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
                                                     } catch (_: Throwable) {}
                                                 }
-                                            } else {
-                                                // Pre-validate stream to filter out expired 403 / 400 / 404 links, ensure Range seek support, and prevent ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED
+                                            } else null
+                                        } else {
+                                            async {
+                                                // Fast-probe stream with 2s timeout to filter out dead links without lagging UI
                                                 val isPlayable = try {
                                                     val probeHeaders = if (isHls) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
-                                                    val check = app.get(streamUrl, headers = probeHeaders, timeout = 4)
+                                                    val check = app.get(streamUrl, headers = probeHeaders, timeout = 2)
                                                     val cType = (check.headers["Content-Type"] ?: check.headers["content-type"])?.lowercase() ?: ""
                                                     val isNotHtml = !cType.contains("text/html")
                                                     (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403 && isNotHtml
@@ -316,6 +364,7 @@ class WaveFlixProvider : MainAPI() {
                                             }
                                         }
                                     }
+                                    streamJobs?.awaitAll()
                                 } catch (_: Throwable) {
                                     // Skip individual server failure silently
                                 }
@@ -427,11 +476,7 @@ class WaveFlixProvider : MainAPI() {
             } catch (_: Throwable) {}
         }
 
-        val resolvedTitle = linkData.title ?: runCatching {
-            val tmdbMetaUrl = "https://api.themoviedb.org/3/${if (isMovie) "movie" else "tv"}/$tmdbId?api_key=e6c2364656962cbcb82dd76660285f39"
-            val json = app.get(tmdbMetaUrl, timeout = 5).parsedSafe<Map<String, Any?>>()
-            (json?.get("title") ?: json?.get("name")) as? String
-        }.getOrNull()
+        val resolvedTitle = linkData.title
 
         // 5. Direct RogMovies Indian Cloud & Multi-Audio Integration
         val rogMoviesJob = async {
@@ -494,28 +539,6 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
-        // 12. High-Reliability Redundant Fallback Extractors
-        val fallbackUrls = mutableListOf<String>()
-        if (isMovie) {
-            fallbackUrls.add("https://2embed.cc/embed/$tmdbId")
-            fallbackUrls.add("https://multiembed.mov/?video_id=$tmdbId&tmdb=1")
-            fallbackUrls.add("https://vidsrc.net/embed/movie/$tmdbId")
-            fallbackUrls.add("https://player.smashystream.com/movie/$tmdbId")
-        } else {
-            fallbackUrls.add("https://2embed.cc/embedtv/$tmdbId&s=$season&e=$episode")
-            fallbackUrls.add("https://multiembed.mov/?video_id=$tmdbId&tmdb=1&s=$season&e=$episode")
-            fallbackUrls.add("https://vidsrc.net/embed/tv/$tmdbId/$season/$episode")
-            fallbackUrls.add("https://player.smashystream.com/tv/$tmdbId/$season/$episode")
-        }
-
-        val fallbackJobs = fallbackUrls.map { url ->
-            async {
-                try {
-                    loadExtractor(url, "$mainUrl/", subtitleCallback, callback)
-                } catch (_: Throwable) {}
-            }
-        }
-
         nxshaJob.await()
         netMirrorJob.await()
         vidlinkJob.await()
@@ -526,7 +549,6 @@ class WaveFlixProvider : MainAPI() {
         bollyflixJob.await()
         katMovieJob.await()
         hdhub4uJob.await()
-        fallbackJobs.forEach { it.await() }
         subtitleJob.await()
         true
     }
@@ -1154,7 +1176,7 @@ class WaveFlixProvider : MainAPI() {
         val isMovie = (this.mediaType?.lowercase() == "movie")
         val titleVal = this.title ?: this.name ?: return null
         val poster = if (!this.posterPath.isNullOrBlank()) {
-            if (this.posterPath.startsWith("http")) this.posterPath else "https://image.tmdb.org/t/p/w500${this.posterPath}"
+            if (this.posterPath.startsWith("http")) this.posterPath else "https://image.tmdb.org/t/p/w342${this.posterPath}"
         } else null
 
         val targetUrl = "$mainUrl/details/${if (isMovie) "movie" else "tv"}/$idVal"
