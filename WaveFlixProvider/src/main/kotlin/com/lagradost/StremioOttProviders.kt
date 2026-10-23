@@ -12,7 +12,7 @@ open class StremioOttProvider(
     override var name: String,
     val providerId: String,
     val defaultType: TvType = TvType.TvSeries,
-    val customMainPage: List<Pair<String, String>>? = null
+    val customMainPage: List<MainPageData>? = null
 ) : MainAPI() {
     override var mainUrl = "https://www.waveflix.online"
     override var lang = "en"
@@ -24,7 +24,7 @@ open class StremioOttProvider(
 
     override val hasMainPage = true
 
-    override val mainPage = customMainPage ?: if (defaultType == TvType.Anime) {
+    override val mainPage: List<MainPageData> = customMainPage ?: if (defaultType == TvType.Anime) {
         mainPageOf(
             "catalog/series/$providerId" to "Trending Anime Series",
             "catalog/movie/$providerId" to "Anime Movies"
@@ -113,17 +113,7 @@ open class StremioOttProvider(
         val cleanQuery = query.trim().lowercase()
         if (cleanQuery.isBlank()) return emptyList()
 
-        // 1. Search locally within cached homepage items for this provider
-        val localMatches = synchronized(ottCache) {
-            ottCache.filterKeys { it.startsWith("$name/") }
-                .values
-                .flatMap { it.second.items }
-                .filter { it.name.lowercase().contains(cleanQuery) }
-                .distinctBy { it.url }
-        }
-        if (localMatches.isNotEmpty()) return localMatches
-
-        // 2. Query provider catalog directly so titles exclusive to other platforms (e.g. Gandhari) do not leak
+        // Query provider catalog directly so titles exclusive to other platforms (e.g. Gandhari) do not leak
         return try {
             val country = getUserCountry()
             val token = getCatalogToken(country)
@@ -196,7 +186,7 @@ open class StremioOttProvider(
 class NetflixProvider : StremioOttProvider(
     name = "Netflix",
     providerId = "nfx",
-    customMainPage = listOf(
+    customMainPage = mainPageOf(
         "catalog/movie/netflix-top10-{country}" to "Top 10 Movies in Netflix Today",
         "catalog/series/netflix-top10-{country}" to "Top 10 Shows in Netflix Today",
         "catalog/series/nfx" to "Trending Series on Netflix",
