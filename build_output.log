@@ -32,8 +32,8 @@ Fetching JAR: cloudstream.jar
 > Task :WaveFlixProvider:packageDebugResources
 > Task :AnimePaheProvider:parseDebugLocalResources
 > Task :WaveFlixProvider:parseDebugLocalResources
-> Task :AnimePaheProvider:generateDebugRFile
 > Task :WaveFlixProvider:generateDebugRFile
+> Task :AnimePaheProvider:generateDebugRFile
 
 > Task :AnimePaheProvider:compileDebugKotlin
 e: Daemon compilation failed: null
