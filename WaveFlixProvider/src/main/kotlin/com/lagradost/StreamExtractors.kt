@@ -410,7 +410,8 @@ open class FilmuExtractor : ExtractorApi() {
             app.get(url, headers = mapOf("Referer" to (referer ?: "https://m1.multimovies.courses/"))).text
         }.getOrNull() ?: return
 
-        val m3u8Url = Regex("""https?://[^\s"'<>\)]+\.m3u8[^\s"'<>\)]*""").find(html)?.value
+        val rawM3u8 = Regex("""https?://[^\s"'<>\)\\]+\.m3u8[^\s"'<>\)\\]*""").find(html)?.value
+        val m3u8Url = rawM3u8?.replace("\\", "")?.trimEnd('/', ' ')
         if (!m3u8Url.isNullOrBlank()) {
             callback.invoke(
                 newExtractorLink(
@@ -482,8 +483,9 @@ open class KatdriveExtractor : ExtractorApi() {
             app.get(playUrl, headers = mapOf("Referer" to "https://katdrive.click/stream/$fileId")).text
         }.getOrNull() ?: return
 
-        val m3u8Url = Regex("""["']?(?:file|src)["']?\s*:\s*["'](https?://[^"']+\.m3u8[^"']*)["']""").find(playHtml)?.groupValues?.get(1)
-            ?: Regex("""https?://[^\s"'<>\)]+\.m3u8[^\s"'<>\)]*""").find(playHtml)?.value
+        val rawM3u8 = Regex("""["']?(?:file|src)["']?\s*:\s*["'](https?://[^"'\\]+\.m3u8[^"'\\]*)["']""").find(playHtml)?.groupValues?.get(1)
+            ?: Regex("""https?://[^\s"'<>\)\\]+\.m3u8[^\s"'<>\)\\]*""").find(playHtml)?.value
+        val m3u8Url = rawM3u8?.replace("\\", "")?.trimEnd('/', ' ')
 
         if (!m3u8Url.isNullOrBlank()) {
             callback.invoke(

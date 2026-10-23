@@ -854,11 +854,17 @@ class WaveFlixProvider : MainAPI() {
         if (posts.isEmpty()) return@coroutineScope
 
         val queryTokens = if (coreTokens.isNotEmpty()) coreTokens else cleanQuery.lowercase().split(" ").filter { it.length > 2 }
+        val significantWords = queryTokens.filter { it.length >= 3 && it.toIntOrNull() == null }
+        val primaryWord = significantWords.firstOrNull() ?: cleanQuery.lowercase().split(" ").firstOrNull() ?: cleanQuery.lowercase()
 
         val matchingPosts = posts.filter { (_, title) ->
             val lower = title.lowercase()
+
+            // 1. Invariant: Post title MUST contain the primary title keyword
+            if (primaryWord.isNotBlank() && !lower.contains(primaryWord)) return@filter false
+
             val tokenMatches = queryTokens.count { lower.contains(it) }
-            val minMatches = (queryTokens.size * 0.6).coerceAtLeast(1.0).toInt()
+            val minMatches = (queryTokens.size * 0.7).coerceAtLeast(1.0).toInt()
             val matchesTokens = lower.contains(cleanQuery) || (queryTokens.isNotEmpty() && tokenMatches >= minMatches)
             if (!matchesTokens) return@filter false
 
@@ -867,7 +873,7 @@ class WaveFlixProvider : MainAPI() {
                 if (isTvTitle) return@filter false
                 if (year != null) {
                     val yearMatches = lower.contains(year.toString()) || lower.contains((year - 1).toString()) || lower.contains((year + 1).toString())
-                    yearMatches || queryTokens.size >= 2
+                    yearMatches || lower.contains(cleanQuery)
                 } else true
             } else {
                 val seasonPatterns = listOf(
@@ -879,7 +885,6 @@ class WaveFlixProvider : MainAPI() {
                     "season 1-"
                 )
                 seasonPatterns.any { lower.contains(it) } ||
-                    (season == 2 && (lower.contains("dhamaal") || lower.contains("dhammal"))) ||
                     (season == 1 && !lower.contains("season 2") && !lower.contains("s02"))
             }
         }.take(3)
@@ -949,7 +954,7 @@ class WaveFlixProvider : MainAPI() {
         if (rawTitle.isNullOrBlank()) return "" to emptyList()
         var base = rawTitle.split(Regex("""\s*[\-–—:|]""")).firstOrNull()?.trim() ?: rawTitle
 
-        base = base.replace(Regex("""(?i)\b(dhamaal\s+with|dhamaal|dhammal\s+with|dhammal|grand\s+finale|chapter\s+\d+|part\s+\d+|season\s+\d+|s\d+)\b"""), " ")
+        base = base.replace(Regex("""(?i)\b(grand\s+finale|season\s+\d+|s\d+)\b"""), " ")
             .replace(Regex("""\s*\(\d{4}\).*"""), "")
             .replace(Regex("""[^a-zA-Z0-9\s]"""), " ")
             .trim()
@@ -984,14 +989,19 @@ class WaveFlixProvider : MainAPI() {
         val searchObj = runCatching { parseJson<AllMovieSearchResponse>(jsonRes) }.getOrNull() ?: return
         val results = searchObj.results ?: return
 
+        val significantWords = coreTokens.filter { it.length >= 3 && it.toIntOrNull() == null }
+        val primaryWord = significantWords.firstOrNull() ?: query.lowercase().split(" ").firstOrNull() ?: query.lowercase()
+
         val target = results.firstOrNull { m ->
             val mTitle = (m.titleEn ?: m.titleRu ?: "").lowercase()
+            if (primaryWord.isNotBlank() && !mTitle.contains(primaryWord)) return@firstOrNull false
+
             val tokenMatches = coreTokens.count { mTitle.contains(it) }
-            val minMatches = (coreTokens.size * 0.6).coerceAtLeast(1.0).toInt()
+            val minMatches = (coreTokens.size * 0.7).coerceAtLeast(1.0).toInt()
             val nameMatch = mTitle.contains(query.lowercase()) || (coreTokens.isNotEmpty() && tokenMatches >= minMatches)
             val yearMatch = if (year != null && m.year != null) (m.year == year || m.year == year - 1 || m.year == year + 1) else true
             nameMatch && yearMatch
-        } ?: results.firstOrNull() ?: return
+        } ?: return
 
         target.player?.forEach { p ->
             val pUrl = p.url?.trim() ?: return@forEach
@@ -1050,7 +1060,12 @@ class WaveFlixProvider : MainAPI() {
             if (el.tagName() == "a") el.attr("href") else el.selectFirst("a")?.attr("href")
         }.distinct().filter { it.isNotBlank() }
 
-        val targetPost = postLinks.firstOrNull() ?: return
+        val significantWords = coreTokens.filter { it.length >= 3 && it.toIntOrNull() == null }
+        val primaryWord = significantWords.firstOrNull() ?: cleanQuery.lowercase().split(" ").firstOrNull() ?: cleanQuery.lowercase()
+
+        val targetPost = postLinks.firstOrNull { link ->
+            link.lowercase().contains(primaryWord)
+        } ?: return
         val postHtml = runCatching {
             app.get(targetPost, headers = headers + ("Referer" to searchUrl), timeout = 7).text
         }.getOrNull() ?: return
@@ -1091,10 +1106,15 @@ class WaveFlixProvider : MainAPI() {
 
         val cleanQuery = query.lowercase().trim()
         val queryTokens = if (coreTokens.isNotEmpty()) coreTokens else cleanQuery.split(" ").filter { it.length > 2 }
+        val significantWords = queryTokens.filter { it.length >= 3 && it.toIntOrNull() == null }
+        val primaryWord = significantWords.firstOrNull() ?: cleanQuery.split(" ").firstOrNull() ?: cleanQuery
+
         val relevantHits = hits.filter { hit ->
             val hitTitle = hit.document?.post_title?.lowercase() ?: ""
+            if (primaryWord.isNotBlank() && !hitTitle.contains(primaryWord)) return@filter false
+
             val tokenMatches = queryTokens.count { hitTitle.contains(it) }
-            val minMatches = (queryTokens.size * 0.6).coerceAtLeast(1.0).toInt()
+            val minMatches = (queryTokens.size * 0.7).coerceAtLeast(1.0).toInt()
             val isNameMatch = hitTitle.contains(cleanQuery) || (queryTokens.isNotEmpty() && tokenMatches >= minMatches)
 
             val isSeasonMatch = if (!isMovie) {
@@ -1103,19 +1123,18 @@ class WaveFlixProvider : MainAPI() {
                 hitTitle.contains("s$sPad") || hitTitle.contains("s$sStr") ||
                 hitTitle.contains("season $sStr") || hitTitle.contains("season $sPad") ||
                 hitTitle.contains("season 1-") || hitTitle.contains("complete") ||
-                (season == 2 && (hitTitle.contains("dhamaal") || hitTitle.contains("dhammal"))) ||
                 (season == 1 && !hitTitle.contains("season 2") && !hitTitle.contains("s02"))
-            } else true
+            } else {
+                if (year != null) {
+                    val yearMatches = hitTitle.contains(year.toString()) || hitTitle.contains((year - 1).toString()) || hitTitle.contains((year + 1).toString())
+                    yearMatches || hitTitle.contains(cleanQuery)
+                } else true
+            }
 
             isNameMatch && isSeasonMatch
         }
 
-        val targetHits = if (!isMovie && season == 2) {
-            relevantHits.sortedByDescending { h ->
-                val ht = h.document?.post_title?.lowercase() ?: ""
-                (if (ht.contains("season 2") || ht.contains("s02")) 2 else 0) + (if (ht.contains("dhamaal") || ht.contains("dhammal")) 2 else 0)
-            }
-        } else relevantHits
+        val targetHits = relevantHits
 
         targetHits.take(2).forEach { hit ->
             val permalink = hit.document?.permalink ?: return@forEach
