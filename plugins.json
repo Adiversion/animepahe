@@ -23,10 +23,10 @@
     },
     {
         "iconUrl": "https://raw.githubusercontent.com/Adiversion/csext/builds/WaveFlix_icon.png",
-        "fileHash": "sha256-c94906db5fc0d16e2212062904b4d013c39604b0e4c03fe40eee1e2d79278ec1",
+        "fileHash": "sha256-2d1696763fea96f3077204dd4413fe2eec01f3e1fedc4b9d87bff58e23330d57",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/Adiversion/csext",
-        "fileSize": 134159,
+        "fileSize": 130295,
         "status": 1,
         "language": "en",
         "authors": [
@@ -37,7 +37,7 @@
             "TvSeries",
             "Anime"
         ],
-        "version": 21,
+        "version": 23,
         "internalName": "WaveFlixProvider",
         "description": "WaveFlix TMDB & Multi-OTT streaming engine with individual homepages for Netflix, JioHotstar, Prime Video, Zee5, SonyLIV, Apple TV+, and Crunchyroll powered by 45+ direct scrapers.",
         "url": "https://raw.githubusercontent.com/Adiversion/csext/builds/WaveFlixProvider.cs3",
