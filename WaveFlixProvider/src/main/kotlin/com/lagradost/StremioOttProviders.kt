@@ -748,7 +748,8 @@ class JioHotstarProvider : StremioOttProvider(
         "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
         "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
         "SHOW_IN:10:0" to "Top 10 in India Today - Hotstar Specials",
-        "MOVIE_IN:10:0" to "Blockbuster Movies on JioHotstar",
+        "MOVIE_GENRE:act:12:0" to "Action Movies on JioHotstar",
+        "MOVIE_GENRE:rma:12:0" to "Find Your Love Story",
         "PEACOCK:10" to "Peacock's Finest & Universal Hits",
         "SHOW_GENRE:fml,ani:12:0" to "Kids Shows & Animation"
     )

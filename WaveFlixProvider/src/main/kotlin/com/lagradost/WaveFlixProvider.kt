@@ -814,6 +814,44 @@ class WaveFlixProvider : MainAPI() {
         }
     }
 
+    private fun findPrecedingQualityTag(a: org.jsoup.nodes.Element): String? {
+        val btnText = a.text().lowercase()
+        when {
+            btnText.contains("2160p") || btnText.contains("4k") -> return "2160p"
+            btnText.contains("1080p") -> return "1080p"
+            btnText.contains("720p") -> return "720p"
+            btnText.contains("480p") -> return "480p"
+        }
+
+        var curr: org.jsoup.nodes.Element? = a
+        while (curr != null) {
+            var prev = curr.previousElementSibling()
+            while (prev != null) {
+                val pText = prev.text().lowercase()
+                val has2160 = pText.contains("2160p") || pText.contains("4k")
+                val has1080 = pText.contains("1080p")
+                val has720 = pText.contains("720p")
+                val has480 = pText.contains("480p")
+                val count = listOf(has2160, has1080, has720, has480).count { it }
+
+                if (count == 1) {
+                    return when {
+                        has2160 -> "2160p"
+                        has1080 -> "1080p"
+                        has720 -> "720p"
+                        has480 -> "480p"
+                        else -> null
+                    }
+                }
+                prev = prev.previousElementSibling()
+            }
+            val parent = curr.parent()
+            if (parent == null || parent.tagName() in listOf("body", "html", "article", "main")) break
+            curr = parent
+        }
+        return null
+    }
+
     private suspend fun queryHDHub4u(
         query: String,
         coreTokens: List<String>,
@@ -903,15 +941,7 @@ class WaveFlixProvider : MainAPI() {
                         for (a in docPost.select("a[href]")) {
                             val href = a.attr("href").trim()
                             val btnText = a.text().trim()
-                            val prevHeading = a.parents().select("h1, h2, h3, h4, h5, p, strong").firstOrNull()?.text() ?: ""
-                            val context = "$btnText $prevHeading"
-                            val qualityTag = when {
-                                context.contains("2160p", ignoreCase = true) || context.contains("4k", ignoreCase = true) -> "2160p"
-                                context.contains("1080p", ignoreCase = true) -> "1080p"
-                                context.contains("720p", ignoreCase = true) -> "720p"
-                                context.contains("480p", ignoreCase = true) -> "480p"
-                                else -> null
-                            }
+                            val qualityTag = findPrecedingQualityTag(a)
                             val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
 
                             if (href.contains("greenmotors.") || href.contains("hubdrive.") ||
@@ -1103,9 +1133,11 @@ class WaveFlixProvider : MainAPI() {
         val postDoc = org.jsoup.Jsoup.parse(postHtml)
         postDoc.select("a[href*='fastdl.'], a[href*='hubcloud.'], a[href*='vcloud.'], a[href*='gofile.'], a[href*='pixeldrain.']").forEach { a ->
             val href = a.attr("href").trim()
+            val qualityTag = findPrecedingQualityTag(a)
+            val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
             if (href.startsWith("http")) {
                 runCatching {
-                    loadExtractor(href, targetPost, subtitleCallback, callback)
+                    loadExtractor(taggedHref, targetPost, subtitleCallback, callback)
                 }
             }
         }
@@ -1177,15 +1209,7 @@ class WaveFlixProvider : MainAPI() {
             doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
                 val href = a.attr("href").trim()
                 val btnText = a.text().trim()
-                val prevHeading = a.parents().select("h1, h2, h3, h4, h5, p, strong").firstOrNull()?.text() ?: ""
-                val context = "$btnText $prevHeading"
-                val qualityTag = when {
-                    context.contains("2160p", ignoreCase = true) || context.contains("4k", ignoreCase = true) -> "2160p"
-                    context.contains("1080p", ignoreCase = true) -> "1080p"
-                    context.contains("720p", ignoreCase = true) -> "720p"
-                    context.contains("480p", ignoreCase = true) -> "480p"
-                    else -> null
-                }
+                val qualityTag = findPrecedingQualityTag(a)
                 val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
 
                 if (href.startsWith("http") && !href.contains("filepress") && !href.contains("filebee") && !href.contains("nexdrive")) {

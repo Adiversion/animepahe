@@ -9,14 +9,27 @@ import org.jsoup.Jsoup
 fun extractResolution(vararg sources: String?): Int {
     for (s in sources) {
         if (s.isNullOrBlank()) continue
-        val lower = s.lowercase()
+        val decoded = runCatching { java.net.URLDecoder.decode(s, "UTF-8") }.getOrDefault(s)
+        val lower = decoded.lowercase()
+
+        val has2160 = lower.contains("2160p") || lower.contains("4k") || lower.contains("uhd")
+        val has1440 = lower.contains("1440p") || lower.contains("2k")
+        val has1080 = lower.contains("1080p") || lower.contains("fhd")
+        val has720 = lower.contains("720p")
+        val has480 = lower.contains("480p") || lower.contains("sd")
+        val has360 = lower.contains("360p")
+
+        val distinctCount = listOf(has2160, has1440, has1080, has720, has480, has360).count { it }
+        // If a string contains multiple resolutions (e.g. 480p, 720p, 1080p), it is an ambiguous multi-pack title
+        if (distinctCount > 1) continue
+
         when {
-            lower.contains("2160p") || lower.contains("4k") || lower.contains("uhd") -> return Qualities.P2160.value
-            lower.contains("1440p") || lower.contains("2k") -> return Qualities.P1440.value
-            lower.contains("1080p") || lower.contains("fhd") -> return Qualities.P1080.value
-            lower.contains("720p") || (lower.contains("hd") && !lower.contains("hdtv") && !lower.contains("hdhub")) -> return Qualities.P720.value
-            lower.contains("480p") || lower.contains("sd") -> return Qualities.P480.value
-            lower.contains("360p") -> return Qualities.P360.value
+            has2160 -> return Qualities.P2160.value
+            has1440 -> return Qualities.P1440.value
+            has1080 -> return Qualities.P1080.value
+            has720 || (lower.contains("hd") && !lower.contains("hdtv") && !lower.contains("hdhub")) -> return Qualities.P720.value
+            has480 -> return Qualities.P480.value
+            has360 -> return Qualities.P360.value
         }
     }
     return Qualities.Unknown.value
@@ -77,11 +90,10 @@ open class VCloudExtractor : ExtractorApi() {
         }
 
         val detectedQuality = extractResolution(
-            url.substringAfter("#", ""),
-            finalDoc.select(".card-title, .card-header, .header, h1, h2, h3, h4, h5, title").text(),
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            finalDoc.select(".card-title, .card-header, h5, h4").firstOrNull()?.text(),
             tokenUrl,
-            url,
-            html
+            url
         )
 
         val fslLinks = finalDoc.select("a[href*='r2.dev'], a[href*='r2.cloudflarestorage.com'], a:contains(FSL)")
@@ -89,7 +101,13 @@ open class VCloudExtractor : ExtractorApi() {
             val href = a.attr("href").trim()
             if (href.startsWith("http")) {
                 val isFsl2 = a.text().contains("FSLv2", ignoreCase = true)
-                val linkQ = extractResolution(a.text(), a.parent()?.text(), href, formatQualityTag(detectedQuality))
+                val linkQ = extractResolution(
+                    url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+                    href,
+                    a.text(),
+                    a.parent()?.text(),
+                    formatQualityTag(detectedQuality)
+                )
                 val finalQ = if (linkQ != Qualities.Unknown.value) linkQ else detectedQuality
                 val qTag = formatQualityTag(finalQ)
                 val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
@@ -174,21 +192,33 @@ open class FastDLExtractor : ExtractorApi() {
             app.get(url, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to (referer ?: mainUrl))).text
         }.getOrNull() ?: return
 
+        val detectedQuality = extractResolution(
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            url
+        )
+
         // 1. Direct reurl script detection (exclude non-seekable Google download links)
         val reurlMatch = Regex("""var\s+reurl\s*=\s*["']([^"']+)["']""").find(html)?.groupValues?.get(1)
         if (!reurlMatch.isNullOrBlank() && !reurlMatch.contains("video-downloads.googleusercontent.com")) {
             val cdnMatch = Regex("""link=(https?://[^"'\s&]+)""").find(reurlMatch)
             val streamTarget = cdnMatch?.groupValues?.get(1) ?: reurlMatch
             if (streamTarget.startsWith("http") && !streamTarget.contains("video-downloads.googleusercontent.com")) {
+                val q1 = extractResolution(
+                    url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+                    streamTarget,
+                    formatQualityTag(detectedQuality)
+                )
+                val qTag1 = formatQualityTag(q1)
+                val displayQ1 = if (qTag1.isNotBlank()) " $qTag1" else ""
                 callback.invoke(
                     newExtractorLink(
                         source = name,
-                        name = "$name - Instant Stream [⚡]",
+                        name = "$name - Instant Stream [⚡]$displayQ1",
                         url = streamTarget,
                         type = ExtractorLinkType.VIDEO
                     ) {
                         this.referer = ""
-                        this.quality = Qualities.P1080.value
+                        this.quality = q1
                     }
                 )
                 return
@@ -212,15 +242,22 @@ open class FastDLExtractor : ExtractorApi() {
                 ).parsedSafe<Map<String, Any?>>()
                 val target = jsonRes?.get("url") as? String
                 if (!target.isNullOrBlank() && target.startsWith("http") && !target.contains("video-downloads.googleusercontent.com")) {
+                    val q2 = extractResolution(
+                        url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+                        target,
+                        formatQualityTag(detectedQuality)
+                    )
+                    val qTag2 = formatQualityTag(q2)
+                    val displayQ2 = if (qTag2.isNotBlank()) " $qTag2" else ""
                     callback.invoke(
                         newExtractorLink(
                             source = name,
-                            name = "$name - Direct Stream [⚡]",
+                            name = "$name - Direct Stream [⚡]$displayQ2",
                             url = target,
                             type = ExtractorLinkType.VIDEO
                         ) {
                             this.referer = ""
-                            this.quality = Qualities.P1080.value
+                            this.quality = q2
                         }
                     )
                 }
@@ -322,16 +359,22 @@ open class HubcloudExtractor : ExtractorApi() {
         }.getOrNull() ?: return
 
         val detectedQuality = extractResolution(
-            url.substringAfter("#", ""),
-            phpDoc.select("h1, h2, h3, h4, h5, .card-title, .card-header, .header, title").text(),
-            driveDoc.select("h1, h2, h3, h4, h5, .card-title, .card-header, .header, title").text(),
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            phpDoc.select(".card-title, .card-header, h5, h4").firstOrNull()?.text(),
+            driveDoc.select(".card-title, .card-header, h5, h4").firstOrNull()?.text(),
             phpBtn,
             url
         )
 
         phpDoc.select("a.btn, a[href*='download'], div.card-body a").forEach { btn ->
             val href = btn.attr("href").trim()
-            val linkQ = extractResolution(btn.text(), href, formatQualityTag(detectedQuality))
+            val linkQ = extractResolution(
+                url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+                href,
+                btn.text(),
+                btn.parent()?.text(),
+                formatQualityTag(detectedQuality)
+            )
             val finalQ = if (linkQ != Qualities.Unknown.value) linkQ else detectedQuality
             val qTag = formatQualityTag(finalQ)
             val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
@@ -467,16 +510,22 @@ open class FilmuExtractor : ExtractorApi() {
 
         val rawM3u8 = Regex("""https?://[^\s"'<>\)\\]+\.m3u8[^\s"'<>\)\\]*""").find(html)?.value
         val m3u8Url = rawM3u8?.replace("\\", "")?.trimEnd('/', ' ')
+        val detectedQ = extractResolution(
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            m3u8Url
+        )
+        val qTag = formatQualityTag(detectedQ)
+        val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
         if (!m3u8Url.isNullOrBlank()) {
             callback.invoke(
                 newExtractorLink(
                     source = name,
-                    name = "$name - HLS [MultiMovies ⚡]",
+                    name = "$name - HLS [MultiMovies ⚡]$displayQ",
                     url = m3u8Url,
                     type = ExtractorLinkType.M3U8
                 ) {
                     this.referer = "https://embed.filmu.in/"
-                    this.quality = Qualities.P1080.value
+                    this.quality = detectedQ
                 }
             )
         }
@@ -503,16 +552,22 @@ open class FuckingfastExtractor : ExtractorApi() {
         // Direct download URL embedded in page or button href
         val directMatch = Regex("""href=["'](https?://[^"']+(?:\.mp4|\.mkv|\.m3u8)[^"']*)["']""").find(html)?.groupValues?.get(1)
             ?: Regex("""window\.location\.href\s*=\s*["'](https?://[^"']+)["']""").find(html)?.groupValues?.get(1)
+        val detectedQ = extractResolution(
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            directMatch
+        )
+        val qTag = formatQualityTag(detectedQ)
+        val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
         if (!directMatch.isNullOrBlank()) {
             callback.invoke(
                 newExtractorLink(
                     source = name,
-                    name = "$name - Fast CDN [⚡]",
+                    name = "$name - Fast CDN [⚡]$displayQ",
                     url = directMatch,
                     type = if (directMatch.contains(".m3u8")) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
                 ) {
                     this.referer = mainUrl
-                    this.quality = Qualities.P1080.value
+                    this.quality = detectedQ
                 }
             )
         }
@@ -542,16 +597,23 @@ open class KatdriveExtractor : ExtractorApi() {
             ?: Regex("""https?://[^\s"'<>\)\\]+\.m3u8[^\s"'<>\)\\]*""").find(playHtml)?.value
         val m3u8Url = rawM3u8?.replace("\\", "")?.trimEnd('/', ' ')
 
+        val detectedQ = extractResolution(
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            m3u8Url
+        )
+        val qTag = formatQualityTag(detectedQ)
+        val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
+
         if (!m3u8Url.isNullOrBlank()) {
             callback.invoke(
                 newExtractorLink(
                     source = name,
-                    name = "$name - HLS [KatMovieHD ⚡]",
+                    name = "$name - HLS [KatMovieHD ⚡]$displayQ",
                     url = m3u8Url,
                     type = ExtractorLinkType.M3U8
                 ) {
                     this.referer = "https://katdrive.click/"
-                    this.quality = Qualities.P1080.value
+                    this.quality = detectedQ
                 }
             )
         }
@@ -691,12 +753,10 @@ open class HubcdnExtractor : ExtractorApi() {
         }
 
         val detectedQuality = extractResolution(
-            url.substringAfter("#", ""),
-            reurlParam,
+            url.substringAfter("#", "").takeIf { it.isNotBlank() && it != url },
+            streamUrl,
             decodedParam,
-            html,
-            url,
-            streamUrl
+            url
         )
         val qTag = formatQualityTag(detectedQuality)
         val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
