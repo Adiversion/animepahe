@@ -3344,5 +3344,5 @@ Made CloudStream package at /home/runner/work/csext/csext/src/WaveFlixProvider/b
 > Task :makePluginsJson
 Created /home/runner/work/csext/csext/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 59s
+BUILD SUCCESSFUL in 2m
 21 actionable tasks: 21 executed
