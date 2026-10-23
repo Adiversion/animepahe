@@ -1141,9 +1141,9 @@ class WaveFlixProvider : MainAPI() {
             }.getOrNull() ?: return@forEach
 
             val doc = org.jsoup.Jsoup.parse(postHtml)
-            doc.select("a[href*='nexdrive.'], a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
+            doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
                 val href = a.attr("href").trim()
-                if (href.startsWith("http")) {
+                if (href.startsWith("http") && !href.contains("filepress") && !href.contains("filebee") && !href.contains("nexdrive")) {
                     runCatching {
                         loadExtractor(href, postUrl, subtitleCallback, callback)
                     }
