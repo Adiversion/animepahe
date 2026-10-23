@@ -477,29 +477,23 @@ class WaveFlixProvider : MainAPI() {
         }
 
         val resolvedTitle = linkData.title
-        val coreTitle = resolvedTitle?.let { t ->
-            t.split(Regex("""\s*[\-–—:|]""")).firstOrNull()?.trim()
-                ?.replace(Regex("""\s*\(\d{4}\).*"""), "")
-                ?.trim()
-                ?.ifBlank { t }
-        } ?: resolvedTitle
+        val (coreTitle, coreTokens) = extractSearchTokens(resolvedTitle)
+        val searchTitle = if (coreTitle.isNotBlank()) coreTitle else (resolvedTitle ?: "")
 
-        // 5. Direct RogMovies Indian Cloud & Multi-Audio Integration
-        val rogMoviesJob = async {
-            val q = coreTitle ?: resolvedTitle
-            if (!q.isNullOrBlank()) {
+        // 5. Direct AllMovieLand Multi-Audio HLS & Krico Integration
+        val allMovieLandJob = async {
+            if (searchTitle.isNotBlank()) {
                 try {
-                    queryRogMovies(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryAllMovieLand(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
-        // 6. Direct BollyZone Daily Indian TV Serial Integration
-        val bollyZoneJob = async {
-            val q = coreTitle ?: resolvedTitle
-            if (!isMovie && !q.isNullOrBlank()) {
+        // 6. Direct RogMovies Indian Cloud & Multi-Audio Integration (Word-based fuzzy match)
+        val rogMoviesJob = async {
+            if (searchTitle.isNotBlank()) {
                 try {
-                    queryBollyZone(q, season, episode, subtitleCallback, callback)
+                    queryRogMovies(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -511,42 +505,29 @@ class WaveFlixProvider : MainAPI() {
             } catch (_: Throwable) {}
         }
 
-        // 8. Direct Desi Serials Daily Indian TV Serial Integration
-        val desiSerialsJob = async {
-            val q = coreTitle ?: resolvedTitle
-            if (!isMovie && !q.isNullOrBlank()) {
-                try {
-                    queryDesiSerials(q, season, episode, subtitleCallback, callback)
-                } catch (_: Throwable) {}
-            }
-        }
-
-        // 9. Direct Bollyflix Indian Cloud Integration
+        // 8. Direct Bollyflix Indian Cloud Integration
         val bollyflixJob = async {
-            val q = coreTitle ?: resolvedTitle
-            if (!q.isNullOrBlank()) {
+            if (searchTitle.isNotBlank()) {
                 try {
-                    queryBollyflix(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryBollyflix(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
-        // 10. KatMovieHD – Direct Indian cloud search via new.katmoviehd.top + links.kmhd.me
+        // 9. KatMovieHD – Direct Indian cloud search via new.katmoviehd.top + links.kmhd.me
         val katMovieJob = async {
-            val q = coreTitle ?: resolvedTitle
-            if (!q.isNullOrBlank()) {
+            if (searchTitle.isNotBlank()) {
                 try {
-                    queryKatMovieHD(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryKatMovieHD(searchTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
-        // 11. HDHub4u – Direct Indian cloud search via new8.hdhub4u.cl + greenmotors
+        // 10. HDHub4u – Direct Indian cloud search via new8.hdhub4u.cl + greenmotors
         val hdhub4uJob = async {
-            val q = coreTitle ?: resolvedTitle
-            if (!q.isNullOrBlank()) {
+            if (searchTitle.isNotBlank()) {
                 try {
-                    queryHDHub4u(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryHDHub4u(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -554,78 +535,14 @@ class WaveFlixProvider : MainAPI() {
         nxshaJob.await()
         netMirrorJob.await()
         vidlinkJob.await()
+        allMovieLandJob.await()
         rogMoviesJob.await()
-        bollyZoneJob.await()
         multiMoviesJob.await()
-        desiSerialsJob.await()
         bollyflixJob.await()
         katMovieJob.await()
         hdhub4uJob.await()
         subtitleJob.await()
         true
-    }
-
-    private suspend fun queryBollyZone(
-        query: String,
-        season: Int,
-        episode: Int,
-        subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
-    ) {
-        val cleanQuery = query
-            .replace(Regex("""\s*[\-–—:|].*"""), "")
-            .replace("Dhamaal with ", "", ignoreCase = true)
-            .replace("Dhamaal", "", ignoreCase = true)
-            .trim()
-            .ifBlank { query }
-
-        val base = DomainResolver.get("bollyzone")
-        val searchUrl = "$base/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
-        val headers = mapOf(
-            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Referer" to "$base/"
-        )
-        val searchHtml = runCatching {
-            app.get(searchUrl, headers = headers, timeout = 7).text
-        }.getOrNull() ?: return
-
-        val doc = org.jsoup.Jsoup.parse(searchHtml)
-        val articles = doc.select("article")
-        val posts = mutableListOf<Pair<String, String>>()
-        for (art in articles) {
-            val href = art.selectFirst("a[href*='/series/']")?.attr("href")?.trim() ?: continue
-            val title = art.selectFirst(".Title, h2, h3, a")?.text()?.trim() ?: ""
-            if (href.isNotBlank()) posts.add(href to title)
-        }
-
-        // Find episode posts matching query & season
-        val targetTokens = cleanQuery.lowercase().split(" ").filter { it.length > 2 }
-        val targetPosts = posts.filter { (_, text) ->
-            val lower = text.lowercase()
-            targetTokens.any { lower.contains(it) } && if (season == 2) (lower.contains(" 2 ") || lower.contains("2026") || lower.contains("dhamaal")) else !lower.contains(" 2 ")
-        }.distinctBy { it.first }
-
-        val chronoPosts = targetPosts.reversed()
-        val targetPost = if (episode in 1..chronoPosts.size) chronoPosts[episode - 1] else targetPosts.firstOrNull() ?: return
-
-        val postHtml = runCatching {
-            app.get(targetPost.first, headers = headers, timeout = 8).text
-        }.getOrNull() ?: return
-
-        val pDoc = org.jsoup.Jsoup.parse(postHtml)
-        for (a in pDoc.select("a[href*='groundbanks.net/item.php']")) {
-            val gbUrl = a.attr("href").trim()
-            if (gbUrl.startsWith("http")) {
-                runCatching {
-                    val gbHtml = app.get(gbUrl, headers = headers + ("Referer" to targetPost.first), timeout = 6).text
-                    val gbDoc = org.jsoup.Jsoup.parse(gbHtml)
-                    val iframeSrc = gbDoc.selectFirst("iframe[src]")?.attr("src")?.trim()
-                    if (!iframeSrc.isNullOrBlank()) {
-                        loadExtractor(iframeSrc, gbUrl, subtitleCallback, callback)
-                    }
-                }
-            }
-        }
     }
 
     private suspend fun queryMultiMovies(
@@ -666,72 +583,6 @@ class WaveFlixProvider : MainAPI() {
             }
         }
         jobs.forEach { it.await() }
-    }
-
-    private suspend fun queryDesiSerials(
-        query: String,
-        season: Int,
-        episode: Int,
-        subtitleCallback: (SubtitleFile) -> Unit,
-        callback: (ExtractorLink) -> Unit
-    ) {
-        val cleanQuery = query.replace(Regex("""\s*[\-–—:|].*"""), "").lowercase().replace(Regex("[^a-z0-9 ]"), " ").trim()
-        val stopWords = setOf("aur", "the", "and", "with", "all", "season", "episode")
-        val significantTokens = cleanQuery.split(" ").filter { it.length > 2 && it !in stopWords }
-        if (significantTokens.isEmpty()) return
-
-        val base = DomainResolver.get("desiserials")
-        val headers = mapOf(
-            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Referer" to "$base/"
-        )
-        val homeHtml = runCatching {
-            app.get("$base/", headers = headers, timeout = 7).text
-        }.getOrNull() ?: return
-
-        val doc = org.jsoup.Jsoup.parse(homeHtml)
-        val matchingShow = doc.select("a[href*='/watch-online/']").maxByOrNull { a ->
-            val text = a.text().lowercase()
-            significantTokens.count { text.contains(it) }
-        }?.takeIf { a ->
-            val text = a.text().lowercase()
-            significantTokens.any { text.contains(it) }
-        } ?: return
-
-        val showUrl = matchingShow.attr("href")
-        if (showUrl.isBlank()) return
-
-        val showHtml = runCatching {
-            app.get(showUrl, headers = headers + ("Referer" to "$base/"), timeout = 7).text
-        }.getOrNull() ?: return
-
-        val showDoc = org.jsoup.Jsoup.parse(showHtml)
-        val episodeList = mutableListOf<String>()
-        val seen = mutableSetOf<String>()
-        for (a in showDoc.select("a[href*='-episode-']")) {
-            val href = a.attr("href").trim()
-            val text = a.text().lowercase()
-            if (href.isNotBlank() && !seen.contains(href) && !text.contains("promo")) {
-                seen.add(href)
-                episodeList.add(href)
-            }
-        }
-        val chronoList = episodeList.reversed()
-        val episodeLink = if (episode in 1..chronoList.size) chronoList[episode - 1] else episodeList.firstOrNull() ?: return
-
-        val epHtml = runCatching {
-            app.get(episodeLink, headers = headers + ("Referer" to showUrl), timeout = 7).text
-        }.getOrNull() ?: return
-
-        val epDoc = org.jsoup.Jsoup.parse(epHtml)
-        for (a in epDoc.select("a[href*='tvarticles.org']")) {
-            val link = a.attr("href").trim()
-            if (link.isNotBlank()) {
-                runCatching {
-                    loadExtractor(link, episodeLink, subtitleCallback, callback)
-                }
-            }
-        }
     }
 
     private suspend fun queryKatMovieHD(
@@ -965,6 +816,7 @@ class WaveFlixProvider : MainAPI() {
 
     private suspend fun queryHDHub4u(
         query: String,
+        coreTokens: List<String>,
         year: Int?,
         isMovie: Boolean,
         season: Int,
@@ -1001,13 +853,13 @@ class WaveFlixProvider : MainAPI() {
 
         if (posts.isEmpty()) return@coroutineScope
 
-        val queryTokens = cleanQuery.lowercase().split(" ").filter { it.length > 2 }
+        val queryTokens = if (coreTokens.isNotEmpty()) coreTokens else cleanQuery.lowercase().split(" ").filter { it.length > 2 }
 
         val matchingPosts = posts.filter { (_, title) ->
             val lower = title.lowercase()
-            val matchesTokens = if (queryTokens.isEmpty()) true else {
-                queryTokens.all { lower.contains(it) } || (queryTokens.size >= 2 && queryTokens.count { lower.contains(it) } >= queryTokens.size - 1)
-            }
+            val tokenMatches = queryTokens.count { lower.contains(it) }
+            val minMatches = (queryTokens.size * 0.6).coerceAtLeast(1.0).toInt()
+            val matchesTokens = lower.contains(cleanQuery) || (queryTokens.isNotEmpty() && tokenMatches >= minMatches)
             if (!matchesTokens) return@filter false
 
             if (isMovie) {
@@ -1023,9 +875,12 @@ class WaveFlixProvider : MainAPI() {
                     "season 0$season",
                     "s0$season",
                     "s$season",
-                    "s $season"
+                    "s $season",
+                    "season 1-"
                 )
-                seasonPatterns.any { lower.contains(it) }
+                seasonPatterns.any { lower.contains(it) } ||
+                    (season == 2 && (lower.contains("dhamaal") || lower.contains("dhammal"))) ||
+                    (season == 1 && !lower.contains("season 2") && !lower.contains("s02"))
             }
         }.take(3)
 
@@ -1090,8 +945,87 @@ class WaveFlixProvider : MainAPI() {
         postJobs.awaitAll()
     }
 
+    private fun extractSearchTokens(rawTitle: String?): Pair<String, List<String>> {
+        if (rawTitle.isNullOrBlank()) return "" to emptyList()
+        var base = rawTitle.split(Regex("""\s*[\-–—:|]""")).firstOrNull()?.trim() ?: rawTitle
+
+        base = base.replace(Regex("""(?i)\b(dhamaal\s+with|dhamaal|dhammal\s+with|dhammal|grand\s+finale|chapter\s+\d+|part\s+\d+|season\s+\d+|s\d+)\b"""), " ")
+            .replace(Regex("""\s*\(\d{4}\).*"""), "")
+            .replace(Regex("""[^a-zA-Z0-9\s]"""), " ")
+            .trim()
+            .replace(Regex("""\s+"""), " ")
+
+        val stopWords = setOf("with", "and", "the", "aur", "for", "ka", "ki", "ke", "all", "in", "of")
+        val tokens = base.lowercase().split(" ").filter { it.length >= 3 && it !in stopWords }
+        val core = if (tokens.isNotEmpty()) tokens.joinToString(" ") else base.lowercase()
+        return core to tokens
+    }
+
+    private suspend fun queryAllMovieLand(
+        query: String,
+        coreTokens: List<String>,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val base = "https://mapi.elochkaigolochla.com/api/v1"
+        val searchUrl = "$base/new-search/movies?title=${URLEncoder.encode(query, "UTF-8")}&page=1"
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Linux; Android 10)",
+            "Referer" to "https://allmovielandapp.app/"
+        )
+        val jsonRes = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7).text
+        }.getOrNull() ?: return
+
+        val searchObj = runCatching { parseJson<AllMovieSearchResponse>(jsonRes) }.getOrNull() ?: return
+        val results = searchObj.results ?: return
+
+        val target = results.firstOrNull { m ->
+            val mTitle = (m.titleEn ?: m.titleRu ?: "").lowercase()
+            val tokenMatches = coreTokens.count { mTitle.contains(it) }
+            val minMatches = (coreTokens.size * 0.6).coerceAtLeast(1.0).toInt()
+            val nameMatch = mTitle.contains(query.lowercase()) || (coreTokens.isNotEmpty() && tokenMatches >= minMatches)
+            val yearMatch = if (year != null && m.year != null) (m.year == year || m.year == year - 1 || m.year == year + 1) else true
+            nameMatch && yearMatch
+        } ?: results.firstOrNull() ?: return
+
+        target.player?.forEach { p ->
+            val pUrl = p.url?.trim() ?: return@forEach
+            val translator = p.translator ?: "Stream"
+            val qualityLabel = p.quality ?: "HD"
+
+            if (p.source == "m3u8" || pUrl.contains(".m3u8") || pUrl.contains("/getm3u8/")) {
+                val streamHeaders = mapOf(
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                    "Referer" to "https://allmovielandapp.app/"
+                )
+                callback(
+                    newExtractorLink(
+                        source = "WaveFlix [AllMovieLand]",
+                        name = "AllMovieLand - $translator [$qualityLabel ⚡]",
+                        url = pUrl,
+                        type = ExtractorLinkType.M3U8
+                    ) {
+                        this.referer = "https://allmovielandapp.app/"
+                        this.headers = streamHeaders
+                        this.quality = parseQuality(qualityLabel)
+                    }
+                )
+            } else if (p.source == "iframe" && pUrl.startsWith("http")) {
+                runCatching {
+                    loadExtractor(pUrl, "https://allmovielandapp.app/", subtitleCallback, callback)
+                }
+            }
+        }
+    }
+
     private suspend fun queryBollyflix(
         query: String,
+        coreTokens: List<String>,
         year: Int?,
         isMovie: Boolean,
         season: Int,
@@ -1134,6 +1068,7 @@ class WaveFlixProvider : MainAPI() {
 
     private suspend fun queryRogMovies(
         query: String,
+        coreTokens: List<String>,
         year: Int?,
         isMovie: Boolean,
         season: Int,
@@ -1155,13 +1090,34 @@ class WaveFlixProvider : MainAPI() {
         val hits = data.hits ?: return
 
         val cleanQuery = query.lowercase().trim()
-        val queryTokens = cleanQuery.split(" ").filter { it.length > 2 }
+        val queryTokens = if (coreTokens.isNotEmpty()) coreTokens else cleanQuery.split(" ").filter { it.length > 2 }
         val relevantHits = hits.filter { hit ->
             val hitTitle = hit.document?.post_title?.lowercase() ?: ""
-            hitTitle.contains(cleanQuery) || (queryTokens.isNotEmpty() && queryTokens.all { hitTitle.contains(it) })
+            val tokenMatches = queryTokens.count { hitTitle.contains(it) }
+            val minMatches = (queryTokens.size * 0.6).coerceAtLeast(1.0).toInt()
+            val isNameMatch = hitTitle.contains(cleanQuery) || (queryTokens.isNotEmpty() && tokenMatches >= minMatches)
+
+            val isSeasonMatch = if (!isMovie) {
+                val sStr = season.toString()
+                val sPad = String.format("%02d", season)
+                hitTitle.contains("s$sPad") || hitTitle.contains("s$sStr") ||
+                hitTitle.contains("season $sStr") || hitTitle.contains("season $sPad") ||
+                hitTitle.contains("season 1-") || hitTitle.contains("complete") ||
+                (season == 2 && (hitTitle.contains("dhamaal") || hitTitle.contains("dhammal"))) ||
+                (season == 1 && !hitTitle.contains("season 2") && !hitTitle.contains("s02"))
+            } else true
+
+            isNameMatch && isSeasonMatch
         }
 
-        relevantHits.take(2).forEach { hit ->
+        val targetHits = if (!isMovie && season == 2) {
+            relevantHits.sortedByDescending { h ->
+                val ht = h.document?.post_title?.lowercase() ?: ""
+                (if (ht.contains("season 2") || ht.contains("s02")) 2 else 0) + (if (ht.contains("dhamaal") || ht.contains("dhammal")) 2 else 0)
+            }
+        } else relevantHits
+
+        targetHits.take(2).forEach { hit ->
             val permalink = hit.document?.permalink ?: return@forEach
             val postUrl = if (permalink.startsWith("http")) permalink else "$base$permalink"
             val postHtml = runCatching {
@@ -1299,6 +1255,29 @@ class WaveFlixProvider : MainAPI() {
         @JsonProperty("id") val id: String? = null,
         @JsonProperty("post_title") val post_title: String? = null,
         @JsonProperty("permalink") val permalink: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AllMovieSearchResponse(
+        @JsonProperty("results") val results: List<AllMovieItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AllMovieItem(
+        @JsonProperty("kinopoisk_id") val kinopoiskId: Long? = null,
+        @JsonProperty("title_en") val titleEn: String? = null,
+        @JsonProperty("title_ru") val titleRu: String? = null,
+        @JsonProperty("year") val year: Int? = null,
+        @JsonProperty("type") val type: String? = null,
+        @JsonProperty("player") val player: List<AllMoviePlayerItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AllMoviePlayerItem(
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("translator") val translator: String? = null,
+        @JsonProperty("quality") val quality: String? = null,
+        @JsonProperty("source") val source: String? = null
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -66,7 +66,7 @@ open class StremioOttProvider(
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val country = getUserCountry()
         val cleanPath = request.data.replace("{country}", country)
-        val cacheKey = "$name/$country/$cleanPath/$page"
+        val cacheKey = "$name/$country/$cleanPath/${request.name}/$page"
         val now = System.currentTimeMillis()
 
         synchronized(ottCache) {
@@ -102,7 +102,16 @@ open class StremioOttProvider(
             }
         } ?: emptyList()
 
-        val response = newHomePageResponse(request.name, items, hasNext = false)
+        val isTop10 = request.name.contains("Top 10", ignoreCase = true)
+        val finalItems = if (isTop10) {
+            items.take(10)
+        } else if (request.name.contains("Popular", ignoreCase = true) && items.size > 10) {
+            items.drop(10).ifEmpty { items }
+        } else {
+            items
+        }
+
+        val response = newHomePageResponse(request.name, finalItems, hasNext = false)
         synchronized(ottCache) {
             ottCache[cacheKey] = now to response
         }
@@ -187,17 +196,72 @@ class NetflixProvider : StremioOttProvider(
     name = "Netflix",
     providerId = "nfx",
     customMainPage = mainPageOf(
-        "catalog/movie/netflix-top10-{country}" to "Top 10 Movies in Netflix Today",
-        "catalog/series/netflix-top10-{country}" to "Top 10 Shows in Netflix Today",
-        "catalog/series/nfx" to "Trending Series on Netflix",
-        "catalog/movie/nfx" to "Trending Movies on Netflix",
+        "catalog/movie/netflix-top10-{country}" to "Top 10 Movies on Netflix Today",
+        "catalog/series/netflix-top10-{country}" to "Top 10 Shows on Netflix Today",
+        "catalog/movie/nfx" to "Popular Movies on Netflix",
+        "catalog/series/nfx" to "Popular Series on Netflix",
         "catalog/movie/netflix-top10-global" to "Global Top 10 Movies",
         "catalog/series/netflix-top10-global" to "Global Top 10 Shows"
     )
 )
-class JioHotstarProvider : StremioOttProvider("JioHotstar", "jhs")
-class PrimeVideoProvider : StremioOttProvider("Amazon Prime", "amp")
-class Zee5Provider : StremioOttProvider("Zee5", "zee")
-class SonyLivProvider : StremioOttProvider("SonyLIV", "sonyliv")
-class AppleTvProvider : StremioOttProvider("Apple TV+", "atp")
-class CrunchyrollProvider : StremioOttProvider("Crunchyroll", "cru", defaultType = TvType.Anime)
+class JioHotstarProvider : StremioOttProvider(
+    name = "JioHotstar",
+    providerId = "jhs",
+    customMainPage = mainPageOf(
+        "catalog/movie/jhs" to "Top 10 Movies on JioHotstar Today",
+        "catalog/series/jhs" to "Top 10 Shows on JioHotstar Today",
+        "catalog/movie/jhs" to "Popular Movies on JioHotstar",
+        "catalog/series/jhs" to "Popular Shows on JioHotstar"
+    )
+)
+class PrimeVideoProvider : StremioOttProvider(
+    name = "Amazon Prime",
+    providerId = "amp",
+    customMainPage = mainPageOf(
+        "catalog/movie/amp" to "Top 10 Movies on Prime Video Today",
+        "catalog/series/amp" to "Top 10 Shows on Prime Video Today",
+        "catalog/movie/amp" to "Popular Movies on Prime Video",
+        "catalog/series/amp" to "Popular Series on Prime Video"
+    )
+)
+class Zee5Provider : StremioOttProvider(
+    name = "Zee5",
+    providerId = "zee",
+    customMainPage = mainPageOf(
+        "catalog/movie/zee" to "Top 10 Movies on Zee5 Today",
+        "catalog/series/zee" to "Top 10 Shows on Zee5 Today",
+        "catalog/movie/zee" to "Popular Movies on Zee5",
+        "catalog/series/zee" to "Popular Shows on Zee5"
+    )
+)
+class SonyLivProvider : StremioOttProvider(
+    name = "SonyLIV",
+    providerId = "sonyliv",
+    customMainPage = mainPageOf(
+        "catalog/movie/sonyliv" to "Top 10 Movies on SonyLIV Today",
+        "catalog/series/sonyliv" to "Top 10 Shows on SonyLIV Today",
+        "catalog/movie/sonyliv" to "Popular Movies on SonyLIV",
+        "catalog/series/sonyliv" to "Popular Shows on SonyLIV"
+    )
+)
+class AppleTvProvider : StremioOttProvider(
+    name = "Apple TV+",
+    providerId = "atp",
+    customMainPage = mainPageOf(
+        "catalog/movie/atp" to "Top 10 Movies on Apple TV+ Today",
+        "catalog/series/atp" to "Top 10 Shows on Apple TV+ Today",
+        "catalog/movie/atp" to "Popular Movies on Apple TV+",
+        "catalog/series/atp" to "Popular Shows on Apple TV+"
+    )
+)
+class CrunchyrollProvider : StremioOttProvider(
+    name = "Crunchyroll",
+    providerId = "cru",
+    defaultType = TvType.Anime,
+    customMainPage = mainPageOf(
+        "catalog/series/cru" to "Top 10 Anime Series Today",
+        "catalog/movie/cru" to "Top 10 Anime Movies Today",
+        "catalog/series/cru" to "Popular Anime Series",
+        "catalog/movie/cru" to "Popular Anime Movies"
+    )
+)

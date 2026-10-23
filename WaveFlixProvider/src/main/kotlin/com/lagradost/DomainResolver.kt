@@ -11,8 +11,6 @@ object DomainResolver {
 
     private val defaults = mapOf(
         "rogmovies"   to "https://rogmovies.one",
-        "bollyzone"   to "https://www.bollyzone.to",
-        "desiserials" to "https://www.desi-serials.to",
         "katmovie"    to "https://new.katmoviehd.top",
         "hdhub4u"     to "https://new8.hdhub4u.cl",
         "bollyflix"   to "https://bollyflix.co.za"
