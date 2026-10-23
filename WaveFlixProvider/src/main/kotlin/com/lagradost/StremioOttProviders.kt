@@ -731,12 +731,12 @@ class NetflixProvider : StremioOttProvider(
     providerId = "nfx",
     jwPackage = "nfx",
     customMainPage = mainPageOf(
-        "SHOW_IN:10:0" to "Top 10 TV Shows in India Today",
-        "MOVIE_IN:10:0" to "Top 10 Movies in India Today",
-        "SHOW_GLOBAL:12:0" to "Popular on Netflix (Global Hits)",
-        "MOVIE_GLOBAL:12:0" to "Trending Movies Worldwide",
-        "SHOW_KOREAN:12" to "K-Dramas & Asian Cinema",
-        "SHOW_GENRE:act,adv:12:0" to "Action & Adventure Series"
+        "SHOW_IN:10:0" to "Top 10 Shows on Netflix Today",
+        "MOVIE_IN:10:0" to "Top 10 Movies on Netflix Today",
+        "SHOW:15:10" to "Popular Series on Netflix",
+        "MOVIE:15:10" to "Popular Movies on Netflix",
+        "MOVIE_IN:12:10" to "Bollywood & Indian Cinema on Netflix",
+        "SHOW_KOREAN:12" to "K-Dramas & Asian Cinema"
     )
 )
 
@@ -760,11 +760,11 @@ class PrimeVideoProvider : StremioOttProvider(
     providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "SHOW_IN:10:0" to "Top 10 Series on Prime Video Today",
+        "SHOW_IN:10:0" to "Top 10 Shows on Prime Video Today",
         "MOVIE_IN:10:0" to "Top 10 Movies on Prime Video Today",
-        "SHOW_GLOBAL:12:0" to "Prime Video Global Bestsellers",
-        "MOVIE_GLOBAL:12:0" to "Worldwide Blockbusters",
-        "COP_UNIVERSE:10" to "Cop Universe & High-Octane Action",
+        "SHOW:15:10" to "Popular Series on Prime Video",
+        "MOVIE:15:10" to "Popular Movies on Prime Video",
+        "COP_UNIVERSE:10" to "Cop Universe & Action Thrillers",
         "SHOW_GENRE:crm,trl:12:2" to "Crime & Mystery Series on Prime"
     )
 )
@@ -798,10 +798,13 @@ class AppleTvProvider : StremioOttProvider(
     providerId = "atp",
     jwPackage = "atp",
     customMainPage = mainPageOf(
-        "SHOW_GLOBAL:10:0" to "Top 10 Shows on Apple TV+ Today",
-        "MOVIE_GLOBAL:10:0" to "Top 10 Movies on Apple TV+ Today",
-        "SHOW_GLOBAL:15:10" to "Popular Shows on Apple TV+",
-        "MOVIE_GLOBAL:15:10" to "Popular Movies on Apple TV+"
+        "SHOW:10:0" to "Top 10 Shows on Apple TV+ Today",
+        "MOVIE:10:0" to "Top 10 Movies on Apple TV+ Today",
+        "SHOW:15:10" to "Popular Series on Apple TV+",
+        "MOVIE:15:10" to "Popular Movies on Apple TV+",
+        "SHOW_GENRE:scf:12:0" to "Epic Sci-Fi & Speculative Fiction",
+        "SHOW_GENRE:trl,crm:12:0" to "Acclaimed Drama & Thriller Series",
+        "SHOW_GENRE:cmy:12:0" to "Feel-Good Comedies & Hits"
     )
 )
 
