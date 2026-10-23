@@ -1,12 +1,15 @@
 package com.lagradost
 
-import android.util.Base64
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.net.URLEncoder
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 
 open class StremioOttProvider(
     override var name: String,
@@ -27,13 +30,13 @@ open class StremioOttProvider(
 
     override val mainPage: List<MainPageData> = customMainPage ?: if (defaultType == TvType.Anime) {
         mainPageOf(
-            "catalog/series/$providerId" to "Trending Anime Series",
-            "catalog/movie/$providerId" to "Anime Movies"
+            "catalog/series/{country}_en_jw_pop_$providerId" to "Trending Anime Series",
+            "catalog/movie/{country}_en_jw_pop_$providerId" to "Anime Movies"
         )
     } else {
         mainPageOf(
-            "catalog/series/$providerId" to "Popular Series",
-            "catalog/movie/$providerId" to "Popular Movies"
+            "catalog/series/{country}_en_jw_pop_$providerId" to "Popular Series",
+            "catalog/movie/{country}_en_jw_pop_$providerId" to "Popular Movies"
         )
     }
 
@@ -41,11 +44,12 @@ open class StremioOttProvider(
         private val ottCache = mutableMapOf<String, Pair<Long, HomePageResponse>>()
         private const val CACHE_TTL_MS = 15 * 60 * 1000L // 15 mins cache
         private val sharedEngine = WaveFlixProvider()
+        private val idCache = ConcurrentHashMap<String, Long>()
     }
 
     private val commonHeaders = mapOf(
         "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Referer" to "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/"
+        "Referer" to "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/"
     )
 
     private fun getUserCountry(): String {
@@ -57,11 +61,41 @@ open class StremioOttProvider(
         }
     }
 
-    private fun getCatalogToken(country: String): String {
-        // Enable Top 10 flags (global + country)
-        val raw = "dnp,amp,atp,hbm,nfx,zee,jhs,sonyliv,cru::$country:1792722613240:1:1:$country"
-        val b64 = Base64.encodeToString(raw.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
-        return URLEncoder.encode(b64, "UTF-8")
+    private suspend fun resolveTmdbId(id: String?, isMovie: Boolean, name: String?): Long? {
+        if (id.isNullOrBlank()) return null
+        if (id.toLongOrNull() != null) return id.toLong()
+
+        idCache[id]?.let { return it }
+
+        // 1. If it's an IMDb ID (e.g. tt11663228), query Cinemeta
+        if (id.startsWith("tt")) {
+            val cType = if (isMovie) "movie" else "series"
+            val cinRes = runCatching {
+                app.get("https://v3-cinemeta.strem.io/meta/$cType/$id.json", timeout = 4)
+                    .parsedSafe<CinemetaResponse>()
+            }.getOrNull()
+            val foundId = cinRes?.meta?.moviedbId
+            if (foundId != null && foundId > 0) {
+                idCache[id] = foundId
+                return foundId
+            }
+        }
+
+        // 2. Fallback: Search WaveFlix internal search API by title
+        if (!name.isNullOrBlank()) {
+            val found = runCatching {
+                val enc = URLEncoder.encode(name, "UTF-8")
+                val searchRes = app.get("https://www.waveflix.online/api/search?q=$enc", timeout = 4)
+                    .parsedSafe<WaveFlixProvider.WaveSearchResponse>()
+                searchRes?.results?.firstOrNull()?.id
+            }.getOrNull()
+            if (found != null && found > 0) {
+                idCache[id] = found
+                return found
+            }
+        }
+
+        return null
     }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
@@ -77,42 +111,47 @@ open class StremioOttProvider(
             }
         }
 
-        val token = getCatalogToken(country)
-        val catalogUrl = "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/$token/$cleanPath.json"
+        val config = "${country}_en_nfx_prv_jhs_zee_snl_atp_cru"
+        val catalogUrl = "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/$config/$cleanPath.json"
 
         val res = app.get(catalogUrl, headers = commonHeaders, timeout = 10)
             .parsedSafe<StremioCatalogResponse>() ?: throw ErrorLoadingException("Failed to load $name catalog")
 
-        val items = res.metas?.mapNotNull { meta ->
-            val tmdbId = meta.moviedbId ?: return@mapNotNull null
-            val title = meta.name ?: return@mapNotNull null
-            val isMovie = meta.type?.lowercase() == "movie"
-            val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
-            val posterUrl = meta.poster
-
-            if (isMovie) {
-                newMovieSearchResponse(title, targetUrl, TvType.Movie) {
-                    this.posterUrl = posterUrl
-                    this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
-                }
-            } else {
-                newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
-                    this.posterUrl = posterUrl
-                    this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
-                }
-            }
-        } ?: emptyList()
-
+        val rawMetas = res.metas ?: emptyList()
         val isTop10 = request.name.contains("Top 10", ignoreCase = true)
-        val finalItems = if (isTop10) {
-            items.take(10)
-        } else if (request.name.contains("Popular", ignoreCase = true) && items.size > 10) {
-            items.drop(10).ifEmpty { items }
+        val candidateMetas = if (isTop10) {
+            rawMetas.take(10)
+        } else if (request.name.contains("Popular", ignoreCase = true) && rawMetas.size > 10) {
+            rawMetas.drop(10).take(20).ifEmpty { rawMetas.take(20) }
         } else {
-            items
+            rawMetas.take(20)
         }
 
-        val response = newHomePageResponse(request.name, finalItems, hasNext = false)
+        val items = coroutineScope {
+            candidateMetas.map { meta ->
+                async {
+                    val title = meta.name ?: return@async null
+                    val isMovie = meta.type?.lowercase() == "movie"
+                    val tmdbId = meta.moviedbId ?: resolveTmdbId(meta.id, isMovie, title) ?: return@async null
+                    val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+                    val posterUrl = meta.poster
+
+                    if (isMovie) {
+                        newMovieSearchResponse(title, targetUrl, TvType.Movie) {
+                            this.posterUrl = posterUrl
+                            this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+                        }
+                    } else {
+                        newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
+                            this.posterUrl = posterUrl
+                            this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+                        }
+                    }
+                }
+            }.awaitAll().filterNotNull()
+        }
+
+        val response = newHomePageResponse(request.name, items, hasNext = false)
         synchronized(ottCache) {
             ottCache[cacheKey] = now to response
         }
@@ -279,9 +318,9 @@ open class StremioOttProvider(
     private suspend fun searchStremioCatalog(query: String, country: String): List<SearchResponse> {
         val cleanQuery = query.lowercase()
         return try {
-            val token = getCatalogToken(country)
-            val seriesUrl = "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/$token/catalog/series/$providerId.json"
-            val movieUrl = "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/$token/catalog/movie/$providerId.json"
+            val config = "${country}_en_nfx_prv_jhs_zee_snl_atp_cru"
+            val seriesUrl = "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/$config/catalog/series/${country}_en_jw_pop_$providerId.json"
+            val movieUrl = "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/$config/catalog/movie/${country}_en_jw_pop_$providerId.json"
 
             val seriesMetas = runCatching {
                 app.get(seriesUrl, headers = commonHeaders, timeout = 6).parsedSafe<StremioCatalogResponse>()?.metas
@@ -291,25 +330,32 @@ open class StremioOttProvider(
                 app.get(movieUrl, headers = commonHeaders, timeout = 6).parsedSafe<StremioCatalogResponse>()?.metas
             }.getOrNull() ?: emptyList()
 
-            (seriesMetas + movieMetas).filter { meta ->
+            val matches = (seriesMetas + movieMetas).filter { meta ->
                 val name = meta.name ?: return@filter false
                 isRelevantTitle(query, name)
-            }.mapNotNull { meta ->
-                val tmdbId = meta.moviedbId ?: return@mapNotNull null
-                val title = meta.name ?: return@mapNotNull null
-                val isMovie = meta.type?.lowercase() == "movie"
-                val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
-                if (isMovie) {
-                    newMovieSearchResponse(title, targetUrl, TvType.Movie) {
-                        this.posterUrl = meta.poster
-                        this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+            }
+
+            coroutineScope {
+                matches.map { meta ->
+                    async {
+                        val title = meta.name ?: return@async null
+                        val isMovie = meta.type?.lowercase() == "movie"
+                        val tmdbId = meta.moviedbId ?: resolveTmdbId(meta.id, isMovie, title) ?: return@async null
+                        val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+
+                        if (isMovie) {
+                            newMovieSearchResponse(title, targetUrl, TvType.Movie) {
+                                this.posterUrl = meta.poster
+                                this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+                            }
+                        } else {
+                            newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
+                                this.posterUrl = meta.poster
+                                this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+                            }
+                        }
                     }
-                } else {
-                    newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
-                        this.posterUrl = meta.poster
-                        this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
-                    }
-                }
+                }.awaitAll().filterNotNull()
             }.distinctBy { it.url }
         } catch (_: Throwable) {
             emptyList()
@@ -417,12 +463,12 @@ class NetflixProvider : StremioOttProvider(
     providerId = "nfx",
     jwPackage = "nfx",
     customMainPage = mainPageOf(
-        "catalog/movie/netflix-top10-{country}" to "Top 10 Movies on Netflix Today",
-        "catalog/series/netflix-top10-{country}" to "Top 10 Shows on Netflix Today",
-        "catalog/movie/nfx" to "Popular Movies on Netflix",
-        "catalog/series/nfx" to "Popular Series on Netflix",
-        "catalog/movie/netflix-top10-global" to "Global Top 10 Movies",
-        "catalog/series/netflix-top10-global" to "Global Top 10 Shows"
+        "catalog/movie/{country}_en_jw_tnd_nfx" to "Top 10 Movies on Netflix Today",
+        "catalog/series/{country}_en_jw_tnd_nfx" to "Top 10 Shows on Netflix Today",
+        "catalog/movie/{country}_en_jw_pop_nfx" to "Popular Movies on Netflix",
+        "catalog/series/{country}_en_jw_pop_nfx" to "Popular Series on Netflix",
+        "catalog/movie/{country}_en_jw_new_nfx" to "New on Netflix",
+        "catalog/series/{country}_en_jw_new_nfx" to "New Series on Netflix"
     )
 )
 
@@ -431,22 +477,26 @@ class JioHotstarProvider : StremioOttProvider(
     providerId = "jhs",
     jwPackage = "jhs",
     customMainPage = mainPageOf(
-        "catalog/movie/jhs" to "Top 10 Movies on JioHotstar Today",
-        "catalog/series/jhs" to "Top 10 Shows on JioHotstar Today",
-        "catalog/movie/jhs" to "Popular Movies on JioHotstar",
-        "catalog/series/jhs" to "Popular Shows on JioHotstar"
+        "catalog/series/{country}_en_jw_tnd_jhs" to "Top 10 Shows on JioHotstar Today",
+        "catalog/movie/{country}_en_jw_tnd_jhs" to "Top 10 Movies on JioHotstar Today",
+        "catalog/series/{country}_en_jw_pop_jhs" to "Popular Shows on JioHotstar",
+        "catalog/movie/{country}_en_jw_pop_jhs" to "Popular Movies on JioHotstar",
+        "catalog/series/{country}_en_jw_new_jhs" to "New on JioHotstar",
+        "catalog/movie/{country}_en_jw_new_jhs" to "New Movies on JioHotstar"
     )
 )
 
 class PrimeVideoProvider : StremioOttProvider(
     name = "Amazon Prime",
-    providerId = "amp",
+    providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "catalog/movie/amp" to "Top 10 Movies on Prime Video Today",
-        "catalog/series/amp" to "Top 10 Shows on Prime Video Today",
-        "catalog/movie/amp" to "Popular Movies on Prime Video",
-        "catalog/series/amp" to "Popular Series on Prime Video"
+        "catalog/movie/{country}_en_jw_tnd_prv" to "Top 10 Movies on Prime Video Today",
+        "catalog/series/{country}_en_jw_tnd_prv" to "Top 10 Shows on Prime Video Today",
+        "catalog/movie/{country}_en_jw_pop_prv" to "Popular Movies on Prime Video",
+        "catalog/series/{country}_en_jw_pop_prv" to "Popular Series on Prime Video",
+        "catalog/movie/{country}_en_jw_new_prv" to "New Movies on Prime Video",
+        "catalog/series/{country}_en_jw_new_prv" to "New Series on Prime Video"
     )
 )
 
@@ -455,22 +505,24 @@ class Zee5Provider : StremioOttProvider(
     providerId = "zee",
     jwPackage = "zee",
     customMainPage = mainPageOf(
-        "catalog/movie/zee" to "Top 10 Movies on Zee5 Today",
-        "catalog/series/zee" to "Top 10 Shows on Zee5 Today",
-        "catalog/movie/zee" to "Popular Movies on Zee5",
-        "catalog/series/zee" to "Popular Shows on Zee5"
+        "catalog/movie/{country}_en_jw_tnd_zee" to "Top 10 Movies on Zee5 Today",
+        "catalog/series/{country}_en_jw_tnd_zee" to "Top 10 Shows on Zee5 Today",
+        "catalog/movie/{country}_en_jw_pop_zee" to "Popular Movies on Zee5",
+        "catalog/series/{country}_en_jw_pop_zee" to "Popular Shows on Zee5",
+        "catalog/movie/{country}_en_jw_new_zee" to "New on Zee5"
     )
 )
 
 class SonyLivProvider : StremioOttProvider(
     name = "SonyLIV",
-    providerId = "sonyliv",
+    providerId = "snl",
     jwPackage = "snl",
     customMainPage = mainPageOf(
-        "catalog/movie/sonyliv" to "Top 10 Movies on SonyLIV Today",
-        "catalog/series/sonyliv" to "Top 10 Shows on SonyLIV Today",
-        "catalog/movie/sonyliv" to "Popular Movies on SonyLIV",
-        "catalog/series/sonyliv" to "Popular Shows on SonyLIV"
+        "catalog/movie/{country}_en_jw_tnd_snl" to "Top 10 Movies on SonyLIV Today",
+        "catalog/series/{country}_en_jw_tnd_snl" to "Top 10 Shows on SonyLIV Today",
+        "catalog/movie/{country}_en_jw_pop_snl" to "Popular Movies on SonyLIV",
+        "catalog/series/{country}_en_jw_pop_snl" to "Popular Shows on SonyLIV",
+        "catalog/movie/{country}_en_jw_new_snl" to "New on SonyLIV"
     )
 )
 
@@ -479,10 +531,12 @@ class AppleTvProvider : StremioOttProvider(
     providerId = "atp",
     jwPackage = "atp",
     customMainPage = mainPageOf(
-        "catalog/movie/atp" to "Top 10 Movies on Apple TV+ Today",
-        "catalog/series/atp" to "Top 10 Shows on Apple TV+ Today",
-        "catalog/movie/atp" to "Popular Movies on Apple TV+",
-        "catalog/series/atp" to "Popular Shows on Apple TV+"
+        "catalog/movie/{country}_en_jw_tnd_atp" to "Top 10 Movies on Apple TV+ Today",
+        "catalog/series/{country}_en_jw_tnd_atp" to "Top 10 Shows on Apple TV+ Today",
+        "catalog/movie/{country}_en_jw_pop_atp" to "Popular Movies on Apple TV+",
+        "catalog/series/{country}_en_jw_pop_atp" to "Popular Shows on Apple TV+",
+        "catalog/movie/{country}_en_jw_new_atp" to "New Movies on Apple TV+",
+        "catalog/series/{country}_en_jw_new_atp" to "New Series on Apple TV+"
     )
 )
 
@@ -492,9 +546,10 @@ class CrunchyrollProvider : StremioOttProvider(
     jwPackage = "cru",
     defaultType = TvType.Anime,
     customMainPage = mainPageOf(
-        "catalog/series/cru" to "Top 10 Anime Series Today",
-        "catalog/movie/cru" to "Top 10 Anime Movies Today",
-        "catalog/series/cru" to "Popular Anime Series",
-        "catalog/movie/cru" to "Popular Anime Movies"
+        "catalog/series/{country}_en_jw_tnd_cru" to "Top 10 Anime Series Today",
+        "catalog/movie/{country}_en_jw_tnd_cru" to "Top 10 Anime Movies Today",
+        "catalog/series/{country}_en_jw_pop_cru" to "Popular Anime Series",
+        "catalog/movie/{country}_en_jw_pop_cru" to "Popular Anime Movies",
+        "catalog/series/{country}_en_jw_new_cru" to "New Anime Series"
     )
 )
