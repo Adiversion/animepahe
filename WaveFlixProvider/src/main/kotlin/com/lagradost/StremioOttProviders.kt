@@ -119,6 +119,44 @@ open class StremioOttProvider(
         return response
     }
 
+    private fun normalizeTokens(str: String): List<String> {
+        return str.lowercase()
+            .replace(Regex("""[^a-z0-9\s]"""), " ")
+            .split(Regex("""\s+"""))
+            .filter { it.length > 1 }
+            .map { w ->
+                if (w.length > 3 && w.endsWith("es")) w.dropLast(2)
+                else if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) w.dropLast(1)
+                else w
+            }
+    }
+
+    private fun isRelevantTitle(query: String, title: String): Boolean {
+        val qTokens = normalizeTokens(query)
+        if (qTokens.isEmpty()) return true
+        val tTokens = normalizeTokens(title)
+        if (tTokens.isEmpty()) return false
+
+        if (qTokens.size == 1) {
+            val q = qTokens[0]
+            return tTokens.any { it.contains(q) || q.contains(it) }
+        }
+
+        val cleanQ = query.trim().lowercase()
+        val cleanT = title.trim().lowercase()
+        if (cleanT.contains(cleanQ)) return true
+
+        val matches = qTokens.count { q ->
+            tTokens.any { t -> t.contains(q) || q.contains(t) }
+        }
+
+        if (qTokens.size == 2) {
+            return matches == 2
+        }
+
+        return (matches.toDouble() / qTokens.size) >= 0.6
+    }
+
     override suspend fun search(query: String): List<SearchResponse> {
         val cleanQuery = query.trim()
         if (cleanQuery.isBlank()) return emptyList()
@@ -192,6 +230,10 @@ open class StremioOttProvider(
                 val node = edge.node ?: return@mapNotNull null
                 val content = node.content ?: return@mapNotNull null
                 val title = content.title ?: return@mapNotNull null
+
+                // Strict relevance check to prevent irrelevant matches on other platforms
+                if (!isRelevantTitle(query, title)) return@mapNotNull null
+
                 val isMovie = node.objectType?.equals("MOVIE", ignoreCase = true) == true
                 val rawTmdb = content.externalIds?.tmdbId?.toLongOrNull()
                 val imdbId = content.externalIds?.imdbId
@@ -249,8 +291,9 @@ open class StremioOttProvider(
                 app.get(movieUrl, headers = commonHeaders, timeout = 6).parsedSafe<StremioCatalogResponse>()?.metas
             }.getOrNull() ?: emptyList()
 
-            (seriesMetas + movieMetas).filter {
-                it.name?.lowercase()?.contains(cleanQuery) == true
+            (seriesMetas + movieMetas).filter { meta ->
+                val name = meta.name ?: return@filter false
+                isRelevantTitle(query, name)
             }.mapNotNull { meta ->
                 val tmdbId = meta.moviedbId ?: return@mapNotNull null
                 val title = meta.name ?: return@mapNotNull null
@@ -274,7 +317,9 @@ open class StremioOttProvider(
     }
 
     override suspend fun load(url: String): LoadResponse {
-        return sharedEngine.load(url)
+        val res = sharedEngine.load(url)
+        res.apiName = this.name
+        return res
     }
 
     override suspend fun loadLinks(

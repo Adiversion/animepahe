@@ -7,8 +7,10 @@ import com.lagradost.cloudstream3.plugins.Plugin
 @CloudstreamPlugin
 class WaveFlixPlugin : Plugin() {
     override fun load(context: Context) {
+        // Core shared provider engine (must be registered in APIHolder so Player link generators can resolve it)
+        registerMainAPI(WaveFlixProvider())
+
         // Dedicated OTT platform providers with individual homepages & catalogs
-        // WaveFlixProvider is retained as the shared backend stream extraction engine
         registerMainAPI(NetflixProvider())
         registerMainAPI(JioHotstarProvider())
         registerMainAPI(PrimeVideoProvider())
