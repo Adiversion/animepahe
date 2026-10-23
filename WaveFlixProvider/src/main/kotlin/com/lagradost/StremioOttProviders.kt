@@ -30,13 +30,13 @@ open class StremioOttProvider(
 
     override val mainPage: List<MainPageData> = customMainPage ?: if (defaultType == TvType.Anime) {
         mainPageOf(
-            "catalog/series/{country}_en_jw_pop_$providerId" to "Trending Anime Series",
-            "catalog/movie/{country}_en_jw_pop_$providerId" to "Anime Movies"
+            "SHOW:15:0" to "Trending Anime Series",
+            "MOVIE:15:0" to "Anime Movies"
         )
     } else {
         mainPageOf(
-            "catalog/series/{country}_en_jw_pop_$providerId" to "Popular Series",
-            "catalog/movie/{country}_en_jw_pop_$providerId" to "Popular Movies"
+            "SHOW:15:0" to "Popular Series",
+            "MOVIE:15:0" to "Popular Movies"
         )
     }
 
@@ -49,7 +49,7 @@ open class StremioOttProvider(
 
     private val commonHeaders = mapOf(
         "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Referer" to "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/"
+        "Content-Type" to "application/json"
     )
 
     private fun getUserCountry(): String {
@@ -71,7 +71,7 @@ open class StremioOttProvider(
         if (id.startsWith("tt")) {
             val cType = if (isMovie) "movie" else "series"
             val cinRes = runCatching {
-                app.get("https://v3-cinemeta.strem.io/meta/$cType/$id.json", timeout = 4)
+                app.get("https://v3-cinemeta.strem.io/meta/$cType/$id.json", timeout = 3)
                     .parsedSafe<CinemetaResponse>()
             }.getOrNull()
             val foundId = cinRes?.meta?.moviedbId
@@ -85,7 +85,7 @@ open class StremioOttProvider(
         if (!name.isNullOrBlank()) {
             val found = runCatching {
                 val enc = URLEncoder.encode(name, "UTF-8")
-                val searchRes = app.get("https://www.waveflix.online/api/search?q=$enc", timeout = 4)
+                val searchRes = app.get("https://www.waveflix.online/api/search?q=$enc", timeout = 3)
                     .parsedSafe<WaveFlixProvider.WaveSearchResponse>()
                 searchRes?.results?.firstOrNull()?.id
             }.getOrNull()
@@ -98,10 +98,102 @@ open class StremioOttProvider(
         return null
     }
 
+    private suspend fun fetchJustWatchCatalog(
+        pkg: String,
+        isMovie: Boolean,
+        country: String,
+        count: Int
+    ): List<SearchResponse> {
+        return try {
+            val gql = """
+                query GetPopularTitles(${"$"}country: Country!, ${"$"}language: Language!, ${"$"}first: Int!, ${"$"}filter: TitleFilter) {
+                  popularTitles(country: ${"$"}country, first: ${"$"}first, filter: ${"$"}filter) {
+                    edges {
+                      node {
+                        objectType
+                        content(country: ${"$"}country, language: ${"$"}language) {
+                          title
+                          originalReleaseYear
+                          posterUrl
+                          scoring {
+                            imdbScore
+                          }
+                          externalIds {
+                            imdbId
+                            tmdbId
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+            """.trimIndent()
+
+            val payloadMap = mapOf(
+                "operationName" to "GetPopularTitles",
+                "query" to gql,
+                "variables" to mapOf(
+                    "country" to country,
+                    "language" to "en",
+                    "first" to count,
+                    "filter" to mapOf(
+                        "packages" to listOf(pkg),
+                        "objectTypes" to listOf(if (isMovie) "MOVIE" else "SHOW"),
+                        "monetizationTypes" to listOf("FLATRATE")
+                    )
+                )
+            )
+
+            val res = app.post(
+                "https://apis.justwatch.com/graphql",
+                headers = commonHeaders,
+                json = payloadMap,
+                timeout = 6
+            ).parsedSafe<JwGraphQLResponse>()
+
+            val edges = res?.data?.popularTitles?.edges ?: return emptyList()
+
+            coroutineScope {
+                edges.map { edge ->
+                    async {
+                        val node = edge.node ?: return@async null
+                        val content = node.content ?: return@async null
+                        val title = content.title ?: return@async null
+
+                        val rawTmdb = content.externalIds?.tmdbId?.toLongOrNull()
+                        val imdbId = content.externalIds?.imdbId
+
+                        val tmdbId = rawTmdb ?: resolveTmdbId(imdbId, isMovie, title) ?: return@async null
+                        val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+
+                        val poster = content.posterUrl?.let {
+                            if (it.startsWith("/")) {
+                                "https://images.justwatch.com" + it.replace("{profile}", "s332").replace("{format}", "jpg")
+                            } else it
+                        }
+
+                        if (isMovie) {
+                            newMovieSearchResponse(title, targetUrl, TvType.Movie) {
+                                this.posterUrl = poster
+                                this.year = content.originalReleaseYear
+                            }
+                        } else {
+                            newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
+                                this.posterUrl = poster
+                                this.year = content.originalReleaseYear
+                            }
+                        }
+                    }
+                }.awaitAll().filterNotNull().distinctBy { it.url }
+            }
+        } catch (_: Throwable) {
+            emptyList()
+        }
+    }
+
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val country = getUserCountry()
-        val cleanPath = request.data.replace("{country}", country)
-        val cacheKey = "$name/$country/$cleanPath/${request.name}/$page"
+        val cacheKey = "$name/$country/${request.data}/${request.name}/$page"
         val now = System.currentTimeMillis()
 
         synchronized(ottCache) {
@@ -111,44 +203,24 @@ open class StremioOttProvider(
             }
         }
 
-        val config = "${country}_en_nfx_prv_jhs_zee_snl_atp_cru"
-        val catalogUrl = "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/$config/$cleanPath.json"
+        // Format of request.data: "SHOW:10:0" -> type, count, offset
+        val parts = request.data.split(":")
+        val isMovie = parts.getOrNull(0)?.equals("MOVIE", ignoreCase = true) == true
+        val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
+        val offset = parts.getOrNull(2)?.toIntOrNull() ?: 0
+        val fetchCount = (count + offset).coerceAtLeast(10)
 
-        val res = app.get(catalogUrl, headers = commonHeaders, timeout = 10)
-            .parsedSafe<StremioCatalogResponse>() ?: throw ErrorLoadingException("Failed to load $name catalog")
+        val allItems = fetchJustWatchCatalog(
+            pkg = jwPackage,
+            isMovie = isMovie,
+            country = country,
+            count = fetchCount
+        )
 
-        val rawMetas = res.metas ?: emptyList()
-        val isTop10 = request.name.contains("Top 10", ignoreCase = true)
-        val candidateMetas = if (isTop10) {
-            rawMetas.take(10)
-        } else if (request.name.contains("Popular", ignoreCase = true) && rawMetas.size > 10) {
-            rawMetas.drop(10).take(20).ifEmpty { rawMetas.take(20) }
+        val items = if (offset > 0 && allItems.size > offset) {
+            allItems.drop(offset).take(count)
         } else {
-            rawMetas.take(20)
-        }
-
-        val items = coroutineScope {
-            candidateMetas.map { meta ->
-                async {
-                    val title = meta.name ?: return@async null
-                    val isMovie = meta.type?.lowercase() == "movie"
-                    val tmdbId = meta.moviedbId ?: resolveTmdbId(meta.id, isMovie, title) ?: return@async null
-                    val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
-                    val posterUrl = meta.poster
-
-                    if (isMovie) {
-                        newMovieSearchResponse(title, targetUrl, TvType.Movie) {
-                            this.posterUrl = posterUrl
-                            this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
-                        }
-                    } else {
-                        newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
-                            this.posterUrl = posterUrl
-                            this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
-                        }
-                    }
-                }
-            }.awaitAll().filterNotNull()
+            allItems.take(count)
         }
 
         val response = newHomePageResponse(request.name, items, hasNext = false)
@@ -201,15 +273,7 @@ open class StremioOttProvider(
         if (cleanQuery.isBlank()) return emptyList()
 
         val country = getUserCountry()
-
-        // 1. First, search the entire full database of this streaming platform via JustWatch's public GraphQL
-        val jwResults = searchJustWatch(cleanQuery, jwPackage, country)
-        if (jwResults.isNotEmpty()) {
-            return jwResults
-        }
-
-        // 2. Fallback to Stremio local catalog search if JustWatch returns no matches
-        return searchStremioCatalog(cleanQuery, country)
+        return searchJustWatch(cleanQuery, jwPackage, country)
     }
 
     private suspend fun searchJustWatch(query: String, pkgCode: String, country: String): List<SearchResponse> {
@@ -256,107 +320,49 @@ open class StremioOttProvider(
 
             val res = app.post(
                 "https://apis.justwatch.com/graphql",
-                headers = mapOf(
-                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                    "Content-Type" to "application/json"
-                ),
+                headers = commonHeaders,
                 json = payloadMap,
                 timeout = 8
             ).parsedSafe<JwGraphQLResponse>()
 
             val edges = res?.data?.popularTitles?.edges ?: return emptyList()
-            edges.mapNotNull { edge ->
-                val node = edge.node ?: return@mapNotNull null
-                val content = node.content ?: return@mapNotNull null
-                val title = content.title ?: return@mapNotNull null
-
-                // Strict relevance check to prevent irrelevant matches on other platforms
-                if (!isRelevantTitle(query, title)) return@mapNotNull null
-
-                val isMovie = node.objectType?.equals("MOVIE", ignoreCase = true) == true
-                val rawTmdb = content.externalIds?.tmdbId?.toLongOrNull()
-                val imdbId = content.externalIds?.imdbId
-
-                val tmdbId = rawTmdb ?: if (!imdbId.isNullOrBlank()) {
-                    runCatching {
-                        val cType = if (isMovie) "movie" else "series"
-                        val cinRes = app.get("https://v3-cinemeta.strem.io/meta/$cType/$imdbId.json", timeout = 4)
-                            .parsedSafe<CinemetaResponse>()
-                        cinRes?.meta?.moviedbId
-                    }.getOrNull()
-                } else null
-
-                val targetUrl = if (tmdbId != null && tmdbId > 0) {
-                    "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
-                } else {
-                    return@mapNotNull null
-                }
-
-                val poster = content.posterUrl?.let {
-                    if (it.startsWith("/")) {
-                        "https://images.justwatch.com" + it.replace("{profile}", "s332").replace("{format}", "jpg")
-                    } else it
-                }
-
-                if (isMovie) {
-                    newMovieSearchResponse(title, targetUrl, TvType.Movie) {
-                        this.posterUrl = poster
-                        this.year = content.originalReleaseYear
-                    }
-                } else {
-                    newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
-                        this.posterUrl = poster
-                        this.year = content.originalReleaseYear
-                    }
-                }
-            }.distinctBy { it.url }
-        } catch (_: Throwable) {
-            emptyList()
-        }
-    }
-
-    private suspend fun searchStremioCatalog(query: String, country: String): List<SearchResponse> {
-        val cleanQuery = query.lowercase()
-        return try {
-            val config = "${country}_en_nfx_prv_jhs_zee_snl_atp_cru"
-            val seriesUrl = "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/$config/catalog/series/${country}_en_jw_pop_$providerId.json"
-            val movieUrl = "https://5cfe2edf73d5-omnicatalogs.baby-beamup.club/$config/catalog/movie/${country}_en_jw_pop_$providerId.json"
-
-            val seriesMetas = runCatching {
-                app.get(seriesUrl, headers = commonHeaders, timeout = 6).parsedSafe<StremioCatalogResponse>()?.metas
-            }.getOrNull() ?: emptyList()
-
-            val movieMetas = runCatching {
-                app.get(movieUrl, headers = commonHeaders, timeout = 6).parsedSafe<StremioCatalogResponse>()?.metas
-            }.getOrNull() ?: emptyList()
-
-            val matches = (seriesMetas + movieMetas).filter { meta ->
-                val name = meta.name ?: return@filter false
-                isRelevantTitle(query, name)
-            }
-
             coroutineScope {
-                matches.map { meta ->
+                edges.map { edge ->
                     async {
-                        val title = meta.name ?: return@async null
-                        val isMovie = meta.type?.lowercase() == "movie"
-                        val tmdbId = meta.moviedbId ?: resolveTmdbId(meta.id, isMovie, title) ?: return@async null
+                        val node = edge.node ?: return@async null
+                        val content = node.content ?: return@async null
+                        val title = content.title ?: return@async null
+
+                        // Strict relevance check to prevent irrelevant matches on other platforms
+                        if (!isRelevantTitle(query, title)) return@async null
+
+                        val isMovie = node.objectType?.equals("MOVIE", ignoreCase = true) == true
+                        val rawTmdb = content.externalIds?.tmdbId?.toLongOrNull()
+                        val imdbId = content.externalIds?.imdbId
+
+                        val tmdbId = rawTmdb ?: resolveTmdbId(imdbId, isMovie, title) ?: return@async null
                         val targetUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+
+                        val poster = content.posterUrl?.let {
+                            if (it.startsWith("/")) {
+                                "https://images.justwatch.com" + it.replace("{profile}", "s332").replace("{format}", "jpg")
+                            } else it
+                        }
 
                         if (isMovie) {
                             newMovieSearchResponse(title, targetUrl, TvType.Movie) {
-                                this.posterUrl = meta.poster
-                                this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+                                this.posterUrl = poster
+                                this.year = content.originalReleaseYear
                             }
                         } else {
                             newTvSeriesSearchResponse(title, targetUrl, if (defaultType == TvType.Anime) TvType.Anime else TvType.TvSeries) {
-                                this.posterUrl = meta.poster
-                                this.year = meta.releaseInfo?.take(4)?.toIntOrNull() ?: meta.year?.take(4)?.toIntOrNull()
+                                this.posterUrl = poster
+                                this.year = content.originalReleaseYear
                             }
                         }
                     }
-                }.awaitAll().filterNotNull()
-            }.distinctBy { it.url }
+                }.awaitAll().filterNotNull().distinctBy { it.url }
+            }
         } catch (_: Throwable) {
             emptyList()
         }
@@ -376,23 +382,6 @@ open class StremioOttProvider(
     ): Boolean {
         return sharedEngine.loadLinks(data, isCasting, subtitleCallback, callback)
     }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    data class StremioCatalogResponse(
-        @JsonProperty("metas") val metas: List<StremioMetaItem>? = null
-    )
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    data class StremioMetaItem(
-        @JsonProperty("id") val id: String? = null,
-        @JsonProperty("moviedb_id") val moviedbId: Long? = null,
-        @JsonProperty("name") val name: String? = null,
-        @JsonProperty("type") val type: String? = null,
-        @JsonProperty("poster") val poster: String? = null,
-        @JsonProperty("description") val description: String? = null,
-        @JsonProperty("releaseInfo") val releaseInfo: String? = null,
-        @JsonProperty("year") val year: String? = null
-    )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class JwGraphQLResponse(
@@ -463,12 +452,10 @@ class NetflixProvider : StremioOttProvider(
     providerId = "nfx",
     jwPackage = "nfx",
     customMainPage = mainPageOf(
-        "catalog/movie/{country}_en_jw_tnd_nfx" to "Top 10 Movies on Netflix Today",
-        "catalog/series/{country}_en_jw_tnd_nfx" to "Top 10 Shows on Netflix Today",
-        "catalog/movie/{country}_en_jw_pop_nfx" to "Popular Movies on Netflix",
-        "catalog/series/{country}_en_jw_pop_nfx" to "Popular Series on Netflix",
-        "catalog/movie/{country}_en_jw_new_nfx" to "New on Netflix",
-        "catalog/series/{country}_en_jw_new_nfx" to "New Series on Netflix"
+        "SHOW:10:0" to "Top 10 Shows on Netflix Today",
+        "MOVIE:10:0" to "Top 10 Movies on Netflix Today",
+        "SHOW:20:10" to "Popular Series on Netflix",
+        "MOVIE:20:10" to "Popular Movies on Netflix"
     )
 )
 
@@ -477,12 +464,10 @@ class JioHotstarProvider : StremioOttProvider(
     providerId = "jhs",
     jwPackage = "jhs",
     customMainPage = mainPageOf(
-        "catalog/series/{country}_en_jw_tnd_jhs" to "Top 10 Shows on JioHotstar Today",
-        "catalog/movie/{country}_en_jw_tnd_jhs" to "Top 10 Movies on JioHotstar Today",
-        "catalog/series/{country}_en_jw_pop_jhs" to "Popular Shows on JioHotstar",
-        "catalog/movie/{country}_en_jw_pop_jhs" to "Popular Movies on JioHotstar",
-        "catalog/series/{country}_en_jw_new_jhs" to "New on JioHotstar",
-        "catalog/movie/{country}_en_jw_new_jhs" to "New Movies on JioHotstar"
+        "SHOW:10:0" to "Top 10 Shows on JioHotstar Today",
+        "MOVIE:10:0" to "Top 10 Movies on JioHotstar Today",
+        "SHOW:20:10" to "Popular Shows on JioHotstar",
+        "MOVIE:20:10" to "Popular Movies on JioHotstar"
     )
 )
 
@@ -491,12 +476,10 @@ class PrimeVideoProvider : StremioOttProvider(
     providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "catalog/movie/{country}_en_jw_tnd_prv" to "Top 10 Movies on Prime Video Today",
-        "catalog/series/{country}_en_jw_tnd_prv" to "Top 10 Shows on Prime Video Today",
-        "catalog/movie/{country}_en_jw_pop_prv" to "Popular Movies on Prime Video",
-        "catalog/series/{country}_en_jw_pop_prv" to "Popular Series on Prime Video",
-        "catalog/movie/{country}_en_jw_new_prv" to "New Movies on Prime Video",
-        "catalog/series/{country}_en_jw_new_prv" to "New Series on Prime Video"
+        "SHOW:10:0" to "Top 10 Shows on Prime Video Today",
+        "MOVIE:10:0" to "Top 10 Movies on Prime Video Today",
+        "SHOW:20:10" to "Popular Series on Prime Video",
+        "MOVIE:20:10" to "Popular Movies on Prime Video"
     )
 )
 
@@ -505,11 +488,10 @@ class Zee5Provider : StremioOttProvider(
     providerId = "zee",
     jwPackage = "zee",
     customMainPage = mainPageOf(
-        "catalog/movie/{country}_en_jw_tnd_zee" to "Top 10 Movies on Zee5 Today",
-        "catalog/series/{country}_en_jw_tnd_zee" to "Top 10 Shows on Zee5 Today",
-        "catalog/movie/{country}_en_jw_pop_zee" to "Popular Movies on Zee5",
-        "catalog/series/{country}_en_jw_pop_zee" to "Popular Shows on Zee5",
-        "catalog/movie/{country}_en_jw_new_zee" to "New on Zee5"
+        "SHOW:10:0" to "Top 10 Shows on Zee5 Today",
+        "MOVIE:10:0" to "Top 10 Movies on Zee5 Today",
+        "SHOW:20:10" to "Popular Shows on Zee5",
+        "MOVIE:20:10" to "Popular Movies on Zee5"
     )
 )
 
@@ -518,11 +500,10 @@ class SonyLivProvider : StremioOttProvider(
     providerId = "snl",
     jwPackage = "snl",
     customMainPage = mainPageOf(
-        "catalog/movie/{country}_en_jw_tnd_snl" to "Top 10 Movies on SonyLIV Today",
-        "catalog/series/{country}_en_jw_tnd_snl" to "Top 10 Shows on SonyLIV Today",
-        "catalog/movie/{country}_en_jw_pop_snl" to "Popular Movies on SonyLIV",
-        "catalog/series/{country}_en_jw_pop_snl" to "Popular Shows on SonyLIV",
-        "catalog/movie/{country}_en_jw_new_snl" to "New on SonyLIV"
+        "SHOW:10:0" to "Top 10 Shows on SonyLIV Today",
+        "MOVIE:10:0" to "Top 10 Movies on SonyLIV Today",
+        "SHOW:20:10" to "Popular Shows on SonyLIV",
+        "MOVIE:20:10" to "Popular Movies on SonyLIV"
     )
 )
 
@@ -531,12 +512,10 @@ class AppleTvProvider : StremioOttProvider(
     providerId = "atp",
     jwPackage = "atp",
     customMainPage = mainPageOf(
-        "catalog/movie/{country}_en_jw_tnd_atp" to "Top 10 Movies on Apple TV+ Today",
-        "catalog/series/{country}_en_jw_tnd_atp" to "Top 10 Shows on Apple TV+ Today",
-        "catalog/movie/{country}_en_jw_pop_atp" to "Popular Movies on Apple TV+",
-        "catalog/series/{country}_en_jw_pop_atp" to "Popular Shows on Apple TV+",
-        "catalog/movie/{country}_en_jw_new_atp" to "New Movies on Apple TV+",
-        "catalog/series/{country}_en_jw_new_atp" to "New Series on Apple TV+"
+        "SHOW:10:0" to "Top 10 Shows on Apple TV+ Today",
+        "MOVIE:10:0" to "Top 10 Movies on Apple TV+ Today",
+        "SHOW:20:10" to "Popular Shows on Apple TV+",
+        "MOVIE:20:10" to "Popular Movies on Apple TV+"
     )
 )
 
@@ -546,10 +525,9 @@ class CrunchyrollProvider : StremioOttProvider(
     jwPackage = "cru",
     defaultType = TvType.Anime,
     customMainPage = mainPageOf(
-        "catalog/series/{country}_en_jw_tnd_cru" to "Top 10 Anime Series Today",
-        "catalog/movie/{country}_en_jw_tnd_cru" to "Top 10 Anime Movies Today",
-        "catalog/series/{country}_en_jw_pop_cru" to "Popular Anime Series",
-        "catalog/movie/{country}_en_jw_pop_cru" to "Popular Anime Movies",
-        "catalog/series/{country}_en_jw_new_cru" to "New Anime Series"
+        "SHOW:10:0" to "Top 10 Anime Series Today",
+        "MOVIE:10:0" to "Top 10 Anime Movies Today",
+        "SHOW:20:10" to "Popular Anime Series",
+        "MOVIE:20:10" to "Popular Anime Movies"
     )
 )
