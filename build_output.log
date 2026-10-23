@@ -32,8 +32,8 @@ Fetching JAR: cloudstream.jar
 > Task :WaveFlixProvider:packageDebugResources
 > Task :AnimePaheProvider:parseDebugLocalResources
 > Task :WaveFlixProvider:parseDebugLocalResources
-> Task :WaveFlixProvider:generateDebugRFile
 > Task :AnimePaheProvider:generateDebugRFile
+> Task :WaveFlixProvider:generateDebugRFile
 
 > Task :AnimePaheProvider:compileDebugKotlin
 e: Daemon compilation failed: null
@@ -173,6 +173,9 @@ Caused by: java.lang.AssertionError: Couldn't load KotlinClass from /home/runner
 Using fallback strategy: Compile without Kotlin daemon
 Try ./gradlew --stop if this issue persists
 If it does not look related to your configuration, please file an issue with logs to https://kotl.in/issue
+exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:525:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
+exception:                         databaseEnabled = true
+exception:                         ^^^^^^^^^^^^^^^
 
 > Task :WaveFlixProvider:compileDebugKotlin
 e: Daemon compilation failed: null
@@ -312,11 +315,6 @@ Caused by: java.lang.AssertionError: Couldn't load KotlinClass from /home/runner
 Using fallback strategy: Compile without Kotlin daemon
 Try ./gradlew --stop if this issue persists
 If it does not look related to your configuration, please file an issue with logs to https://kotl.in/issue
-
-> Task :AnimePaheProvider:compileDebugKotlin
-exception: animePaheProvider/src/main/kotlin/com/lagradost/AnimePaheProvider.kt:525:25: warning: 'var databaseEnabled: Boolean' is deprecated. Deprecated in Java.
-exception:                         databaseEnabled = true
-exception:                         ^^^^^^^^^^^^^^^
 
 > Task :AnimePaheProvider:compileDex
 WARNING: D8: Unexpected error during rewriting of Kotlin metadata for class 'com.lagradost.AnimePaheProvider$load$$inlined$parseJson$1':
@@ -3344,5 +3342,5 @@ Made CloudStream package at /home/runner/work/csext/csext/src/WaveFlixProvider/b
 > Task :makePluginsJson
 Created /home/runner/work/csext/csext/src/build/plugins.json
 
-BUILD SUCCESSFUL in 1m 53s
+BUILD SUCCESSFUL in 1m 19s
 21 actionable tasks: 21 executed
