@@ -477,21 +477,29 @@ class WaveFlixProvider : MainAPI() {
         }
 
         val resolvedTitle = linkData.title
+        val coreTitle = resolvedTitle?.let { t ->
+            t.split(Regex("""\s*[\-–—:|]""")).firstOrNull()?.trim()
+                ?.replace(Regex("""\s*\(\d{4}\).*"""), "")
+                ?.trim()
+                ?.ifBlank { t }
+        } ?: resolvedTitle
 
         // 5. Direct RogMovies Indian Cloud & Multi-Audio Integration
         val rogMoviesJob = async {
-            if (!resolvedTitle.isNullOrBlank()) {
+            val q = coreTitle ?: resolvedTitle
+            if (!q.isNullOrBlank()) {
                 try {
-                    queryRogMovies(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryRogMovies(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
         // 6. Direct BollyZone Daily Indian TV Serial Integration
         val bollyZoneJob = async {
-            if (!isMovie && !resolvedTitle.isNullOrBlank()) {
+            val q = coreTitle ?: resolvedTitle
+            if (!isMovie && !q.isNullOrBlank()) {
                 try {
-                    queryBollyZone(resolvedTitle, season, episode, subtitleCallback, callback)
+                    queryBollyZone(q, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -505,36 +513,40 @@ class WaveFlixProvider : MainAPI() {
 
         // 8. Direct Desi Serials Daily Indian TV Serial Integration
         val desiSerialsJob = async {
-            if (!isMovie && !resolvedTitle.isNullOrBlank()) {
+            val q = coreTitle ?: resolvedTitle
+            if (!isMovie && !q.isNullOrBlank()) {
                 try {
-                    queryDesiSerials(resolvedTitle, season, episode, subtitleCallback, callback)
+                    queryDesiSerials(q, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
         // 9. Direct Bollyflix Indian Cloud Integration
         val bollyflixJob = async {
-            if (!resolvedTitle.isNullOrBlank()) {
+            val q = coreTitle ?: resolvedTitle
+            if (!q.isNullOrBlank()) {
                 try {
-                    queryBollyflix(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryBollyflix(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
         // 10. KatMovieHD – Direct Indian cloud search via new.katmoviehd.top + links.kmhd.me
         val katMovieJob = async {
-            if (!resolvedTitle.isNullOrBlank()) {
+            val q = coreTitle ?: resolvedTitle
+            if (!q.isNullOrBlank()) {
                 try {
-                    queryKatMovieHD(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryKatMovieHD(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
 
         // 11. HDHub4u – Direct Indian cloud search via new8.hdhub4u.cl + greenmotors
         val hdhub4uJob = async {
-            if (!resolvedTitle.isNullOrBlank()) {
+            val q = coreTitle ?: resolvedTitle
+            if (!q.isNullOrBlank()) {
                 try {
-                    queryHDHub4u(resolvedTitle, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryHDHub4u(q, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -560,7 +572,8 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        val cleanQuery = query.substringBefore("–").substringBefore("-")
+        val cleanQuery = query
+            .replace(Regex("""\s*[\-–—:|].*"""), "")
             .replace("Dhamaal with ", "", ignoreCase = true)
             .replace("Dhamaal", "", ignoreCase = true)
             .trim()
@@ -584,9 +597,10 @@ class WaveFlixProvider : MainAPI() {
         }
 
         // Find episode posts matching query & season
+        val targetTokens = cleanQuery.lowercase().split(" ").filter { it.length > 2 }
         val targetPosts = posts.filter { (_, text) ->
             val lower = text.lowercase()
-            lower.contains("panga") && if (season == 2) (lower.contains(" 2 ") || lower.contains("2026")) else !lower.contains(" 2 ")
+            targetTokens.any { lower.contains(it) } && if (season == 2) (lower.contains(" 2 ") || lower.contains("2026") || lower.contains("dhamaal")) else !lower.contains(" 2 ")
         }.distinctBy { it.first }
 
         val chronoPosts = targetPosts.reversed()
@@ -601,7 +615,12 @@ class WaveFlixProvider : MainAPI() {
             val gbUrl = a.attr("href").trim()
             if (gbUrl.startsWith("http")) {
                 runCatching {
-                    loadExtractor(gbUrl, targetPost.first, subtitleCallback, callback)
+                    val gbHtml = app.get(gbUrl, headers = headers + ("Referer" to targetPost.first), timeout = 6).text
+                    val gbDoc = org.jsoup.Jsoup.parse(gbHtml)
+                    val iframeSrc = gbDoc.selectFirst("iframe[src]")?.attr("src")?.trim()
+                    if (!iframeSrc.isNullOrBlank()) {
+                        loadExtractor(iframeSrc, gbUrl, subtitleCallback, callback)
+                    }
                 }
             }
         }
@@ -654,7 +673,7 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        val cleanQuery = query.substringBefore("–").substringBefore("-").lowercase().replace(Regex("[^a-z0-9 ]"), " ").trim()
+        val cleanQuery = query.replace(Regex("""\s*[\-–—:|].*"""), "").lowercase().replace(Regex("[^a-z0-9 ]"), " ").trim()
         val stopWords = setOf("aur", "the", "and", "with", "all", "season", "episode")
         val significantTokens = cleanQuery.split(" ").filter { it.length > 2 && it !in stopWords }
         if (significantTokens.isEmpty()) return
@@ -1128,9 +1147,10 @@ class WaveFlixProvider : MainAPI() {
         val hits = data.hits ?: return
 
         val cleanQuery = query.lowercase().trim()
+        val queryTokens = cleanQuery.split(" ").filter { it.length > 2 }
         val relevantHits = hits.filter { hit ->
             val hitTitle = hit.document?.post_title?.lowercase() ?: ""
-            hitTitle.contains(cleanQuery)
+            hitTitle.contains(cleanQuery) || (queryTokens.isNotEmpty() && queryTokens.all { hitTitle.contains(it) })
         }
 
         relevantHits.take(2).forEach { hit ->
@@ -1146,6 +1166,23 @@ class WaveFlixProvider : MainAPI() {
                 if (href.startsWith("http") && !href.contains("filepress") && !href.contains("filebee") && !href.contains("nexdrive")) {
                     runCatching {
                         loadExtractor(href, postUrl, subtitleCallback, callback)
+                    }
+                }
+            }
+            // Follow nexdrive cloud dispenser pages for direct vcloud/hubcloud links (bypassing filepress webviews)
+            doc.select("a[href*='nexdrive.beer/genxfm']").take(2).forEach { a ->
+                val nexUrl = a.attr("href").trim()
+                runCatching {
+                    val nexHtml = app.get(nexUrl, headers = headers, timeout = 7).text
+                    val nexDoc = org.jsoup.Jsoup.parse(nexHtml)
+                    val vcloudLinks = nexDoc.select("a[href*='vcloud.beer'], a[href*='hubcloud.cx']")
+                    val targetLink = if (!isMovie && episode in 1..vcloudLinks.size) {
+                        vcloudLinks[episode - 1].attr("href").trim()
+                    } else {
+                        vcloudLinks.firstOrNull()?.attr("href")?.trim()
+                    }
+                    if (!targetLink.isNullOrBlank()) {
+                        loadExtractor(targetLink, nexUrl, subtitleCallback, callback)
                     }
                 }
             }
