@@ -6,14 +6,14 @@ FAILURE: Build failed with an exception.
 * What went wrong:
 A problem occurred configuring root project 'CloudstreamPlugins'.
 > Could not resolve all artifacts for configuration 'classpath'.
-   > Could not find com.github.recloudstream:gradle:-SNAPSHOT.
+   > Could not find com.github.recloudstream:gradle:master-SNAPSHOT.
      Searched in the following locations:
-       - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/-SNAPSHOT/maven-metadata.xml
-       - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.pom
-       - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/-SNAPSHOT/maven-metadata.xml
-       - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.pom
-       - https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/maven-metadata.xml
-       - https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/gradle--32895aedb6-1.pom
+       - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml
+       - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom
+       - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml
+       - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom
+       - https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml
+       - https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-32895aedb6-1.pom
      Required by:
          root project :
 
@@ -353,16 +353,16 @@ Caused by: org.gradle.api.internal.artifacts.ivyservice.TypedResolveException: C
 	at org.gradle.launcher.daemon.server.DaemonStateCoordinator.lambda$runCommand$0(DaemonStateCoordinator.java:321)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
-Caused by: org.gradle.internal.resolve.ModuleVersionNotFoundException: Could not find com.github.recloudstream:gradle:-SNAPSHOT.
+Caused by: org.gradle.internal.resolve.ModuleVersionNotFoundException: Could not find com.github.recloudstream:gradle:master-SNAPSHOT.
 Searched in the following locations:
-  - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/-SNAPSHOT/maven-metadata.xml
-  - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.pom
-  - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/-SNAPSHOT/maven-metadata.xml
-  - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/-SNAPSHOT/gradle--SNAPSHOT.pom
-  - https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/maven-metadata.xml
-  - https://jitpack.io/com/github/recloudstream/gradle/-SNAPSHOT/gradle--32895aedb6-1.pom
+  - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml
+  - https://dl.google.com/dl/android/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom
+  - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml
+  - https://repo.maven.apache.org/maven2/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-SNAPSHOT.pom
+  - https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/maven-metadata.xml
+  - https://jitpack.io/com/github/recloudstream/gradle/master-SNAPSHOT/gradle-master-32895aedb6-1.pom
 Required by:
     root project :
 
 
-BUILD FAILED in 5s
+BUILD FAILED in 11s
