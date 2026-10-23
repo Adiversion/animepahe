@@ -1,5 +1,6 @@
 package com.lagradost
 
+import android.util.Base64
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
@@ -7,6 +8,7 @@ import com.lagradost.cloudstream3.utils.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
@@ -23,7 +25,8 @@ open class StremioOttProvider(
     override val supportedTypes = setOf(
         TvType.Movie,
         TvType.TvSeries,
-        TvType.Anime
+        TvType.Anime,
+        TvType.Live
     )
 
     override val hasMainPage = true
@@ -98,11 +101,35 @@ open class StremioOttProvider(
         return null
     }
 
+    private suspend fun fetchCncLiveSports(): List<SearchResponse> {
+        return try {
+            val res = app.get(
+                "https://cncverse.dpdns.org/catalog/tv/cnc_JioHotstar2_tv.json",
+                headers = mapOf("User-Agent" to "Mozilla/5.0"),
+                timeout = 6
+            ).parsedSafe<CncCatalogResponse>() ?: return emptyList()
+
+            res.metas?.mapNotNull { meta ->
+                val id = meta.id ?: return@mapNotNull null
+                val name = meta.name?.trim() ?: return@mapNotNull null
+                if (name.isBlank() || name == "⠀") return@mapNotNull null
+
+                val targetUrl = "https://cncverse.dpdns.org/live/${URLEncoder.encode(name, "UTF-8")}?data=${URLEncoder.encode(id, "UTF-8")}"
+                newMovieSearchResponse(name, targetUrl, TvType.Live) {
+                    this.posterUrl = meta.poster
+                }
+            } ?: emptyList()
+        } catch (_: Throwable) {
+            emptyList()
+        }
+    }
+
     private suspend fun fetchJustWatchCatalog(
         pkg: String,
         isMovie: Boolean,
         country: String,
-        count: Int
+        count: Int,
+        genres: List<String>? = null
     ): List<SearchResponse> {
         return try {
             val gql = """
@@ -129,6 +156,15 @@ open class StremioOttProvider(
                 }
             """.trimIndent()
 
+            val filterMap = mutableMapOf<String, Any>(
+                "packages" to listOf(pkg),
+                "objectTypes" to listOf(if (isMovie) "MOVIE" else "SHOW"),
+                "monetizationTypes" to listOf("FLATRATE")
+            )
+            if (!genres.isNullOrEmpty()) {
+                filterMap["genres"] = genres
+            }
+
             val payloadMap = mapOf(
                 "operationName" to "GetPopularTitles",
                 "query" to gql,
@@ -136,11 +172,7 @@ open class StremioOttProvider(
                     "country" to country,
                     "language" to "en",
                     "first" to count,
-                    "filter" to mapOf(
-                        "packages" to listOf(pkg),
-                        "objectTypes" to listOf(if (isMovie) "MOVIE" else "SHOW"),
-                        "monetizationTypes" to listOf("FLATRATE")
-                    )
+                    "filter" to filterMap
                 )
             )
 
@@ -203,24 +235,40 @@ open class StremioOttProvider(
             }
         }
 
-        // Format of request.data: "SHOW:10:0" -> type, count, offset
-        val parts = request.data.split(":")
-        val isMovie = parts.getOrNull(0)?.equals("MOVIE", ignoreCase = true) == true
-        val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
-        val offset = parts.getOrNull(2)?.toIntOrNull() ?: 0
-        val fetchCount = (count + offset).coerceAtLeast(10)
+        val items = when {
+            request.data.startsWith("LIVE_SPORTS") -> {
+                fetchCncLiveSports()
+            }
+            request.data.startsWith("MOVIE_COP") -> {
+                val count = request.data.substringAfter(":").toIntOrNull() ?: 15
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = true,
+                    country = country,
+                    count = count,
+                    genres = listOf("act", "crm")
+                )
+            }
+            else -> {
+                val parts = request.data.split(":")
+                val isMovie = parts.getOrNull(0)?.equals("MOVIE", ignoreCase = true) == true
+                val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
+                val offset = parts.getOrNull(2)?.toIntOrNull() ?: 0
+                val fetchCount = (count + offset).coerceAtLeast(10)
 
-        val allItems = fetchJustWatchCatalog(
-            pkg = jwPackage,
-            isMovie = isMovie,
-            country = country,
-            count = fetchCount
-        )
+                val allItems = fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = isMovie,
+                    country = country,
+                    count = fetchCount
+                )
 
-        val items = if (offset > 0 && allItems.size > offset) {
-            allItems.drop(offset).take(count)
-        } else {
-            allItems.take(count)
+                if (offset > 0 && allItems.size > offset) {
+                    allItems.drop(offset).take(count)
+                } else {
+                    allItems.take(count)
+                }
+            }
         }
 
         val response = newHomePageResponse(request.name, items, hasNext = false)
@@ -369,6 +417,17 @@ open class StremioOttProvider(
     }
 
     override suspend fun load(url: String): LoadResponse {
+        if (url.startsWith("https://cncverse.dpdns.org/live/")) {
+            val rawData = url.substringAfter("?data=")
+            val decodedId = URLDecoder.decode(rawData, "UTF-8")
+            val rawTitle = url.substringBefore("?data=").substringAfter("/live/")
+            val title = URLDecoder.decode(rawTitle, "UTF-8")
+
+            return newMovieLoadResponse(title, url, TvType.Live, decodedId) {
+                this.plot = "Live sports stream from JioHotstar"
+            }
+        }
+
         val res = sharedEngine.load(url)
         res.apiName = this.name
         return res
@@ -380,8 +439,70 @@ open class StremioOttProvider(
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
+        if (data.startsWith("cnc:")) {
+            try {
+                val b64Payload = data.removePrefix("cnc:").replace("-", "+").replace("_", "/")
+                val padded = b64Payload + "=".repeat((-b64Payload.length) % 4)
+                val jsonStr = String(Base64.decode(padded, Base64.DEFAULT), Charsets.UTF_8)
+                val cleanJson = if (jsonStr.contains("::{")) jsonStr.substringAfter("::") else jsonStr
+
+                val cncObj = AppUtils.parseJson<CncLiveStreamItem>(cleanJson)
+                val streamUrl = cncObj.url ?: return false
+                val cookie = cncObj.cookie
+                val referer = cncObj.headers?.get("Referer") ?: "https://www.hotstar.com/"
+                val origin = cncObj.headers?.get("Origin") ?: "https://www.hotstar.com"
+                val ua = cncObj.userAgent ?: "Hotstar;in.startv.hotstar/25.02.24.8.11169@Premium Plugx(Android/15)"
+
+                val headers = mutableMapOf(
+                    "User-Agent" to ua,
+                    "Referer" to referer,
+                    "Origin" to origin
+                )
+                if (!cookie.isNullOrBlank()) {
+                    headers["Cookie"] = cookie
+                }
+
+                callback(
+                    newExtractorLink(
+                        source = "JioHotstar Live",
+                        name = cncObj.title ?: "Live Stream",
+                        url = streamUrl,
+                        type = if (streamUrl.contains(".mpd")) ExtractorLinkType.DASH else ExtractorLinkType.M3U8
+                    ) {
+                        this.headers = headers
+                    }
+                )
+                return true
+            } catch (_: Throwable) {
+                // fallback to sharedEngine
+            }
+        }
+
         return sharedEngine.loadLinks(data, isCasting, subtitleCallback, callback)
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncCatalogResponse(
+        @JsonProperty("metas") val metas: List<CncMetaItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncMetaItem(
+        @JsonProperty("id") val id: String? = null,
+        @JsonProperty("name") val name: String? = null,
+        @JsonProperty("poster") val poster: String? = null,
+        @JsonProperty("type") val type: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncLiveStreamItem(
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("poster") val poster: String? = null,
+        @JsonProperty("cookie") val cookie: String? = null,
+        @JsonProperty("userAgent") val userAgent: String? = null,
+        @JsonProperty("headers") val headers: Map<String, String>? = null
+    )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class JwGraphQLResponse(
@@ -464,9 +585,10 @@ class JioHotstarProvider : StremioOttProvider(
     providerId = "jhs",
     jwPackage = "jhs",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on JioHotstar Today",
-        "MOVIE:10:0" to "Top 10 Movies on JioHotstar Today",
-        "SHOW:20:10" to "Popular Shows on JioHotstar",
+        "LIVE_SPORTS:15" to "⚡ Live Sports & Star Sports",
+        "SHOW:10:0" to "Top 10 in India Today - Shows",
+        "MOVIE:10:0" to "Top 10 in India Today - Movies",
+        "SHOW:20:10" to "Hotstar Specials & Popular Shows",
         "MOVIE:20:10" to "Popular Movies on JioHotstar"
     )
 )
@@ -476,10 +598,11 @@ class PrimeVideoProvider : StremioOttProvider(
     providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on Prime Video Today",
-        "MOVIE:10:0" to "Top 10 Movies on Prime Video Today",
-        "SHOW:20:10" to "Popular Series on Prime Video",
-        "MOVIE:20:10" to "Popular Movies on Prime Video"
+        "SHOW:10:0" to "Top 10 with Prime - TV",
+        "MOVIE:10:0" to "Top 10 with Prime - Movies",
+        "SHOW:20:10" to "Popular Series on Prime",
+        "MOVIE:20:10" to "Popular Movies on Prime",
+        "MOVIE_COP:15" to "Cop Universe & Action Crime Thrillers"
     )
 )
 
