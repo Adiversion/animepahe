@@ -579,9 +579,11 @@ class WaveFlixProvider : MainAPI() {
             .trim()
             .ifBlank { query }
 
-        val searchUrl = "https://www.bollyzone.to/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
+        val base = DomainResolver.get("bollyzone")
+        val searchUrl = "$base/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
         val headers = mapOf(
-            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "$base/"
         )
         val searchHtml = runCatching {
             app.get(searchUrl, headers = headers, timeout = 7).text
@@ -678,11 +680,13 @@ class WaveFlixProvider : MainAPI() {
         val significantTokens = cleanQuery.split(" ").filter { it.length > 2 && it !in stopWords }
         if (significantTokens.isEmpty()) return
 
+        val base = DomainResolver.get("desiserials")
         val headers = mapOf(
-            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "$base/"
         )
         val homeHtml = runCatching {
-            app.get("https://www.desi-serials.to/", headers = headers, timeout = 7).text
+            app.get("$base/", headers = headers, timeout = 7).text
         }.getOrNull() ?: return
 
         val doc = org.jsoup.Jsoup.parse(homeHtml)
@@ -698,7 +702,7 @@ class WaveFlixProvider : MainAPI() {
         if (showUrl.isBlank()) return
 
         val showHtml = runCatching {
-            app.get(showUrl, headers = headers + ("Referer" to "https://www.desi-serials.to/"), timeout = 7).text
+            app.get(showUrl, headers = headers + ("Referer" to "$base/"), timeout = 7).text
         }.getOrNull() ?: return
 
         val showDoc = org.jsoup.Jsoup.parse(showHtml)
@@ -739,10 +743,11 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) = coroutineScope {
+        val base = DomainResolver.get("katmovie")
         val browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         val katHeaders = mapOf(
             "User-Agent" to browserUA,
-            "Referer" to "https://new.katmoviehd.top/"
+            "Referer" to "$base/"
         )
 
         val cleanTitleKebab = query.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-')
@@ -766,7 +771,7 @@ class WaveFlixProvider : MainAPI() {
         // 2. Scan KatMovieHD recent posts & catalog SSR pages for matching title tokens
         val tokens = cleanTitleKebab.split("-").filter { it.length > 2 }
         if (tokens.isNotEmpty()) {
-            val pagesToScan = listOf("https://new.katmoviehd.top/", "https://new.katmoviehd.top/?page=2")
+            val pagesToScan = listOf("$base/", "$base/?page=2")
             pagesToScan.forEach { pageUrl ->
                 val pageHtml = runCatching {
                     app.get(pageUrl, headers = katHeaders, timeout = 7).text
@@ -789,7 +794,7 @@ class WaveFlixProvider : MainAPI() {
         val slugJobs = uniqueSlugs.map { slug ->
             async {
                 try {
-                    val postUrl = "https://new.katmoviehd.top/$slug/"
+                    val postUrl = "$base/$slug/"
                     val postHtml = runCatching {
                         app.get(postUrl, headers = katHeaders, timeout = 8).text
                     }.getOrNull() ?: return@async
@@ -967,14 +972,15 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) = coroutineScope {
+        val base = DomainResolver.get("hdhub4u")
         val browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         val hdhubHeaders = mapOf(
             "User-Agent" to browserUA,
-            "Referer" to "https://new8.hdhub4u.cl/"
+            "Referer" to "$base/"
         )
 
         val cleanQuery = query.replace(Regex("""[^a-zA-Z0-9\s]"""), " ").trim()
-        val searchUrl = "https://new8.hdhub4u.cl/?s=${cleanQuery.replace(" ", "+")}"
+        val searchUrl = "$base/?s=${cleanQuery.replace(" ", "+")}"
 
         val searchHtml = runCatching {
             app.get(searchUrl, headers = hdhubHeaders, timeout = 8).text
@@ -988,7 +994,7 @@ class WaveFlixProvider : MainAPI() {
             val href = a?.attr("href")?.trim() ?: return@forEach
             val title = a.attr("aria-label").ifBlank { thumb.selectFirst("figcaption p")?.text() ?: "" }.trim()
             if (href.isNotBlank() && title.isNotBlank()) {
-                val fullUrl = if (href.startsWith("http")) href else "https://new8.hdhub4u.cl" + (if (href.startsWith("/")) href else "/$href")
+                val fullUrl = if (href.startsWith("http")) href else "$base" + (if (href.startsWith("/")) href else "/$href")
                 posts.add(fullUrl to title)
             }
         }
@@ -1093,11 +1099,12 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
+        val base = DomainResolver.get("bollyflix")
         val cleanQuery = query.replace(Regex("[^a-zA-Z0-9 ]"), " ").trim()
-        val searchUrl = "https://bollyflix.co.za/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
+        val searchUrl = "$base/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
         val headers = mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Referer" to "https://bollyflix.co.za/"
+            "Referer" to "$base/"
         )
         val searchRes = runCatching {
             app.get(searchUrl, headers = headers, timeout = 7).text
@@ -1134,10 +1141,11 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
-        val searchUrl = "https://rogmovies.one/ts-search.php?q=${URLEncoder.encode(query, "UTF-8")}&page=1"
+        val base = DomainResolver.get("rogmovies")
+        val searchUrl = "$base/ts-search.php?q=${URLEncoder.encode(query, "UTF-8")}&page=1"
         val headers = mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Referer" to "https://rogmovies.one/?s="
+            "Referer" to "$base/?s="
         )
         val jsonRes = runCatching {
             app.get(searchUrl, headers = headers, timeout = 7).text
@@ -1155,7 +1163,7 @@ class WaveFlixProvider : MainAPI() {
 
         relevantHits.take(2).forEach { hit ->
             val permalink = hit.document?.permalink ?: return@forEach
-            val postUrl = if (permalink.startsWith("http")) permalink else "https://rogmovies.one$permalink"
+            val postUrl = if (permalink.startsWith("http")) permalink else "$base$permalink"
             val postHtml = runCatching {
                 app.get(postUrl, headers = headers, timeout = 8).text
             }.getOrNull() ?: return@forEach
@@ -1170,7 +1178,7 @@ class WaveFlixProvider : MainAPI() {
                 }
             }
             // Follow nexdrive cloud dispenser pages for direct vcloud/hubcloud links (bypassing filepress webviews)
-            doc.select("a[href*='nexdrive.beer/genxfm']").take(2).forEach { a ->
+            doc.select("a[href*='nexdrive.'][href*='/genxfm']").take(2).forEach { a ->
                 val nexUrl = a.attr("href").trim()
                 runCatching {
                     val nexHtml = app.get(nexUrl, headers = headers, timeout = 7).text

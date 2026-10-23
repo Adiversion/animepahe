@@ -21,6 +21,8 @@ class WaveFlixPlugin : Plugin() {
 
         // Register direct Indian CDN & Cloud Extractors
         registerExtractorAPI(VCloudExtractor())
+        registerExtractorAPI(VCloudLolExtractor())
+        registerExtractorAPI(VCloudCxExtractor())
         registerExtractorAPI(NexdriveExtractor())
         registerExtractorAPI(NexdriveYouExtractor())
         registerExtractorAPI(NexdriveStoreExtractor())
@@ -31,6 +33,9 @@ class WaveFlixPlugin : Plugin() {
         registerExtractorAPI(DriveSeedExtractor())
         registerExtractorAPI(HubdriveExtractor())
         registerExtractorAPI(HubcloudExtractor())
+        registerExtractorAPI(HubcloudCxExtractor())
+        registerExtractorAPI(HubcloudClubExtractor())
+        registerExtractorAPI(HubcloudLolExtractor())
         registerExtractorAPI(BollydriveExtractor())
         registerExtractorAPI(BollydriveMomExtractor())
         registerExtractorAPI(GroundbanksExtractor())

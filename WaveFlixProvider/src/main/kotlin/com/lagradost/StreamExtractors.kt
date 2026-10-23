@@ -76,6 +76,14 @@ open class VCloudExtractor : ExtractorApi() {
     }
 }
 
+class VCloudLolExtractor : VCloudExtractor() {
+    override val mainUrl = "https://vcloud.lol"
+}
+
+class VCloudCxExtractor : VCloudExtractor() {
+    override val mainUrl = "https://vcloud.cx"
+}
+
 open class NexdriveExtractor : ExtractorApi() {
     override val name = "Nexdrive"
     override val mainUrl = "https://nexdrive.beer"
@@ -338,6 +346,18 @@ open class HubcloudExtractor : ExtractorApi() {
             }
         }
     }
+}
+
+class HubcloudCxExtractor : HubcloudExtractor() {
+    override val mainUrl = "https://hubcloud.cx"
+}
+
+class HubcloudClubExtractor : HubcloudExtractor() {
+    override val mainUrl = "https://hubcloud.club"
+}
+
+class HubcloudLolExtractor : HubcloudExtractor() {
+    override val mainUrl = "https://hubcloud.lol"
 }
 
 open class GroundbanksExtractor : ExtractorApi() {

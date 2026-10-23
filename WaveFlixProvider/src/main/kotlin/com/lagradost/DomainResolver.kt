@@ -1,0 +1,49 @@
+package com.lagradost
+
+import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.utils.AppUtils.parseJson
+import java.util.concurrent.ConcurrentHashMap
+
+object DomainResolver {
+    private const val REMOTE_CONFIG_URL = "https://raw.githubusercontent.com/Adiversion/csext/master/domains.json"
+    private const val BACKUP_CONFIG_URL = "https://raw.githubusercontent.com/Adiversion/animepahe/master/domains.json"
+    private const val CACHE_TTL = 6 * 3600 * 1000L // 6 hours
+
+    private val defaults = mapOf(
+        "rogmovies"   to "https://rogmovies.one",
+        "bollyzone"   to "https://www.bollyzone.to",
+        "desiserials" to "https://www.desi-serials.to",
+        "katmovie"    to "https://new.katmoviehd.top",
+        "hdhub4u"     to "https://new8.hdhub4u.cl",
+        "bollyflix"   to "https://bollyflix.co.za"
+    )
+
+    private val domainCache = ConcurrentHashMap<String, String>(defaults)
+    @Volatile private var lastFetchTime = 0L
+
+    suspend fun get(key: String): String {
+        val now = System.currentTimeMillis()
+        if (lastFetchTime == 0L || (now - lastFetchTime) > CACHE_TTL) {
+            tryFetch()
+        }
+        return domainCache[key] ?: defaults[key] ?: ""
+    }
+
+    private suspend fun tryFetch() {
+        val text = runCatching {
+            app.get(REMOTE_CONFIG_URL, timeout = 5).text
+        }.getOrNull() ?: runCatching {
+            app.get(BACKUP_CONFIG_URL, timeout = 5).text
+        }.getOrNull() ?: return
+
+        runCatching {
+            val map = parseJson<Map<String, String>>(text)
+            for ((k, v) in map) {
+                if (v.isNotBlank()) {
+                    domainCache[k] = v.trim().trimEnd('/')
+                }
+            }
+            lastFetchTime = System.currentTimeMillis()
+        }
+    }
+}
