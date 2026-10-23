@@ -129,12 +129,13 @@ class WaveFlixProvider : MainAPI() {
                     break
                 }
 
-                epList.forEach { ep ->
+                epList.forEachIndexed { idx, ep ->
+                    val epNum = ep.episodeNumber ?: (idx + 1)
                     val epData = WaveLinkData(
                         tmdbId = tmdbId,
                         isMovie = false,
                         season = seasonNum,
-                        episode = ep.episodeNumber,
+                        episode = epNum,
                         title = cleanTitle,
                         year = year
                     )
@@ -145,9 +146,9 @@ class WaveFlixProvider : MainAPI() {
 
                     episodes.add(
                         newEpisode(epData.toJson()) {
-                            this.name = ep.name ?: "Episode ${ep.episodeNumber}"
+                            this.name = ep.name ?: "Episode $epNum"
                             this.season = seasonNum
-                            this.episode = ep.episodeNumber
+                            this.episode = epNum
                             this.posterUrl = epPoster
                             this.description = ep.overview
                         }
@@ -223,105 +224,110 @@ class WaveFlixProvider : MainAPI() {
         }
 
         // 2. Query Nxsha Multi-Server Playback Engine
-        try {
-            val serverPayload = """{"tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
-            val encServerQuery = NxshaCrypto.encrypt(serverPayload)
-            val serverUrl = "https://nxsha.space/api/servers?q=${URLEncoder.encode(encServerQuery, "UTF-8")}"
+        val nxshaJob = async {
+            try {
+                val serverPayload = """{"tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+                val encServerQuery = NxshaCrypto.encrypt(serverPayload)
+                val serverUrl = "https://nxsha.space/api/servers?q=${URLEncoder.encode(encServerQuery, "UTF-8")}"
 
-            val serverRes = app.get(serverUrl, headers = nxshaHeaders, timeout = 10).text
-            val serverHash = parseJson<NxshaHashResponse>(serverRes).hash
+                val serverRes = app.get(serverUrl, headers = nxshaHeaders, timeout = 10).text
+                val serverHash = parseJson<NxshaHashResponse>(serverRes).hash
 
-            if (!serverHash.isNullOrBlank()) {
-                val decryptedServerJson = NxshaCrypto.decrypt(serverHash)
-                if (!decryptedServerJson.isNullOrBlank()) {
-                    val serverList = parseJson<NxshaServerList>(decryptedServerJson)
-                    // Query all 33 available servers concurrently (including 4K UHD & direct cloud scrapers)
-                    val activeServers = serverList.servers?.filter {
-                        !it.scraper.isNullOrBlank() && it.status != "offline"
-                    } ?: emptyList()
+                if (!serverHash.isNullOrBlank()) {
+                    val decryptedServerJson = NxshaCrypto.decrypt(serverHash)
+                    if (!decryptedServerJson.isNullOrBlank()) {
+                        val serverList = parseJson<NxshaServerList>(decryptedServerJson)
+                        // Query all 33 available servers concurrently (including 4K UHD & direct cloud scrapers)
+                        val activeServers = serverList.servers?.filter {
+                            !it.scraper.isNullOrBlank() && it.status != "offline"
+                        } ?: emptyList()
 
-                    val serverJobs = activeServers.map { srv ->
-                        async {
-                            try {
-                                val sourcePayload = """{"ex_lang":false,"provider":"${srv.scraper}","tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
-                                val encSourceQuery = NxshaCrypto.encrypt(sourcePayload)
-                                val sourceUrl = "https://nxsha.space/api/sources?q=${URLEncoder.encode(encSourceQuery, "UTF-8")}"
+                        val serverJobs = activeServers.map { srv ->
+                            async {
+                                try {
+                                    val sourcePayload = """{"ex_lang":false,"provider":"${srv.scraper}","tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+                                    val encSourceQuery = NxshaCrypto.encrypt(sourcePayload)
+                                    val sourceUrl = "https://nxsha.space/api/sources?q=${URLEncoder.encode(encSourceQuery, "UTF-8")}"
 
-                                val sourceRes = app.get(sourceUrl, headers = nxshaHeaders, timeout = 8).text
-                                val sourceHash = parseJson<NxshaHashResponse>(sourceRes).hash ?: return@async
-                                val decryptedSourceJson = NxshaCrypto.decrypt(sourceHash) ?: return@async
-                                val sourcesObj = parseJson<NxshaSourcesResponse>(decryptedSourceJson)
+                                    val sourceRes = app.get(sourceUrl, headers = nxshaHeaders, timeout = 8).text
+                                    val sourceHash = parseJson<NxshaHashResponse>(sourceRes).hash ?: return@async
+                                    val decryptedSourceJson = NxshaCrypto.decrypt(sourceHash) ?: return@async
+                                    val sourcesObj = parseJson<NxshaSourcesResponse>(decryptedSourceJson)
 
-                                val serverDisplayName = srv.name ?: srv.scraper ?: "Server"
+                                    val serverDisplayName = srv.name ?: srv.scraper ?: "Server"
 
-                                sourcesObj.sources?.forEach { src ->
-                                    val streamUrl = src.url?.trim()
-                                    if (!streamUrl.isNullOrBlank()) {
-                                        val qualityLabel = src.label ?: src.quality ?: "Auto"
+                                    sourcesObj.sources?.forEach { src ->
+                                        val streamUrl = src.url?.trim()
+                                        if (!streamUrl.isNullOrBlank()) {
+                                            val qualityLabel = src.label ?: src.quality ?: "Auto"
 
-                                        // Skip 10Gbps Google CDN download links that fail HTTP Range seeking and resume
-                                        if (streamUrl.contains("video-downloads.googleusercontent.com") ||
-                                            qualityLabel.contains("10Gbps", ignoreCase = true) ||
-                                            serverDisplayName.contains("10Gbps", ignoreCase = true)
-                                        ) {
-                                            return@forEach
-                                        }
-
-                                        val qualityInt = parseQuality(qualityLabel)
-                                        val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
-                                        val streamReferer = src.headers?.get("Referer") ?: "https://nxsha.space/"
-
-                                        val streamHeaders = mapOf(
-                                            "User-Agent" to browserUserAgent,
-                                            "Referer" to streamReferer,
-                                            "Origin" to "https://nxsha.space"
-                                        )
-
-                                        if (src.isEmbed == true || src.type?.lowercase() == "embed") {
-                                            try {
-                                                loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
-                                            } catch (_: Throwable) {}
-                                        } else {
-                                            // Pre-validate stream to filter out expired 403 / 400 / 404 links, ensure Range seek support, and prevent ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED
-                                            val isPlayable = try {
-                                                val probeHeaders = if (isHls) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
-                                                val check = app.get(streamUrl, headers = probeHeaders, timeout = 5)
-                                                val cType = (check.headers["Content-Type"] ?: check.headers["content-type"])?.lowercase() ?: ""
-                                                val isNotHtml = !cType.contains("text/html")
-                                                (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403 && isNotHtml
-                                            } catch (_: Throwable) {
-                                                false
+                                            // Skip 10Gbps Google CDN download links that fail HTTP Range seeking and resume
+                                            if (streamUrl.contains("video-downloads.googleusercontent.com") ||
+                                                qualityLabel.contains("10Gbps", ignoreCase = true) ||
+                                                serverDisplayName.contains("10Gbps", ignoreCase = true)
+                                            ) {
+                                                return@forEach
                                             }
 
-                                            if (isPlayable) {
-                                                val link = newExtractorLink(
-                                                    source = "WaveFlix [$serverDisplayName]",
-                                                    name = "$serverDisplayName - $qualityLabel",
-                                                    url = streamUrl,
-                                                    type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
-                                                ) {
-                                                    this.referer = streamReferer
-                                                    this.headers = streamHeaders
-                                                    this.quality = qualityInt
+                                            val qualityInt = parseQuality(qualityLabel)
+                                            val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
+                                            val streamReferer = src.headers?.get("Referer") ?: "https://nxsha.space/"
+
+                                            val streamHeaders = mapOf(
+                                                "User-Agent" to browserUserAgent,
+                                                "Referer" to streamReferer,
+                                                "Origin" to "https://nxsha.space"
+                                            )
+
+                                            if (src.isEmbed == true || src.type?.lowercase() == "embed") {
+                                                // Avoid slow blocking WebViews for known Cloudflare/captcha-walled hosts
+                                                if (!streamUrl.contains("filepress") && !streamUrl.contains("filebee")) {
+                                                    try {
+                                                        loadExtractor(streamUrl, streamReferer, subtitleCallback, callback)
+                                                    } catch (_: Throwable) {}
                                                 }
-                                                synchronized(callback) {
-                                                    callback(link)
+                                            } else {
+                                                // Pre-validate stream to filter out expired 403 / 400 / 404 links, ensure Range seek support, and prevent ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED
+                                                val isPlayable = try {
+                                                    val probeHeaders = if (isHls) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
+                                                    val check = app.get(streamUrl, headers = probeHeaders, timeout = 4)
+                                                    val cType = (check.headers["Content-Type"] ?: check.headers["content-type"])?.lowercase() ?: ""
+                                                    val isNotHtml = !cType.contains("text/html")
+                                                    (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403 && isNotHtml
+                                                } catch (_: Throwable) {
+                                                    false
+                                                }
+
+                                                if (isPlayable) {
+                                                    val link = newExtractorLink(
+                                                        source = "WaveFlix [$serverDisplayName]",
+                                                        name = "$serverDisplayName - $qualityLabel",
+                                                        url = streamUrl,
+                                                        type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                                    ) {
+                                                        this.referer = streamReferer
+                                                        this.headers = streamHeaders
+                                                        this.quality = qualityInt
+                                                    }
+                                                    synchronized(callback) {
+                                                        callback(link)
+                                                    }
                                                 }
                                             }
                                         }
                                     }
+                                } catch (_: Throwable) {
+                                    // Skip individual server failure silently
                                 }
-                            } catch (_: Throwable) {
-                                // Skip individual server failure silently
                             }
                         }
-                    }
 
-                    serverJobs.forEach { it.await() }
+                        serverJobs.awaitAll()
+                    }
                 }
+            } catch (_: Throwable) {
+                // Nxsha backbone error handled
             }
-        } catch (_: Throwable) {
-            // Nxsha backbone error handled
         }
 
         // 3. Direct NetMirror Stream Provider (Multi-Resolution Direct MP4 + Subtitles)
@@ -510,6 +516,7 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
+        nxshaJob.await()
         netMirrorJob.await()
         vidlinkJob.await()
         rogMoviesJob.await()
@@ -1193,7 +1200,7 @@ class WaveFlixProvider : MainAPI() {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class WaveEpisodeItem(
-        @JsonProperty("episode_number") val episodeNumber: Int,
+        @JsonProperty("episode_number") val episodeNumber: Int? = null,
         @JsonProperty("name") val name: String? = null,
         @JsonProperty("overview") val overview: String? = null,
         @JsonProperty("still_path") val stillPath: String? = null,
