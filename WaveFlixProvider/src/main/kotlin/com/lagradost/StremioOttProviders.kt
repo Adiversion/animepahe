@@ -101,7 +101,7 @@ open class StremioOttProvider(
         return null
     }
 
-    private suspend fun fetchCncLiveSports(): List<SearchResponse> {
+    private suspend fun fetchCncChannels(filterType: String): List<SearchResponse> {
         return try {
             val res = app.get(
                 "https://cncverse.dpdns.org/catalog/tv/cnc_JioHotstar2_tv.json",
@@ -114,8 +114,22 @@ open class StremioOttProvider(
                 val name = meta.name?.trim() ?: return@mapNotNull null
                 if (name.isBlank() || name == "⠀") return@mapNotNull null
 
+                val lower = name.lowercase()
+                val match = when (filterType.uppercase()) {
+                    "SPORTS" -> lower.contains("sport") || lower.contains("ipl") || lower.contains("espn") || lower.contains("cricket")
+                    "BIGGBOSS" -> lower.contains("bigboss") || lower.contains("bigg boss")
+                    "KIDS" -> lower.contains("disney") || lower.contains("nick") || lower.contains("sonic") || lower.contains("hungama")
+                    "ENTERTAINMENT" -> lower.contains("star plus") || lower.contains("colors hd") || lower.contains("star maa") || lower.contains("star vijay") || lower.contains("star jalsha") || lower.contains("asianet hd")
+                    else -> true
+                }
+                if (!match) return@mapNotNull null
+
+                val displayName = if (filterType.equals("BIGGBOSS", ignoreCase = true) && lower.contains("bigboss 24/7 live-")) {
+                    "Bigg Boss 24x7 Live (${name.substringAfter("live-").uppercase()})"
+                } else name
+
                 val targetUrl = "https://cncverse.dpdns.org/live/${URLEncoder.encode(name, "UTF-8")}?data=${URLEncoder.encode(id, "UTF-8")}"
-                newMovieSearchResponse(name, targetUrl, TvType.Live) {
+                newMovieSearchResponse(displayName, targetUrl, TvType.Live) {
                     this.posterUrl = meta.poster
                 }
             } ?: emptyList()
@@ -236,8 +250,36 @@ open class StremioOttProvider(
         }
 
         val items = when {
+            request.data.startsWith("LIVE_CNC:") -> {
+                val cat = request.data.substringAfter("LIVE_CNC:")
+                fetchCncChannels(cat)
+            }
             request.data.startsWith("LIVE_SPORTS") -> {
-                fetchCncLiveSports()
+                fetchCncChannels("SPORTS")
+            }
+            request.data.startsWith("SHOW_GENRE:") -> {
+                val parts = request.data.removePrefix("SHOW_GENRE:").split(":")
+                val genreList = parts.getOrNull(0)?.split(",")?.map { it.trim() }?.filter { it.isNotBlank() }
+                val count = parts.getOrNull(1)?.toIntOrNull() ?: 12
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = false,
+                    country = country,
+                    count = count,
+                    genres = genreList
+                )
+            }
+            request.data.startsWith("MOVIE_GENRE:") -> {
+                val parts = request.data.removePrefix("MOVIE_GENRE:").split(":")
+                val genreList = parts.getOrNull(0)?.split(",")?.map { it.trim() }?.filter { it.isNotBlank() }
+                val count = parts.getOrNull(1)?.toIntOrNull() ?: 12
+                fetchJustWatchCatalog(
+                    pkg = jwPackage,
+                    isMovie = true,
+                    country = country,
+                    count = count,
+                    genres = genreList
+                )
             }
             request.data.startsWith("MOVIE_COP") -> {
                 val count = request.data.substringAfter(":").toIntOrNull() ?: 15
@@ -424,7 +466,7 @@ open class StremioOttProvider(
             val title = URLDecoder.decode(rawTitle, "UTF-8")
 
             return newMovieLoadResponse(title, url, TvType.Live, decodedId) {
-                this.plot = "Live sports stream from JioHotstar"
+                this.plot = "Live stream from JioHotstar / Star Network"
             }
         }
 
@@ -442,7 +484,8 @@ open class StremioOttProvider(
         if (data.startsWith("cnc:")) {
             try {
                 val b64Payload = data.removePrefix("cnc:").replace("-", "+").replace("_", "/")
-                val padded = b64Payload + "=".repeat((-b64Payload.length) % 4)
+                val padLen = (4 - (b64Payload.length % 4)) % 4
+                val padded = b64Payload + "=".repeat(padLen)
                 val jsonStr = String(Base64.decode(padded, Base64.DEFAULT), Charsets.UTF_8)
                 val cleanJson = if (jsonStr.contains("::{")) jsonStr.substringAfter("::") else jsonStr
 
@@ -575,8 +618,9 @@ class NetflixProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "SHOW:10:0" to "Top 10 Shows on Netflix Today",
         "MOVIE:10:0" to "Top 10 Movies on Netflix Today",
-        "SHOW:20:10" to "Popular Series on Netflix",
-        "MOVIE:20:10" to "Popular Movies on Netflix"
+        "SHOW:15:10" to "Popular Series on Netflix",
+        "MOVIE:15:10" to "Popular Movies on Netflix",
+        "MOVIE_GENRE:drm,cmy:12" to "Bollywood & Indian Cinema on Netflix"
     )
 )
 
@@ -585,11 +629,13 @@ class JioHotstarProvider : StremioOttProvider(
     providerId = "jhs",
     jwPackage = "jhs",
     customMainPage = mainPageOf(
-        "LIVE_SPORTS:15" to "⚡ Live Sports & Star Sports",
-        "SHOW:10:0" to "Top 10 in India Today - Shows",
-        "MOVIE:10:0" to "Top 10 in India Today - Movies",
-        "SHOW:20:10" to "Hotstar Specials & Popular Shows",
-        "MOVIE:20:10" to "Popular Movies on JioHotstar"
+        "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
+        "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
+        "SHOW_GENRE:rly:10" to "Top 10 in India Today - Hindi",
+        "SHOW:12:0" to "New on JioHotstar",
+        "MOVIE_GENRE:rma,drm:12" to "Peacock's Finest & Blockbusters",
+        "SHOW_GENRE:fml,ani:12" to "Kids Shows & Animation",
+        "MOVIE:12:0" to "Popular Movies on JioHotstar"
     )
 )
 
@@ -598,11 +644,12 @@ class PrimeVideoProvider : StremioOttProvider(
     providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 with Prime - TV",
-        "MOVIE:10:0" to "Top 10 with Prime - Movies",
-        "SHOW:20:10" to "Popular Series on Prime",
-        "MOVIE:20:10" to "Popular Movies on Prime",
-        "MOVIE_COP:15" to "Cop Universe & Action Crime Thrillers"
+        "SHOW:10:0" to "Top 10 Shows on Prime Video Today",
+        "MOVIE:10:0" to "Top 10 Movies on Prime Video Today",
+        "SHOW:15:10" to "Popular Series on Prime Video",
+        "MOVIE:15:10" to "Popular Movies on Prime Video",
+        "MOVIE_COP:15" to "Cop Universe & Action Thrillers",
+        "SHOW_GENRE:crm,trl:12" to "Crime & Mystery Series on Prime"
     )
 )
 
@@ -613,8 +660,8 @@ class Zee5Provider : StremioOttProvider(
     customMainPage = mainPageOf(
         "SHOW:10:0" to "Top 10 Shows on Zee5 Today",
         "MOVIE:10:0" to "Top 10 Movies on Zee5 Today",
-        "SHOW:20:10" to "Popular Shows on Zee5",
-        "MOVIE:20:10" to "Popular Movies on Zee5"
+        "SHOW:15:10" to "Popular Shows on Zee5",
+        "MOVIE:15:10" to "Popular Movies on Zee5"
     )
 )
 
@@ -625,8 +672,8 @@ class SonyLivProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "SHOW:10:0" to "Top 10 Shows on SonyLIV Today",
         "MOVIE:10:0" to "Top 10 Movies on SonyLIV Today",
-        "SHOW:20:10" to "Popular Shows on SonyLIV",
-        "MOVIE:20:10" to "Popular Movies on SonyLIV"
+        "SHOW:15:10" to "Popular Shows on SonyLIV",
+        "MOVIE:15:10" to "Popular Movies on SonyLIV"
     )
 )
 
@@ -637,8 +684,8 @@ class AppleTvProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "SHOW:10:0" to "Top 10 Shows on Apple TV+ Today",
         "MOVIE:10:0" to "Top 10 Movies on Apple TV+ Today",
-        "SHOW:20:10" to "Popular Shows on Apple TV+",
-        "MOVIE:20:10" to "Popular Movies on Apple TV+"
+        "SHOW:15:10" to "Popular Shows on Apple TV+",
+        "MOVIE:15:10" to "Popular Movies on Apple TV+"
     )
 )
 
@@ -650,7 +697,7 @@ class CrunchyrollProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "SHOW:10:0" to "Top 10 Anime Series Today",
         "MOVIE:10:0" to "Top 10 Anime Movies Today",
-        "SHOW:20:10" to "Popular Anime Series",
-        "MOVIE:20:10" to "Popular Anime Movies"
+        "SHOW:15:10" to "Popular Anime Series",
+        "MOVIE:15:10" to "Popular Anime Movies"
     )
 )
