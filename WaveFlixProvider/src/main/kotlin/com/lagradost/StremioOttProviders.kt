@@ -61,14 +61,16 @@ open class StremioOttProvider(
         )
 
         private val PEACOCK_QUERIES = listOf(
+            "Suits",
+            "Fifty Shades of Grey",
+            "Fifty Shades Freed",
+            "Fifty Shades Darker",
+            "Anora",
+            "The Day of the Jackal",
             "Oppenheimer",
             "The Office",
-            "Suits",
             "Fast X",
-            "Jurassic World",
-            "Ted",
-            "Brooklyn Nine-Nine",
-            "Banshee"
+            "Jurassic World"
         )
     }
 
@@ -747,11 +749,11 @@ class JioHotstarProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
         "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
-        "SHOW_IN:10:0" to "Top 10 in India Today - Hotstar Specials",
+        "SHOW_IN:10:0" to "Top 10 in India Today - Hindi",
+        "PEACOCK:10" to "Peacock's Finest",
         "MOVIE_GENRE:act:12:0" to "Action Movies on JioHotstar",
         "MOVIE_GENRE:rma:12:0" to "Find Your Love Story",
-        "PEACOCK:10" to "Peacock's Finest & Universal Hits",
-        "SHOW_GENRE:fml,ani:12:0" to "Kids Shows & Animation"
+        "SHOW_GENRE:fml,ani:12:0" to "Tiny but Mighty (Kids & Family)"
     )
 )
 
