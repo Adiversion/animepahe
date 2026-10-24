@@ -16,6 +16,13 @@ object DomainResolver {
         "bollyflix"   to "https://bollyflix.co.za"
     )
 
+    private val mirrors = mapOf(
+        "rogmovies" to listOf("https://rogmovies.im", "https://rogmovies.one"),
+        "katmovie"  to listOf("https://new.katmoviehd.top", "https://katmoviehd.cat"),
+        "hdhub4u"   to listOf("https://new8.hdhub4u.cl", "https://hdhub4u.fans", "https://hdhub4u.ms", "https://hdhub4u.cl"),
+        "bollyflix" to listOf("https://bollyflix.co.za", "https://bollyflix.org")
+    )
+
     private val domainCache = ConcurrentHashMap<String, String>(defaults)
     @Volatile private var lastFetchTime = 0L
 
@@ -25,6 +32,23 @@ object DomainResolver {
             tryFetch()
         }
         return domainCache[key] ?: defaults[key] ?: ""
+    }
+
+    /**
+     * Automatically capture HTTP redirects from scrapers and update in-memory cache
+     * so subsequent requests go straight to the working mirror without manual intervention.
+     */
+    fun reportRedirect(key: String, finalUrl: String?) {
+        if (finalUrl.isNullOrBlank()) return
+        val origin = runCatching {
+            val uri = java.net.URI(finalUrl)
+            if (uri.scheme != null && uri.host != null) {
+                "${uri.scheme}://${uri.host}"
+            } else null
+        }.getOrNull()
+        if (!origin.isNullOrBlank() && origin.startsWith("http")) {
+            domainCache[key] = origin.trimEnd('/')
+        }
     }
 
     private suspend fun tryFetch() {

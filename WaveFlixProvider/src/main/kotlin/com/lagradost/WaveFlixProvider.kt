@@ -880,9 +880,11 @@ class WaveFlixProvider : MainAPI() {
         val cleanQuery = query.replace(Regex("""[^a-zA-Z0-9\s]"""), " ").trim()
         val searchUrl = "$base/?s=${cleanQuery.replace(" ", "+")}"
 
-        val searchHtml = runCatching {
-            app.get(searchUrl, headers = hdhubHeaders, timeout = 8).text
+        val searchRes = runCatching {
+            app.get(searchUrl, headers = hdhubHeaders, timeout = 8)
         }.getOrNull() ?: return@coroutineScope
+        DomainResolver.reportRedirect("hdhub4u", searchRes.url)
+        val searchHtml = searchRes.text
 
         val doc = Jsoup.parse(searchHtml)
         val posts = mutableListOf<Pair<String, String>>() // (url, title)
@@ -1050,9 +1052,11 @@ class WaveFlixProvider : MainAPI() {
             "User-Agent" to "Mozilla/5.0 (Linux; Android 10)",
             "Referer" to "https://allmovielandapp.app/"
         )
-        val jsonRes = runCatching {
-            app.get(searchUrl, headers = headers, timeout = 7).text
+        val jsonResponse = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7)
         }.getOrNull() ?: return
+        DomainResolver.reportRedirect("rogmovies", jsonResponse.url)
+        val jsonRes = jsonResponse.text
 
         val searchObj = runCatching { parseJson<AllMovieSearchResponse>(jsonRes) }.getOrNull() ?: return
         val results = searchObj.results ?: return
@@ -1118,9 +1122,11 @@ class WaveFlixProvider : MainAPI() {
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer" to "$base/"
         )
-        val searchRes = runCatching {
-            app.get(searchUrl, headers = headers, timeout = 7).text
+        val searchResponse = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7)
         }.getOrNull() ?: return
+        DomainResolver.reportRedirect("bollyflix", searchResponse.url)
+        val searchRes = searchResponse.text
 
         val doc = org.jsoup.Jsoup.parse(searchRes)
         val posts = doc.select("article, div.post-item, div.post-content, h2.entry-title a, a[href*='-movie/'], a[href*='-series/']")
@@ -1167,9 +1173,11 @@ class WaveFlixProvider : MainAPI() {
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer" to "$base/?s="
         )
-        val jsonRes = runCatching {
-            app.get(searchUrl, headers = headers, timeout = 7).text
+        val jsonResponse = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7)
         }.getOrNull() ?: return
+        DomainResolver.reportRedirect("rogmovies", jsonResponse.url)
+        val jsonRes = jsonResponse.text
 
         val data = runCatching { parseJson<RogSearchResponse>(jsonRes) }.getOrNull() ?: return
         val hits = data.hits ?: return
