@@ -955,7 +955,25 @@ open class StremioOttProvider(
                     timeout = 8
                 ).parsedSafe<CncStreamResponse>()
 
-                streamRes?.streams?.forEach { s ->
+                val rawStreams = streamRes?.streams ?: emptyList()
+                val sortedStreams = rawStreams.sortedByDescending { s ->
+                    val u = s.url?.lowercase().orEmpty()
+                    val titleAndName = (s.title.orEmpty() + " " + s.name.orEmpty()).lowercase()
+                    when {
+                        // Top priority: Direct Akamai CDN SonyLiv / Sony channels (fast, 0-stall native HLS)
+                        u.contains("akamaized.net") || u.contains("sonydaime") -> 300
+                        // Direct native HLS broadcasters (e.g. fullscreen.nz, etc.)
+                        u.contains("fullscreen.nz") || (!u.contains("/d/master.m3u8") && !u.contains("cncverse")) -> 200
+                        // Channels specifically labeled SonyLiv / Sony
+                        titleAndName.contains("sonyliv") || titleAndName.contains("sony") -> 150
+                        // Other non-transcode streams
+                        !u.contains("/d/master.m3u8") -> 100
+                        // Transcoded bridge streams as fallback
+                        else -> 50
+                    }
+                }
+
+                sortedStreams.forEach { s ->
                     val rawUrl = s.url?.trim() ?: return@forEach
                     if (rawUrl.isBlank() || rawUrl.startsWith("javascript:")) return@forEach
 
