@@ -498,9 +498,9 @@ class WaveFlixProvider : MainAPI() {
         val (coreTitle, coreTokens) = extractSearchTokens(resolvedTitle)
         val searchTitle = if (coreTitle.isNotBlank()) coreTitle else (resolvedTitle ?: "")
 
-        // 5. Direct AllMovieLand Multi-Audio HLS & Krico Integration
+        // 5. Direct AllMovieLand Multi-Audio HLS & Krico Integration (Movies ONLY)
         val allMovieLandJob = async {
-            if (searchTitle.isNotBlank()) {
+            if (isMovie && searchTitle.isNotBlank()) {
                 try {
                     queryAllMovieLand(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
                 } catch (_: Throwable) {}
@@ -638,8 +638,21 @@ class WaveFlixProvider : MainAPI() {
                 if (!pageHtml.isNullOrBlank()) {
                     Regex("""slug:"([a-z0-9\-]+)"""").findAll(pageHtml).forEach { m ->
                         val slug = m.groupValues[1]
-                        if (tokens.any { slug.contains(it) }) {
-                            candidateSlugs.add(slug)
+                        val matchesTokens = if (tokens.size >= 2) {
+                            tokens.count { slug.contains(it) } >= 2
+                        } else {
+                            tokens.any { slug.contains(it) }
+                        }
+                        if (matchesTokens) {
+                            if (!isMovie) {
+                                val sStr = season.toString()
+                                val sPad = String.format("%02d", season)
+                                if (slug.contains("s$sPad") || slug.contains("s$sStr") || slug.contains("season-$sStr") || (season == 1 && !slug.contains("season-2") && !slug.contains("s02"))) {
+                                    candidateSlugs.add(slug)
+                                }
+                            } else {
+                                candidateSlugs.add(slug)
+                            }
                         }
                     }
                 }
@@ -684,14 +697,16 @@ class WaveFlixProvider : MainAPI() {
                         }
                     }
 
-                    // Resolve individual file links directly
-                    val fileJobs = fileIds.take(6).map { fileId ->
-                        async {
-                            try {
-                                resolveKmhdFile(fileId, katHeaders, callback)
-                            } catch (_: Throwable) {}
+                    // Resolve individual file links directly (Movies only to prevent episode mismatch)
+                    val fileJobs = if (isMovie) {
+                        fileIds.take(6).map { fileId ->
+                            async {
+                                try {
+                                    resolveKmhdFile(fileId, katHeaders, callback)
+                                } catch (_: Throwable) {}
+                            }
                         }
-                    }
+                    } else emptyList()
 
                     (playJobs + fileJobs).forEach { it.await() }
                 } catch (_: Throwable) {}
@@ -1022,7 +1037,7 @@ class WaveFlixProvider : MainAPI() {
 
     private fun extractSearchTokens(rawTitle: String?): Pair<String, List<String>> {
         if (rawTitle.isNullOrBlank()) return "" to emptyList()
-        var base = rawTitle.split(Regex("""\s*[\-–—:|]""")).firstOrNull()?.trim() ?: rawTitle
+        var base = rawTitle
 
         base = base.replace(Regex("""(?i)\b(grand\s+finale|season\s+\d+|s\d+)\b"""), " ")
             .replace(Regex("""\s*\(\d{4}\).*"""), "")
@@ -1138,7 +1153,21 @@ class WaveFlixProvider : MainAPI() {
         val primaryWord = significantWords.firstOrNull() ?: cleanQuery.lowercase().split(" ").firstOrNull() ?: cleanQuery.lowercase()
 
         val targetPost = postLinks.firstOrNull { link ->
-            link.lowercase().contains(primaryWord)
+            val lower = link.lowercase()
+            if (!lower.contains(primaryWord)) return@firstOrNull false
+            if (!isMovie) {
+                val sStr = season.toString()
+                val sPad = String.format("%02d", season)
+                val isSeason = lower.contains("season-$sStr") || lower.contains("season$sStr") ||
+                    lower.contains("season-$sPad") || lower.contains("season$sPad") ||
+                    lower.contains("s$sStr") || lower.contains("s$sPad") ||
+                    lower.contains("s0$season") || lower.contains("season-1-") || lower.contains("season-1-to-") ||
+                    (season == 1 && !lower.contains("season-2") && !lower.contains("s02") && !lower.contains("s2"))
+                if (!isSeason) return@firstOrNull false
+            } else {
+                if (lower.contains("season") || lower.contains("-s1-") || lower.contains("-s2-")) return@firstOrNull false
+            }
+            true
         } ?: return
         val postHtml = runCatching {
             app.get(targetPost, headers = headers + ("Referer" to searchUrl), timeout = 7).text
@@ -1147,6 +1176,15 @@ class WaveFlixProvider : MainAPI() {
         val postDoc = org.jsoup.Jsoup.parse(postHtml)
         postDoc.select("a[href*='fastdl.'], a[href*='hubcloud.'], a[href*='vcloud.'], a[href*='gofile.'], a[href*='pixeldrain.']").forEach { a ->
             val href = a.attr("href").trim()
+            val text = (a.text() + " " + a.parent()?.text().orEmpty()).lowercase()
+            if (!isMovie) {
+                val epPatterns = listOf("episode $episode", "episode 0$episode", "ep $episode", "ep 0$episode", "ep$episode", "ep0$episode", "e0$episode", "e$episode")
+                val isSpecificOtherEp = (1..50).filter { it != episode }.any { otherEp ->
+                    val otherPatterns = listOf("episode $otherEp", "episode 0$otherEp", "ep $otherEp", "ep 0$otherEp", "ep$otherEp", "ep0$otherEp", "e0$otherEp", "e$otherEp")
+                    otherPatterns.any { text.contains(it) } && !epPatterns.any { text.contains(it) }
+                }
+                if (isSpecificOtherEp) return@forEach
+            }
             val qualityTag = findPrecedingQualityTag(a)
             val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
             if (href.startsWith("http")) {
@@ -1200,8 +1238,8 @@ class WaveFlixProvider : MainAPI() {
                 val sPad = String.format("%02d", season)
                 hitTitle.contains("s$sPad") || hitTitle.contains("s$sStr") ||
                 hitTitle.contains("season $sStr") || hitTitle.contains("season $sPad") ||
-                hitTitle.contains("season 1-") || hitTitle.contains("complete") ||
-                (season == 1 && !hitTitle.contains("season 2") && !hitTitle.contains("s02"))
+                hitTitle.contains("season 1-") ||
+                (season == 1 && (hitTitle.contains("complete") || (!hitTitle.contains("season 2") && !hitTitle.contains("s02"))))
             } else {
                 if (year != null) {
                     val yearMatches = hitTitle.contains(year.toString()) || hitTitle.contains((year - 1).toString()) || hitTitle.contains((year + 1).toString())
@@ -1225,6 +1263,15 @@ class WaveFlixProvider : MainAPI() {
             doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
                 val href = a.attr("href").trim()
                 val btnText = a.text().trim()
+                if (!isMovie) {
+                    val contextText = (btnText + " " + a.parent()?.text().orEmpty() + " " + (a.previousElementSibling()?.text().orEmpty())).lowercase()
+                    val epPatterns = listOf("episode $episode", "episode 0$episode", "ep $episode", "ep 0$episode", "ep$episode", "ep0$episode", "e0$episode", "e$episode")
+                    val isSpecificOtherEp = (1..50).filter { it != episode }.any { otherEp ->
+                        val otherPatterns = listOf("episode $otherEp", "episode 0$otherEp", "ep $otherEp", "ep 0$otherEp", "ep$otherEp", "ep0$otherEp", "e0$otherEp", "e$otherEp")
+                        otherPatterns.any { contextText.contains(it) } && !epPatterns.any { contextText.contains(it) }
+                    }
+                    if (isSpecificOtherEp) return@forEach
+                }
                 val qualityTag = findPrecedingQualityTag(a)
                 val taggedHref = if (qualityTag != null && !href.contains("#")) "$href#$qualityTag" else href
 
@@ -1234,20 +1281,55 @@ class WaveFlixProvider : MainAPI() {
                     }
                 }
             }
-            // Follow nexdrive cloud dispenser pages for direct vcloud/hubcloud links (bypassing filepress webviews)
-            doc.select("a[href*='nexdrive.'][href*='/genxfm']").take(2).forEach { a ->
+            // Follow nexdrive cloud dispenser pages for direct vcloud/hubcloud/fastdl links
+            doc.select("a[href*='nexdrive.'][href*='/genxfm']").take(5).forEach { a ->
                 val nexUrl = a.attr("href").trim()
+                val postQualityTag = findPrecedingQualityTag(a)
                 runCatching {
                     val nexHtml = app.get(nexUrl, headers = headers, timeout = 7).text
                     val nexDoc = org.jsoup.Jsoup.parse(nexHtml)
-                    val vcloudLinks = nexDoc.select("a[href*='vcloud.beer'], a[href*='hubcloud.cx']")
-                    val targetLink = if (!isMovie && episode in 1..vcloudLinks.size) {
-                        vcloudLinks[episode - 1].attr("href").trim()
+                    val candidateLinks = mutableListOf<String>()
+
+                    if (!isMovie) {
+                        for (h in nexDoc.select("h1, h2, h3, h4, h5, h6, p")) {
+                            val hText = h.text().lowercase()
+                            val isTargetEp = hText.contains("episode: $episode") ||
+                                hText.contains("episode $episode") ||
+                                hText.contains("ep: $episode") ||
+                                hText.contains("ep $episode") ||
+                                hText.contains("e0$episode") ||
+                                hText.contains("e$episode")
+                            if (isTargetEp) {
+                                val nextEl = h.nextElementSibling()
+                                if (nextEl != null) {
+                                    nextEl.select("a[href]").forEach { subA ->
+                                        val sHref = subA.attr("href").trim()
+                                        if (sHref.contains("fastdl.") || sHref.contains("vcloud.") || sHref.contains("hubcloud.") || sHref.contains("fast-dl.")) {
+                                            candidateLinks.add(sHref)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     } else {
-                        vcloudLinks.firstOrNull()?.attr("href")?.trim()
+                        nexDoc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.']").forEach { subA ->
+                            candidateLinks.add(subA.attr("href").trim())
+                        }
                     }
-                    if (!targetLink.isNullOrBlank()) {
-                        loadExtractor(targetLink, nexUrl, subtitleCallback, callback)
+
+                    if (candidateLinks.isEmpty()) {
+                        val allLinks = nexDoc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.']")
+                            .map { it.attr("href").trim() }
+                        if (!isMovie && episode in 1..allLinks.size) {
+                            candidateLinks.add(allLinks[episode - 1])
+                        } else if (allLinks.isNotEmpty()) {
+                            candidateLinks.add(allLinks.first())
+                        }
+                    }
+
+                    candidateLinks.distinct().forEach { targetLink ->
+                        val tagged = if (postQualityTag != null && !targetLink.contains("#")) "$targetLink#$postQualityTag" else targetLink
+                        loadExtractor(tagged, nexUrl, subtitleCallback, callback)
                     }
                 }
             }

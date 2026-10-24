@@ -958,12 +958,21 @@ open class StremioOttProvider(
                         else -> "Live Stream"
                     }
 
+                    val isDASH = sUrl.substringBefore("?").endsWith(".mpd", ignoreCase = true)
+                    val isM3U8 = sUrl.substringBefore("?").endsWith(".m3u8", ignoreCase = true)
+                    val linkType = when {
+                        isM3U8 -> ExtractorLinkType.M3U8
+                        isDASH -> ExtractorLinkType.DASH
+                        sUrl.contains(".m3u8", ignoreCase = true) -> ExtractorLinkType.M3U8
+                        sUrl.contains(".mpd", ignoreCase = true) -> ExtractorLinkType.DASH
+                        else -> ExtractorLinkType.M3U8
+                    }
                     callback(
                         newExtractorLink(
                             source = "Live Stream",
                             name = label,
                             url = sUrl,
-                            type = if (sUrl.contains(".mpd")) ExtractorLinkType.DASH else ExtractorLinkType.M3U8
+                            type = linkType
                         ) {
                             this.headers = headers
                             this.quality = quality
@@ -1001,12 +1010,21 @@ open class StremioOttProvider(
                     headers["Cookie"] = cookie
                 }
 
+                val isDASH = streamUrl.substringBefore("?").endsWith(".mpd", ignoreCase = true)
+                val isM3U8 = streamUrl.substringBefore("?").endsWith(".m3u8", ignoreCase = true)
+                val linkType = when {
+                    isM3U8 -> ExtractorLinkType.M3U8
+                    isDASH -> ExtractorLinkType.DASH
+                    streamUrl.contains(".m3u8", ignoreCase = true) -> ExtractorLinkType.M3U8
+                    streamUrl.contains(".mpd", ignoreCase = true) -> ExtractorLinkType.DASH
+                    else -> ExtractorLinkType.M3U8
+                }
                 callback(
                     newExtractorLink(
                         source = "Live Stream",
                         name = cncObj.title ?: "Live Stream",
                         url = streamUrl,
-                        type = if (streamUrl.contains(".mpd")) ExtractorLinkType.DASH else ExtractorLinkType.M3U8
+                        type = linkType
                     ) {
                         this.headers = headers
                     }
