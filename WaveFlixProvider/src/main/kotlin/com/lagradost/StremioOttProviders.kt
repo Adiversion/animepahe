@@ -54,6 +54,56 @@ open class StremioOttProvider(
         private val hotstarSlugCache = ConcurrentHashMap<String, Pair<Long, String>>()
         private val hotstarSlugMutex = Mutex()
 
+        private val PRIME_TOP_10 = listOf(
+            "Rise And Fall",
+            "Jailer",
+            "Lenin Pandiyan",
+            "Chaar Yaar",
+            "Dupahiya",
+            "The Traitors",
+            "The Terminal List",
+            "Awarapan 2",
+            "Khalifa",
+            "Sardar 2"
+        )
+
+        private val PRIME_COP_UNIVERSE = listOf(
+            "Drishyam 2",
+            "Waiting Hai",
+            "Rahasya",
+            "Section 375",
+            "B.A. Pass",
+            "Yashoda",
+            "Sankalp",
+            "Security",
+            "Mahaan",
+            "Jai Bhim",
+            "Neeyat"
+        )
+
+        private val PRIME_FEATURED_ORIGINALS = listOf(
+            "Masterplan",
+            "Love Of Your Life",
+            "My Fault",
+            "Your Fault",
+            "Red One"
+        )
+
+        private val PRIME_TOP_MOVIES = listOf(
+            "Awarapan 2",
+            "Khalifa",
+            "Sardar 2",
+            "Lenin Pandiyan",
+            "Romeo"
+        )
+
+        private val PRIME_KOREAN = listOf(
+            "True Beauty",
+            "Good Boy",
+            "Guardian: The Lonely And Great God",
+            "Tale Of The Nine Tailed"
+        )
+
         private val COP_UNIVERSE_QUERIES = listOf(
             "Singham Again",
             "Sooryavanshi",
@@ -268,7 +318,14 @@ open class StremioOttProvider(
         return coroutineScope {
             queries.map { q ->
                 async {
-                    searchJustWatch(q, pkg, country).firstOrNull()
+                    val jw = searchJustWatch(q, pkg, country).firstOrNull()
+                    if (jw != null) return@async jw
+
+                    val meta = resolveTmdbMeta(null, isMovie = true, name = q) ?: return@async null
+                    val itemUrl = "https://www.waveflix.online/details/movie/${meta.id}"
+                    newMovieSearchResponse(q, itemUrl, TvType.Movie) {
+                        this.posterUrl = meta.posterUrl
+                    }
                 }
             }.awaitAll().filterNotNull().distinctBy { it.url }
         }
@@ -731,6 +788,21 @@ open class StremioOttProvider(
             }
             request.data.startsWith("LIVE_SPORTS") -> {
                 fetchCncChannels("SPORTS")
+            }
+            request.data.startsWith("PRIME_TOP_10") -> {
+                fetchCuratedTitles(PRIME_TOP_10, jwPackage, country)
+            }
+            request.data.startsWith("PRIME_TOP_MOVIES") -> {
+                fetchCuratedTitles(PRIME_TOP_MOVIES, jwPackage, country)
+            }
+            request.data.startsWith("PRIME_ORIGINALS") -> {
+                fetchCuratedTitles(PRIME_FEATURED_ORIGINALS, jwPackage, country)
+            }
+            request.data.startsWith("PRIME_COP") -> {
+                fetchCuratedTitles(PRIME_COP_UNIVERSE, jwPackage, country)
+            }
+            request.data.startsWith("PRIME_KOREAN") -> {
+                fetchCuratedTitles(PRIME_KOREAN, jwPackage, country)
             }
             request.data.startsWith("COP_UNIVERSE") -> {
                 fetchCuratedTitles(COP_UNIVERSE_QUERIES, jwPackage, country)
@@ -1488,12 +1560,14 @@ class JioHotstarProvider : StremioOttProvider(
     jwPackage = "jhs",
     customMainPage = mainPageOf(
         "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
-        "HOTSTAR_TRAY:home:Top 10 in India Today:10" to "🔥 Top 10 in India Today",
+        "HOTSTAR_TRAY:home:Top 10 in India Today:10" to "🔟 Top 10 in India Today",
         "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
+        "HOTSTAR_TRAY:home:New on JioHotstar:10" to "✨ New on JioHotstar",
         "HOTSTAR_TRAY:shows:Popular Shows:20" to "🔥 Popular Shows on JioHotstar",
         "HOTSTAR_TRAY:movies:Popular Movies:20" to "🎬 Popular Movies on JioHotstar",
         "HOTSTAR_TRAY:movies:Best of Bollywood Movies:15" to "✨ Best of Bollywood Movies",
         "HOTSTAR_TRAY:movies:Best of Hollywood Dubbed:15" to "🌍 Best of Hollywood Dubbed",
+        "HOTSTAR_TRAY:movies:Thriller Movies:10" to "🔪 Thriller Movies on JioHotstar",
         "HOTSTAR_TRAY:shows:Must Watch Originals:10" to "⭐ Must Watch Hotstar Specials",
         "HOTSTAR_TRAY:shows:Kids Shows:12" to "🧸 Kids Shows & Animation",
         "HOTSTAR_TRAY:shows:Real Lives, Unlimited Drama:10" to "🎭 Reality & Drama Shows"
@@ -1505,12 +1579,13 @@ class PrimeVideoProvider : StremioOttProvider(
     providerId = "prv",
     jwPackage = "prv",
     customMainPage = mainPageOf(
-        "SHOW_IN:10:0" to "Top 10 Shows on Prime Video Today",
-        "MOVIE_IN:10:0" to "Top 10 Movies on Prime Video Today",
-        "SHOW:15:10" to "Popular Series on Prime Video",
-        "MOVIE:15:10" to "Popular Movies on Prime Video",
-        "COP_UNIVERSE:10" to "Cop Universe & Action Thrillers",
-        "SHOW_GENRE:crm,trl:12:2" to "Crime & Mystery Series on Prime"
+        "PRIME_TOP_10" to "🔟 Top 10 with Prime Today",
+        "PRIME_TOP_MOVIES" to "🎬 Top Movies on Prime Video",
+        "PRIME_ORIGINALS" to "✨ Featured Originals on Prime",
+        "PRIME_COP" to "🚨 Cop Universe & Crime Thrillers",
+        "PRIME_KOREAN" to "🎎 Korean Dramas on Prime",
+        "SHOW_IN:12:0" to "🔥 Popular TV Shows on Prime Video",
+        "MOVIE_IN:12:0" to "🎬 Popular Bollywood Movies on Prime"
     )
 )
 

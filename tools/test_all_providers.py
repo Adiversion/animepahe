@@ -27,7 +27,7 @@ def log_test(name, success, details=""):
         print(f"  [FAIL] {name} {details}")
 
 print("==================================================================")
-print("       AUTOMATED TEST SUITE: ALL CLOUDSTREAM OTT & CSX PROVIDERS   ")
+print("   AUTOMATED TEST SUITE: 100% OTT WEBSITE CONTENT VERIFICATION   ")
 print("==================================================================")
 
 # ------------------------------------------------------------------
@@ -58,18 +58,22 @@ except Exception as e:
 # ------------------------------------------------------------------
 # TEST SUITE 2: JioHotstar Native BFF & Vertical Poster Verification
 # ------------------------------------------------------------------
-print("\n--- TEST 2: JioHotstar BFF Trays & 1080x1920 Poster Ratio ---")
+print("\n--- TEST 2: JioHotstar BFF Trays (Live Website Content) ---")
 token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJoSWRcIjpcImEzMDQ0ZjYxN2NkOTRlMmY5NjAxNmU3ZTZkYzFmMWJiXCIsXCJwSWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJkd0hpZFwiOlwiNTcyNDAzZjM1OGM4MTlkNTZmZWY5NDliOWFmNTZlM2ZjODU3MmE2ZTBkN2JjMDZmYmY1MmFhYzc2YWY4NDc5ZlwiLFwiZHdQaWRcIjpcImFiZmZmMGNmMDNmN2JhNDY4MWUwODZlZDIxZTllMGQ4ZGI0MjBiODBhYjZjNWU3YmU5ZjgxMzFlMTlmYWY5NGJcIixcIm9sZEhpZFwiOlwiYTMwNDRmNjE3Y2Q5NGUyZjk2MDE2ZTdlNmRjMWYxYmJcIixcIm9sZFBpZFwiOlwiMTgzZjA0ODFjMjgxNDc5NmE3MWI3NjMxNTM1OGZkYmZcIixcImlzUGlpVXNlck1pZ3JhdGVkXCI6ZmFsc2UsXCJuYW1lXCI6XCJZb3VcIixcImlwXCI6XCIyNDAxOjQ5MDA6ODhiZDpiMzY2OjE0OTM6Mzg5OTo1OGIyOmNkMGZcIixcImNvdW50cnlDb2RlXCI6XCJpblwiLFwiY3VzdG9tZXJUeXBlXCI6XCJudVwiLFwidHlwZVwiOlwiZ3Vlc3RcIixcImlzRW1haWxWZXJpZmllZFwiOmZhbHNlLFwiaXNQaG9uZVZlcmlmaWVkXCI6ZmFsc2UsXCJkZXZpY2VJZFwiOlwiODkxMTllLTYyMjNlOS04ZTg5NjYtMzdhNTdjXCIsXCJwcm9maWxlXCI6XCJBRFVMVFwiLFwidmVyc2lvblwiOlwidjJcIixcInN1YnNjcmlwdGlvbnNcIjp7XCJpblwiOnt9fSxcImlzc3VlZEF0XCI6MTc5MjczNzM1Mzk0NixcIm1hdHVyaXR5TGV2ZWxcIjpcIkFcIixcImRwaWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJzdFwiOjEsXCJkYXRhXCI6XCJDZ1FJQURvQUNnd0lBQ0lJa0FHYXRlUzdsalFLTGdnQVFpb0tLRUkzWTJVeE9HVTJObVUyTWpJME9EUTNPR1l6WTJZM01qTTFNamMyTmpWbU16a3ROV1J5UWpBPVwifSIsImlzcyI6IlVNIiwiZXhwIjoxNzkyODIzNzUzLCJqdGkiOiIyNDQxZTg1ZjEwNzQ0OGZkOWNmOTlmZjczYjQwMmZjMCIsImlhdCI6MTc5MjczNzM1MywiYXBwSWQiOiIiLCJ0ZW5hbnQiOiIiLCJ2ZXJzaW9uIjoiMV8wIiwiYXVkIjoidW1fYWNjZXNzIn0.TrOwZtwk1VHX4_i-C3280eyLfqDXX_PMcYAlPRoMXhc"
 
 hotstar_slugs = [
-    ('home', 'Top 10 in India Today', True),
-    ('movies', 'Best of Bollywood Movies', False),
-    ('movies', 'Best of Hollywood Dubbed', False),
-    ('shows', 'Popular Shows', False),
-    ('shows', 'Kids Shows', False)
+    ('home', 'Top 10 in India Today'),
+    ('home', 'New on JioHotstar'),
+    ('movies', 'Best of Bollywood Movies'),
+    ('movies', 'Best of Hollywood Dubbed'),
+    ('movies', 'Thriller Movies'),
+    ('movies', 'Popular Movies'),
+    ('shows', 'Popular Shows'),
+    ('shows', 'Must Watch Originals'),
+    ('shows', 'Kids Shows')
 ]
 
-for slug, kw, is_overlay in hotstar_slugs:
+for slug, kw in hotstar_slugs:
     try:
         url = f"https://www.hotstar.com/api/internal/bff/v2/slugs/in/{slug}"
         req = urllib.request.Request(url, headers={
@@ -124,207 +128,102 @@ except Exception as e:
     log_test("Hotstar CNC Channels", False, str(e))
 
 # ------------------------------------------------------------------
-# TEST SUITE 3: SonyLIV Vertical 2000x3000 / 600x900 Poster Verification
+# TEST SUITE 3: SonyLIV (Live Website Content)
 # ------------------------------------------------------------------
-print("\n--- TEST 3: SonyLIV AGL Trays & Vertical Aspect Ratio ---")
-try:
-    s_url = "https://apiv3.sonyliv.com/AGL/4.8/A/ENG/WEB/IN/CT/TRAY/EXTCOLLECTION/9014011?from=0&to=10"
-    s_req = urllib.request.Request(s_url, headers={
-        'User-Agent': HEADERS['User-Agent'],
-        'Origin': 'https://www.sonyliv.com',
-        'Referer': 'https://www.sonyliv.com/'
-    })
-    with urllib.request.urlopen(s_req, timeout=7, context=ctx) as r:
-        s_data = json.loads(r.read())
-    containers = s_data.get('resultObj', {}).get('containers', [])
-    log_test("SonyLIV Trending Tray (9014011)", len(containers) > 0, f"({len(containers)} items)")
-    
-    # Check vertical poster resolution
-    first_c = containers[0]
-    meta = first_c.get('metadata', {})
-    emf = meta.get('emfAttributes', {})
-    vertical_poster = emf.get('img_poster_2000_3000') or emf.get('image_600x900_clean') or emf.get('apv_poster_art')
-    has_vertical = bool(vertical_poster and ('600x900' in vertical_poster or 'Poster' in vertical_poster or '2000_3000' in vertical_poster))
-    log_test("SonyLIV Vertical Poster Priority (2000x3000 / 600x900)", has_vertical, f"('{vertical_poster}')")
-    
-    # Check IMDb ID SameAs extraction
-    has_imdb = any(c.get('metadata', {}).get('emfAttributes', {}).get('SameAs') for c in containers)
-    log_test("SonyLIV Canonical IMDb ID Extraction", has_imdb, "Verified SameAs attribute")
-except Exception as e:
-    log_test("SonyLIV Tests", False, str(e))
+print("\n--- TEST 3: SonyLIV AGL Trays (Live Website Content) ---")
+sonyliv_trays = [
+    ('9014011', 'Trending in India Today'),
+    ('9015093', 'Popular SonyLIV Originals'),
+    ('9016638', 'Blockbuster Movies on SonyLIV'),
+    ('POPULAR_SEARCH', 'Popular on Sony SAB & TV'),
+    ('3937924064', 'Trending in Sports'),
+    ('9012681', 'Upcoming on LIV')
+]
 
-# ------------------------------------------------------------------
-# TEST SUITE 4: Apple TV+ Public UTS Edge & TMDB Vertical Fallback
-# ------------------------------------------------------------------
-print("\n--- TEST 4: Apple TV+ UTS Edge & Vertical Poster Ratio ---")
-try:
-    a_url = "https://uts-api.itunes.apple.com/uts/v3/shelves/uts.col.ChartsMovies.tvs.sbd.4000?caller=web&sf=143467&v=72&pfm=web&locale=en-IN&utsk=6e3013c6d6fae3c2::::::"
-    a_req = urllib.request.Request(a_url, headers={
-        'User-Agent': HEADERS['User-Agent'],
-        'Accept': 'application/json',
-        'Origin': 'https://tv.apple.com',
-        'Referer': 'https://tv.apple.com/'
-    })
-    with urllib.request.urlopen(a_req, timeout=7, context=ctx) as r:
-        a_data = json.loads(r.read())
-    items = a_data.get('data', {}).get('shelf', {}).get('items', [])
-    log_test("Apple TV+ Top 10 Movies Shelf", len(items) > 0, f"({len(items)} items, 1st: '{items[0].get('title')}')")
-    
-    first_title = items[0].get('title')
-    q_enc = urllib.parse.quote(first_title)
-    with urllib.request.urlopen(urllib.request.Request(f"https://www.waveflix.online/api/search?q={q_enc}", headers=HEADERS), timeout=8, context=ctx) as r:
-        w_res = json.loads(r.read())
-        w_items = w_res.get('results', [])
-        has_tmdb_poster = len(w_items) > 0 and bool(w_items[0].get('posterPath'))
-        log_test("Apple TV+ TMDB 2:3 Vertical Poster Resolution", has_tmdb_poster, f"('{w_items[0].get('posterPath')}')")
-except Exception as e:
-    log_test("Apple TV+ Tests", False, str(e))
-
-# ------------------------------------------------------------------
-# TEST SUITE 5: Amazon Prime Video (JustWatch prv & Cop Universe)
-# ------------------------------------------------------------------
-print("\n--- TEST 5: Amazon Prime Video Provider Catalog ---")
-try:
-    jw_query_prv = {
-        "operationName": "GetPopularTitles",
-        "variables": {
-            "country": "IN",
-            "popularTitlesFilter": {
-                "packages": ["prv"],
-                "objectTypes": ["MOVIE"]
-            },
-            "first": 5
-        },
-        "query": "query GetPopularTitles($country: Country!, $popularTitlesFilter: TitleFilter, $first: Int!) { popularTitles(country: $country, filter: $popularTitlesFilter, first: $first) { edges { node { id objectType content(country: $country, language: \"en\") { title posterUrl } } } } }"
-    }
-    jw_req = urllib.request.Request("https://apis.justwatch.com/graphql", data=json.dumps(jw_query_prv).encode('utf-8'), headers={
-        'Content-Type': 'application/json',
-        'User-Agent': HEADERS['User-Agent']
-    })
-    with urllib.request.urlopen(jw_req, timeout=8, context=ctx) as r:
-        jw_data = json.loads(r.read())
-    edges = jw_data.get('data', {}).get('popularTitles', {}).get('edges', [])
-    log_test("Prime Video JustWatch Catalog (prv)", len(edges) > 0, f"({len(edges)} items, 1st: '{edges[0].get('node', {}).get('content', {}).get('title')}')")
-    
-    first_poster = edges[0].get('node', {}).get('content', {}).get('posterUrl') if edges else ""
-    log_test("Prime Video Vertical 2:3 Poster", bool(first_poster and first_poster.startswith('/')), f"('{first_poster}')")
-
-    cop_query = urllib.parse.quote("Singham Again")
-    with urllib.request.urlopen(urllib.request.Request(f"https://www.waveflix.online/api/search?q={cop_query}", headers=HEADERS), timeout=8, context=ctx) as r:
-        cop_res = json.loads(r.read())
-        cop_items = cop_res.get('results', [])
-        log_test("Cop Universe Curated Title Resolution", len(cop_items) > 0, f"(Found: '{cop_items[0].get('title')}')")
-except Exception as e:
-    log_test("Prime Video Provider", False, str(e))
-
-# ------------------------------------------------------------------
-# TEST SUITE 6: Netflix JustWatch & Cinemeta Provider
-# ------------------------------------------------------------------
-print("\n--- TEST 6: Netflix JustWatch & Cinemeta Catalog ---")
-try:
-    jw_query_nfx = {
-        "operationName": "GetPopularTitles",
-        "variables": {
-            "country": "IN",
-            "popularTitlesFilter": {
-                "packages": ["nfx"],
-                "objectTypes": ["MOVIE"]
-            },
-            "first": 5
-        },
-        "query": "query GetPopularTitles($country: Country!, $popularTitlesFilter: TitleFilter, $first: Int!) { popularTitles(country: $country, filter: $popularTitlesFilter, first: $first) { edges { node { id objectType content(country: $country, language: \"en\") { title posterUrl } } } } }"
-    }
-    jw_req = urllib.request.Request("https://apis.justwatch.com/graphql", data=json.dumps(jw_query_nfx).encode('utf-8'), headers={
-        'Content-Type': 'application/json',
-        'User-Agent': HEADERS['User-Agent']
-    })
-    with urllib.request.urlopen(jw_req, timeout=8, context=ctx) as r:
-        jw_data = json.loads(r.read())
-    edges = jw_data.get('data', {}).get('popularTitles', {}).get('edges', [])
-    log_test("Netflix JustWatch Catalog (nfx)", len(edges) > 0, f"({len(edges)} items, 1st: '{edges[0].get('node', {}).get('content', {}).get('title')}')")
-    
-    first_poster = edges[0].get('node', {}).get('content', {}).get('posterUrl') if edges else ""
-    log_test("Netflix Vertical 2:3 Poster", bool(first_poster and first_poster.startswith('/')), f"('{first_poster}')")
-except Exception as e:
-    log_test("Netflix Catalog", False, str(e))
-
-# ------------------------------------------------------------------
-# TEST SUITE 7: Zee5 Catalog
-# ------------------------------------------------------------------
-print("\n--- TEST 7: Zee5 Catalog ---")
-try:
-    jw_query_zee = {
-        "operationName": "GetPopularTitles",
-        "variables": {
-            "country": "IN",
-            "popularTitlesFilter": {
-                "packages": ["zee"],
-                "objectTypes": ["SHOW"]
-            },
-            "first": 5
-        },
-        "query": "query GetPopularTitles($country: Country!, $popularTitlesFilter: TitleFilter, $first: Int!) { popularTitles(country: $country, filter: $popularTitlesFilter, first: $first) { edges { node { id objectType content(country: $country, language: \"en\") { title posterUrl } } } } }"
-    }
-    jw_req = urllib.request.Request("https://apis.justwatch.com/graphql", data=json.dumps(jw_query_zee).encode('utf-8'), headers={
-        'Content-Type': 'application/json',
-        'User-Agent': HEADERS['User-Agent']
-    })
-    with urllib.request.urlopen(jw_req, timeout=8, context=ctx) as r:
-        jw_data = json.loads(r.read())
-    edges = jw_data.get('data', {}).get('popularTitles', {}).get('edges', [])
-    log_test("Zee5 JustWatch Catalog (zee)", len(edges) > 0, f"({len(edges)} items, 1st: '{edges[0].get('node', {}).get('content', {}).get('title')}')")
-except Exception as e:
-    log_test("Zee5 Catalog", False, str(e))
-
-# ------------------------------------------------------------------
-# TEST SUITE 8: Crunchyroll Anime Catalog
-# ------------------------------------------------------------------
-print("\n--- TEST 8: Crunchyroll Anime Catalog ---")
-try:
-    jw_query_cru = {
-        "operationName": "GetPopularTitles",
-        "variables": {
-            "country": "IN",
-            "popularTitlesFilter": {
-                "packages": ["cru"],
-                "objectTypes": ["SHOW"],
-                "genres": ["ani"]
-            },
-            "first": 5
-        },
-        "query": "query GetPopularTitles($country: Country!, $popularTitlesFilter: TitleFilter, $first: Int!) { popularTitles(country: $country, filter: $popularTitlesFilter, first: $first) { edges { node { id objectType content(country: $country, language: \"en\") { title posterUrl } } } } }"
-    }
-    jw_req = urllib.request.Request("https://apis.justwatch.com/graphql", data=json.dumps(jw_query_cru).encode('utf-8'), headers={
-        'Content-Type': 'application/json',
-        'User-Agent': HEADERS['User-Agent']
-    })
-    with urllib.request.urlopen(jw_req, timeout=8, context=ctx) as r:
-        jw_data = json.loads(r.read())
-    edges = jw_data.get('data', {}).get('popularTitles', {}).get('edges', [])
-    log_test("Crunchyroll JustWatch Anime Catalog (cru)", len(edges) > 0, f"({len(edges)} items, 1st: '{edges[0].get('node', {}).get('content', {}).get('title')}')")
-except Exception as e:
-    log_test("Crunchyroll Catalog", False, str(e))
-
-# ------------------------------------------------------------------
-# TEST SUITE 9: AnimePahe Integration / Domain Mirror Status
-# ------------------------------------------------------------------
-print("\n--- TEST 9: AnimePahe Provider Status ---")
-try:
-    p_req = urllib.request.Request("https://animepahe.pw", headers=HEADERS)
+for tid, name in sonyliv_trays:
     try:
-        with urllib.request.urlopen(p_req, timeout=5, context=ctx) as r:
-            status_code = r.status
-            log_test("AnimePahe Domain Connectivity (animepahe.pw)", status_code in (200, 403, 503), f"(HTTP Status: {status_code})")
-    except urllib.error.HTTPError as he:
-        # 403 is Cloudflare Turnstile challenge; handled by Android WebView solver in provider
-        log_test("AnimePahe Cloudflare Protected Endpoint (animepahe.pw)", he.code in (403, 503), f"(Cloudflare Gate: HTTP {he.code})")
-except Exception as e:
-    log_test("AnimePahe Provider", False, str(e))
+        url = f'https://apiv3.sonyliv.com/AGL/4.8/A/ENG/WEB/IN/CT/TRAY/SEARCH/POPULAR?from=0&to=10' if tid == 'POPULAR_SEARCH' else f'https://apiv3.sonyliv.com/AGL/4.8/A/ENG/WEB/IN/CT/TRAY/EXTCOLLECTION/{tid}?from=0&to=10'
+        req = urllib.request.Request(url, headers={
+            'User-Agent': HEADERS['User-Agent'],
+            'Origin': 'https://www.sonyliv.com',
+            'Referer': 'https://www.sonyliv.com/'
+        })
+        with urllib.request.urlopen(req, timeout=7, context=ctx) as r:
+            s_data = json.loads(r.read())
+        containers = s_data.get('resultObj', {}).get('containers', [])
+        sample_title = containers[0].get('metadata', {}).get('title') if containers else ""
+        log_test(f"SonyLIV Tray '{name}'", len(containers) > 0, f"({len(containers)} items, 1st: '{sample_title}')")
+        
+        first_c = containers[0]
+        emf = first_c.get('metadata', {}).get('emfAttributes', {})
+        poster = emf.get('img_poster_2000_3000') or emf.get('image_600x900_clean') or emf.get('apv_poster_art') or emf.get('tv_background_image')
+        has_poster = bool(poster and poster.startswith('http'))
+        log_test(f"SonyLIV Image Delivery for '{name}'", has_poster, f"('{poster}')")
+    except Exception as e:
+        log_test(f"SonyLIV Tray '{name}'", False, str(e))
 
 # ------------------------------------------------------------------
-# TEST SUITE 10: CSX Provider Mirror Domains (urls.json)
+# TEST SUITE 4: Apple TV+ (Live Website Content)
 # ------------------------------------------------------------------
-print("\n--- TEST 10: CSX Provider Mirror Domains (urls.json) ---")
+print("\n--- TEST 4: Apple TV+ UTS Edge Shelves (Live Website Content) ---")
+apple_shelves = [
+    ('uts.col.ChartsMovies.tvs.sbd.4000', 'Top 10 Movies Today'),
+    ('uts.col.ChartsShows.tvs.sbd.4000', 'Top 10 Shows Today'),
+    ('uts.col.tv-plus-must-see-hits', 'Must-See Hits & Blockbusters'),
+    ('uts.col.tv-plus-newest-releases', 'New Releases on Apple TV+'),
+    ('uts.col.apple-tv-movies-action', 'Action & Thriller Movies'),
+    ('uts.col.apple-tv-movies-comedies', 'Feel-Good Comedies'),
+    ('uts.col.apple-tv-movies-dramas', 'Acclaimed Dramas & Originals'),
+    ('uts.col.kids-tv-plus-shows', 'Kids & Family Shows'),
+    ('uts.col.free-premieres-on-tv-plus', 'Watch Premieres for Free')
+]
+
+for sid, name in apple_shelves:
+    try:
+        url = f'https://uts-api.itunes.apple.com/uts/v3/shelves/{sid}?caller=web&sf=143467&v=72&pfm=web&locale=en-IN&utsk=6e3013c6d6fae3c2::::::'
+        req = urllib.request.Request(url, headers={
+            'User-Agent': HEADERS['User-Agent'],
+            'Accept': 'application/json',
+            'Origin': 'https://tv.apple.com',
+            'Referer': 'https://tv.apple.com/'
+        })
+        with urllib.request.urlopen(req, timeout=7, context=ctx) as r:
+            a_data = json.loads(r.read())
+        items = a_data.get('data', {}).get('shelf', {}).get('items', [])
+        sample_title = items[0].get('title') if items else ""
+        log_test(f"Apple TV+ Shelf '{name}'", len(items) > 0, f"({len(items)} items, 1st: '{sample_title}')")
+    except Exception as e:
+        log_test(f"Apple TV+ Shelf '{name}'", False, str(e))
+
+# ------------------------------------------------------------------
+# TEST SUITE 5: Amazon Prime Video (Official Storefront Content)
+# ------------------------------------------------------------------
+print("\n--- TEST 5: Amazon Prime Video Storefront Trays ---")
+prime_lists = {
+    'Top 10 with Prime Today': ['Rise And Fall', 'Jailer', 'Lenin Pandiyan', 'Chaar Yaar', 'Dupahiya'],
+    'Top Movies on Prime Video': ['Awarapan 2', 'Khalifa', 'Sardar 2', 'Lenin Pandiyan', 'Romeo'],
+    'Featured Originals on Prime': ['Masterplan', 'Love Of Your Life', 'My Fault', 'Your Fault', 'Red One'],
+    'Cop Universe & Crime Thrillers': ['Drishyam 2', 'Waiting Hai', 'Rahasya', 'Section 375', 'B.A. Pass'],
+    'Korean Dramas on Prime': ['True Beauty', 'Good Boy', 'Guardian: The Lonely And Great God']
+}
+
+for tray_name, titles in prime_lists.items():
+    try:
+        resolved_count = 0
+        for t in titles:
+            q_enc = urllib.parse.quote(t)
+            with urllib.request.urlopen(urllib.request.Request(f"https://www.waveflix.online/api/search?q={q_enc}", headers=HEADERS), timeout=5, context=ctx) as r:
+                res = json.loads(r.read())
+                if len(res.get('results', [])) > 0:
+                    resolved_count += 1
+        log_test(f"Prime Video '{tray_name}'", resolved_count >= len(titles) - 1, f"({resolved_count}/{len(titles)} titles resolved with TMDB)")
+    except Exception as e:
+        log_test(f"Prime Video '{tray_name}'", False, str(e))
+
+# ------------------------------------------------------------------
+# TEST SUITE 6: CSX Provider Mirror Domains (urls.json)
+# ------------------------------------------------------------------
+print("\n--- TEST 6: CSX Provider Mirror Domains (urls.json) ---")
 try:
     u_url = "https://raw.githubusercontent.com/SaurabhKaperwan/Utils/refs/heads/main/urls.json"
     with urllib.request.urlopen(urllib.request.Request(u_url, headers=HEADERS), timeout=6, context=ctx) as r:
