@@ -587,14 +587,38 @@ open class StremioOttProvider(
                 val trayItems = fetchHotstarTray(pageType, trayName, count)
                 if (trayItems.isNotEmpty()) trayItems else {
                     val isMovie = pageType.equals("movies", ignoreCase = true)
+                    val prodCountries = when {
+                        trayName.contains("Hollywood", ignoreCase = true) -> listOf("US", "GB")
+                        trayName.contains("Bollywood", ignoreCase = true) -> listOf("IN")
+                        trayName.contains("Specials", ignoreCase = true) -> listOf("IN")
+                        else -> null
+                    }
+                    val genres = when {
+                        trayName.contains("Kids", ignoreCase = true) || trayName.contains("Animation", ignoreCase = true) -> listOf("ani", "fml")
+                        trayName.contains("Action", ignoreCase = true) -> listOf("act", "trl")
+                        trayName.contains("Reality", ignoreCase = true) -> listOf("rly", "doc")
+                        trayName.contains("Drama", ignoreCase = true) -> listOf("dra")
+                        else -> null
+                    }
+                    val sortBy = when {
+                        trayName.contains("Popular", ignoreCase = true) -> "POPULAR"
+                        trayName.contains("Hollywood", ignoreCase = true) -> "POPULAR"
+                        trayName.contains("Kids", ignoreCase = true) -> "POPULAR"
+                        else -> "TRENDING"
+                    }
+                    val minScore = when {
+                        trayName.contains("Specials", ignoreCase = true) || trayName.contains("Must Watch", ignoreCase = true) -> 7.0
+                        else -> 5.5
+                    }
                     fetchJustWatchCatalog(
                         pkg = jwPackage,
                         isMovie = isMovie,
                         country = country,
                         count = count,
-                        productionCountries = listOf("IN"),
-                        sortBy = "TRENDING",
-                        minScore = 6.0
+                        genres = genres,
+                        productionCountries = prodCountries,
+                        sortBy = sortBy,
+                        minScore = minScore
                     )
                 }
             }
