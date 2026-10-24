@@ -575,6 +575,24 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
+        // 12. Moviesmod – Direct Indian Cloud & HubCloud/FastDL Integration (CSX Scraper)
+        val moviesModJob = async {
+            if (searchTitle.isNotBlank() || !imdbId.isNullOrBlank()) {
+                try {
+                    queryMoviesmod(searchTitle, linkData.year, isMovie, season, episode, imdbId, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 13. UHDMovies – Direct 4K UHD & DriveLeech/HubCloud Integration (CSX Scraper)
+        val uhdMoviesJob = async {
+            if (searchTitle.isNotBlank()) {
+                try {
+                    queryUHDMovies(searchTitle, linkData.year, isMovie, season, episode, imdbId, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
         nxshaJob.await()
         netMirrorJob.await()
         vidlinkJob.await()
@@ -585,6 +603,8 @@ class WaveFlixProvider : MainAPI() {
         katMovieJob.await()
         hdhub4uJob.await()
         moviesDriveJob.await()
+        moviesModJob.await()
+        uhdMoviesJob.await()
         subtitleJob.await()
         true
     }
@@ -1155,6 +1175,105 @@ class WaveFlixProvider : MainAPI() {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private suspend fun queryMoviesmod(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        imdbId: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val base = DomainResolver.get("moviesmod")
+        val searchParam = if (!imdbId.isNullOrBlank()) imdbId else {
+            if (isMovie) query else "$query $season"
+        }
+        val searchUrl = "$base/search/${URLEncoder.encode(searchParam, "UTF-8")}"
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "$base/"
+        )
+        val res = runCatching { app.get(searchUrl, headers = headers, timeout = 7) }.getOrNull() ?: return
+        DomainResolver.reportRedirect("moviesmod", res.url)
+        val doc = res.document
+        val firstPost = doc.selectFirst("#content_box article > a, div.post-cards article > a")?.attr("href") ?: return
+        val postDoc = runCatching { app.get(firstPost, headers = headers, timeout = 7).document }.getOrNull() ?: return
+
+        val hTag = if (isMovie) "h4" else "h3"
+        val aTag = if (isMovie) "Download" else "Episode"
+        val sTag = if (isMovie) "" else "(S0?$season|Season 0?$season)"
+        val entries = postDoc.select("div.thecontent $hTag:matches((?i)$sTag.*(480p|720p|1080p|2160p))")
+            .filter { element -> !element.text().contains("MoviesMod", true) }
+
+        entries.forEach { entry ->
+            val link = entry.nextElementSibling()?.selectFirst("a:contains($aTag)")?.attr("href")
+                ?.substringAfter("=") ?: ""
+            if (link.isNotBlank()) {
+                val selector = if (isMovie) "p a.maxbutton, a[href*='hubcloud'], a[href*='gdflix']" else "h3 a:matches((?i)Episode 0?$episode)"
+                val epDoc = runCatching { app.get(link, headers = headers, timeout = 7).document }.getOrNull()
+                val source = epDoc?.selectFirst(selector)?.attr("href") ?: return@forEach
+                val bypassedLink = if (source.contains("href.li/?")) source.substringAfter("href.li/?") else source
+                runCatching {
+                    loadExtractor(bypassedLink, firstPost, subtitleCallback, callback)
+                }
+            }
+        }
+    }
+
+    private suspend fun queryUHDMovies(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        imdbId: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val base = DomainResolver.get("uhdmovies")
+        val cleanQuery = query.replace(Regex("[^a-zA-Z0-9\\s]"), " ").trim()
+        val searchParam = if (year != null && isMovie) "$cleanQuery $year" else cleanQuery
+        val searchUrl = "$base/search/${URLEncoder.encode(searchParam, "UTF-8")}"
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "$base/"
+        )
+        val res = runCatching { app.get(searchUrl, headers = headers, timeout = 7) }.getOrNull() ?: return
+        DomainResolver.reportRedirect("uhdmovies", res.url)
+        val postUrl = res.document.selectFirst("article div.entry-image a, article h2 a")?.attr("href") ?: return
+        val doc = runCatching { app.get(postUrl, headers = headers, timeout = 7).document }.getOrNull() ?: return
+
+        val selector = if (isMovie) {
+            if (year != null) "div.entry-content p:matches($year)" else "div.entry-content p:matches((?i)(480p|720p|1080p|2160p|4k))"
+        } else {
+            "div.entry-content p:matches((?i)(S0?$season|Season 0?$season))"
+        }
+        val epSelector = if (isMovie) "a:matches((?i)(Download))" else "a:matches((?i)(Episode 0?$episode))"
+
+        val links = doc.select(selector).mapNotNull { el ->
+            el.nextElementSibling()?.select(epSelector)?.attr("href")
+        }
+
+        links.forEach { linkUrl ->
+            if (linkUrl.isNotBlank()) {
+                val driveLink = if (linkUrl.contains("driveleech") || linkUrl.contains("driveseed")) {
+                    val baseUrl = linkUrl.substringBefore("/file/")
+                    val text = runCatching { app.get(linkUrl, headers = headers, timeout = 6).text }.getOrNull() ?: ""
+                    val regex = Regex("""window\\.location\\.replace\\(["'](.*?)["']\\)""")
+                    val fileId = regex.find(text)?.groupValues?.get(1)
+                    if (fileId != null) "$baseUrl$fileId" else linkUrl
+                } else if (linkUrl.contains("href.li/?")) {
+                    linkUrl.substringAfter("href.li/?")
+                } else linkUrl
+
+                runCatching {
+                    loadExtractor(driveLink, postUrl, subtitleCallback, callback)
                 }
             }
         }

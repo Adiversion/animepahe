@@ -15,7 +15,9 @@ object DomainResolver {
         "katmovie"    to "https://new.katmoviehd.top",
         "hdhub4u"     to "https://new8.hdhub4u.cl",
         "bollyflix"   to "https://bollyflix.co.za",
-        "moviesdrive" to "https://new3.moviesdrive.beer"
+        "moviesdrive" to "https://new3.moviesdrive.beer",
+        "moviesmod"   to "https://moviesmod.meme",
+        "uhdmovies"   to "https://uhdmovies.beauty"
     )
 
     private val mirrors = mapOf(
@@ -23,7 +25,9 @@ object DomainResolver {
         "katmovie"    to listOf("https://new.katmoviehd.top", "https://katmoviehd.cat"),
         "hdhub4u"     to listOf("https://new8.hdhub4u.cl", "https://hdhub4u.fans", "https://hdhub4u.ms", "https://hdhub4u.cl"),
         "bollyflix"   to listOf("https://bollyflix.co.za", "https://bollyflix.org"),
-        "moviesdrive" to listOf("https://new3.moviesdrive.beer", "https://moviesdrive.space", "https://moviesdrive.forum")
+        "moviesdrive" to listOf("https://new3.moviesdrive.beer", "https://moviesdrive.space", "https://moviesdrive.forum"),
+        "moviesmod"   to listOf("https://moviesmod.meme", "https://moviesleech.rest"),
+        "uhdmovies"   to listOf("https://uhdmovies.beauty", "https://uhdmovies.click")
     )
 
     private val domainCache = ConcurrentHashMap<String, String>(defaults)
