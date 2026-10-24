@@ -114,7 +114,7 @@ class WaveFlixProvider : MainAPI() {
         val plot = doc.selectFirst("meta[property=og:description]")?.attr("content")
             ?: doc.selectFirst("meta[name=description]")?.attr("content")
         val poster = doc.selectFirst("meta[property=og:image]")?.attr("content")
-            ?: "https://image.tmdb.org/t/p/w500"
+            ?.takeIf { it.isNotBlank() && !it.endsWith("/w500") && !it.endsWith("/w500/") }
 
         val yearMatch = Regex("""\b(19\d{2}|20\d{2})\b""").find(rawTitle)
         val year = yearMatch?.groupValues?.get(1)?.toIntOrNull()

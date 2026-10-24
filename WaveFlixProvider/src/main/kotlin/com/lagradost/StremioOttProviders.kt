@@ -8,6 +8,8 @@ import com.lagradost.cloudstream3.utils.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
@@ -48,6 +50,9 @@ open class StremioOttProvider(
         private const val CACHE_TTL_MS = 15 * 60 * 1000L // 15 mins cache
         private val sharedEngine = WaveFlixProvider()
         private val idCache = ConcurrentHashMap<String, Long>()
+        private val metaCache = ConcurrentHashMap<String, TmdbResolvedMeta>()
+        private val hotstarSlugCache = ConcurrentHashMap<String, Pair<Long, String>>()
+        private val hotstarSlugMutex = Mutex()
 
         private val COP_UNIVERSE_QUERIES = listOf(
             "Singham Again",
@@ -88,13 +93,17 @@ open class StremioOttProvider(
         }
     }
 
-    private suspend fun resolveTmdbId(id: String?, isMovie: Boolean, name: String?): Long? {
+    private suspend fun resolveTmdbMeta(id: String?, isMovie: Boolean, name: String?): TmdbResolvedMeta? {
         if (id.isNullOrBlank() && name.isNullOrBlank()) return null
-        val numId = id?.toLongOrNull()
-        if (numId != null) return numId
-
         val cacheKey = id ?: "name:${name?.lowercase()?.trim()}"
-        idCache[cacheKey]?.let { return it }
+        metaCache[cacheKey]?.let { return it }
+
+        val numId = id?.toLongOrNull()
+        if (numId != null) {
+            val resolved = TmdbResolvedMeta(numId, null)
+            metaCache[cacheKey] = resolved
+            return resolved
+        }
 
         // 1. If it's an IMDb ID (e.g. tt11663228), query Cinemeta
         if (!id.isNullOrBlank() && id.startsWith("tt")) {
@@ -104,9 +113,12 @@ open class StremioOttProvider(
                     .parsedSafe<CinemetaResponse>()
             }.getOrNull()
             val foundId = cinRes?.meta?.moviedbId
+            val foundPoster = cinRes?.meta?.poster
             if (foundId != null && foundId > 0) {
+                val resolved = TmdbResolvedMeta(foundId, foundPoster)
+                metaCache[cacheKey] = resolved
                 idCache[cacheKey] = foundId
-                return foundId
+                return resolved
             }
         }
 
@@ -116,15 +128,25 @@ open class StremioOttProvider(
                 val enc = URLEncoder.encode(name, "UTF-8")
                 val searchRes = app.get("https://www.waveflix.online/api/search?q=$enc", timeout = 3)
                     .parsedSafe<WaveFlixProvider.WaveSearchResponse>()
-                searchRes?.results?.firstOrNull()?.id
+                val match = searchRes?.results?.firstOrNull()
+                val mid = match?.id
+                val poster = match?.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+                if (mid != null && mid > 0) {
+                    TmdbResolvedMeta(mid, poster)
+                } else null
             }.getOrNull()
-            if (found != null && found > 0) {
-                idCache[cacheKey] = found
+            if (found != null) {
+                metaCache[cacheKey] = found
+                idCache[cacheKey] = found.id
                 return found
             }
         }
 
         return null
+    }
+
+    private suspend fun resolveTmdbId(id: String?, isMovie: Boolean, name: String?): Long? {
+        return resolveTmdbMeta(id, isMovie, name)?.id
     }
 
     private suspend fun fetchCncChannels(filterType: String): List<SearchResponse> {
@@ -402,7 +424,10 @@ open class StremioOttProvider(
 
                     val tmdbId = resolveTmdbId(imdbId, isMovie, title) ?: return@async null
 
-                    val poster: String? = meta.emfAttributes?.tvBackgroundImage
+                    val poster: String? = meta.emfAttributes?.imgPoster20003000
+                        ?: meta.emfAttributes?.image600x900Clean
+                        ?: meta.emfAttributes?.apvPosterArt
+                        ?: meta.emfAttributes?.tvBackgroundImage
                         ?: meta.emfAttributes?.imgTile38402160
                         ?: meta.emfAttributes?.mastheadLargeV2
                         ?: if (!meta.pictureUrl.isNullOrBlank() && meta.pictureUrl != "NA") meta.pictureUrl else null
@@ -458,10 +483,12 @@ open class StremioOttProvider(
                         cal.get(java.util.Calendar.YEAR)
                     }
 
-                    val tmdbId = resolveTmdbId(null, isMovie, title) ?: return@async null
+                    val resolved = resolveTmdbMeta(null, isMovie, title) ?: return@async null
+                    val tmdbId = resolved.id
 
                     val rawPoster = item.images?.shelfImage?.url ?: item.images?.transitionImage?.url
-                    val poster: String? = rawPoster?.replace("{w}x{h}.{f}", "720x1080.webp")
+                    val poster: String? = resolved.posterUrl
+                        ?: rawPoster?.replace("{w}x{h}.{f}", "720x1080.webp")
 
                     val itemUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
 
@@ -481,23 +508,47 @@ open class StremioOttProvider(
         }
     }
 
-    private suspend fun fetchHotstarTray(pageSlug: String, trayKeyword: String, count: Int = 15): List<SearchResponse> {
-        val token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJoSWRcIjpcImEzMDQ0ZjYxN2NkOTRlMmY5NjAxNmU3ZTZkYzFmMWJiXCIsXCJwSWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJkd0hpZFwiOlwiNTcyNDAzZjM1OGM4MTlkNTZmZWY5NDliOWFmNTZlM2ZjODU3MmE2ZTBkN2JjMDZmYmY1MmFhYzc2YWY4NDc5ZlwiLFwiZHdQaWRcIjpcImFiZmZmMGNmMDNmN2JhNDY4MWUwODZlZDIxZTllMGQ4ZGI0MjBiODBhYjZjNWU3YmU5ZjgxMzFlMTlmYWY5NGJcIixcIm9sZEhpZFwiOlwiYTMwNDRmNjE3Y2Q5NGUyZjk2MDE2ZTdlNmRjMWYxYmJcIixcIm9sZFBpZFwiOlwiMTgzZjA0ODFjMjgxNDc5NmE3MWI3NjMxNTM1OGZkYmZcIixcImlzUGlpVXNlck1pZ3JhdGVkXCI6ZmFsc2UsXCJuYW1lXCI6XCJZb3VcIixcImlwXCI6XCIyNDAxOjQ5MDA6ODhiZDpiMzY2OjE0OTM6Mzg5OTo1OGIyOmNkMGZcIixcImNvdW50cnlDb2RlXCI6XCJpblwiLFwiY3VzdG9tZXJUeXBlXCI6XCJudVwiLFwidHlwZVwiOlwiZ3Vlc3RcIixcImlzRW1haWxWZXJpZmllZFwiOmZhbHNlLFwiaXNQaG9uZVZlcmlmaWVkXCI6ZmFsc2UsXCJkZXZpY2VJZFwiOlwiODkxMTllLTYyMjNlOS04ZTg5NjYtMzdhNTdjXCIsXCJwcm9maWxlXCI6XCJBRFVMVFwiLFwidmVyc2lvblwiOlwidjJcIixcInN1YnNjcmlwdGlvbnNcIjp7XCJpblwiOnt9fSxcImlzc3VlZEF0XCI6MTc5MjczNzM1Mzk0NixcIm1hdHVyaXR5TGV2ZWxcIjpcIkFcIixcImRwaWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJzdFwiOjEsXCJkYXRhXCI6XCJDZ1FJQURvQUNnd0lBQ0lJa0FHYXRlUzdsalFLTGdnQVFpb0tLRUkzWTJVeE9HVTJObVUyTWpJME9EUTNPR1l6WTJZM01qTTFNamMyTmpWbU16a3ROV1J5UWpBPVwifSIsImlzcyI6IlVNIiwiZXhwIjoxNzkyODIzNzUzLCJqdGkiOiIyNDQxZTg1ZjEwNzQ0OGZkOWNmOTlmZjczYjQwMmZjMCIsImlhdCI6MTc5MjczNzM1MywiYXBwSWQiOiIiLCJ0ZW5hbnQiOiIiLCJ2ZXJzaW9uIjoiMV8wIiwiYXVkIjoidW1fYWNjZXNzIn0.TrOwZtwk1VHX4_i-C3280eyLfqDXX_PMcYAlPRoMXhc"
-        val url = "https://www.hotstar.com/api/internal/bff/v2/slugs/in/$pageSlug"
+    private suspend fun getHotstarSlugJson(pageSlug: String): String? {
+        val now = System.currentTimeMillis()
+        val cached = hotstarSlugCache[pageSlug]
+        if (cached != null && (now - cached.first) < CACHE_TTL_MS) {
+            return cached.second
+        }
 
-        val json = runCatching {
-            app.get(
-                url,
-                headers = mapOf(
-                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                    "Accept" to "application/json, text/plain, */*",
-                    "x-hs-usertoken" to token,
-                    "X-HS-Platform" to "web",
-                    "X-Country-Code" to "in"
-                ),
-                timeout = 7
-            ).text
-        }.getOrNull() ?: return emptyList()
+        return hotstarSlugMutex.withLock {
+            val freshCheck = hotstarSlugCache[pageSlug]
+            if (freshCheck != null && (System.currentTimeMillis() - freshCheck.first) < CACHE_TTL_MS) {
+                return@withLock freshCheck.second
+            }
+
+            val token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJoSWRcIjpcImEzMDQ0ZjYxN2NkOTRlMmY5NjAxNmU3ZTZkYzFmMWJiXCIsXCJwSWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJkd0hpZFwiOlwiNTcyNDAzZjM1OGM4MTlkNTZmZWY5NDliOWFmNTZlM2ZjODU3MmE2ZTBkN2JjMDZmYmY1MmFhYzc2YWY4NDc5ZlwiLFwiZHdQaWRcIjpcImFiZmZmMGNmMDNmN2JhNDY4MWUwODZlZDIxZTllMGQ4ZGI0MjBiODBhYjZjNWU3YmU5ZjgxMzFlMTlmYWY5NGJcIixcIm9sZEhpZFwiOlwiYTMwNDRmNjE3Y2Q5NGUyZjk2MDE2ZTdlNmRjMWYxYmJcIixcIm9sZFBpZFwiOlwiMTgzZjA0ODFjMjgxNDc5NmE3MWI3NjMxNTM1OGZkYmZcIixcImlzUGlpVXNlck1pZ3JhdGVkXCI6ZmFsc2UsXCJuYW1lXCI6XCJZb3VcIixcImlwXCI6XCIyNDAxOjQ5MDA6ODhiZDpiMzY2OjE0OTM6Mzg5OTo1OGIyOmNkMGZcIixcImNvdW50cnlDb2RlXCI6XCJpblwiLFwiY3VzdG9tZXJUeXBlXCI6XCJudVwiLFwidHlwZVwiOlwiZ3Vlc3RcIixcImlzRW1haWxWZXJpZmllZFwiOmZhbHNlLFwiaXNQaG9uZVZlcmlmaWVkXCI6ZmFsc2UsXCJkZXZpY2VJZFwiOlwiODkxMTllLTYyMjNlOS04ZTg5NjYtMzdhNTdjXCIsXCJwcm9maWxlXCI6XCJBRFVMVFwiLFwidmVyc2lvblwiOlwidjJcIixcInN1YnNjcmlwdGlvbnNcIjp7XCJpblwiOnt9fSxcImlzc3VlZEF0XCI6MTc5MjczNzM1Mzk0NixcIm1hdHVyaXR5TGV2ZWxcIjpcIkFcIixcImRwaWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJzdFwiOjEsXCJkYXRhXCI6XCJDZ1FJQURvQUNnd0lBQ0lJa0FHYXRlUzdsalFLTGdnQVFpb0tLRUkzWTJVeE9HVTJObVUyTWpJME9EUTNPR1l6WTJZM01qTTFNamMyTmpWbU16a3ROV1J5UWpBPVwifSIsImlzcyI6IlVNIiwiZXhwIjoxNzkyODIzNzUzLCJqdGkiOiIyNDQxZTg1ZjEwNzQ0OGZkOWNmOTlmZjczYjQwMmZjMCIsImlhdCI6MTc5MjczNzM1MywiYXBwSWQiOiIiLCJ0ZW5hbnQiOiIiLCJ2ZXJzaW9uIjoiMV8wIiwiYXVkIjoidW1fYWNjZXNzIn0.TrOwZtwk1VHX4_i-C3280eyLfqDXX_PMcYAlPRoMXhc"
+            val url = "https://www.hotstar.com/api/internal/bff/v2/slugs/in/$pageSlug"
+
+            val json = runCatching {
+                app.get(
+                    url,
+                    headers = mapOf(
+                        "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                        "Accept" to "application/json, text/plain, */*",
+                        "x-hs-usertoken" to token,
+                        "X-HS-Platform" to "web",
+                        "X-Country-Code" to "in",
+                        "Origin" to "https://www.hotstar.com",
+                        "Referer" to "https://www.hotstar.com/"
+                    ),
+                    timeout = 15
+                ).text
+            }.getOrNull()
+
+            if (!json.isNullOrBlank()) {
+                hotstarSlugCache[pageSlug] = System.currentTimeMillis() to json
+            }
+            json
+        }
+    }
+
+    private suspend fun fetchHotstarTray(pageSlug: String, trayKeyword: String, count: Int = 15): List<SearchResponse> {
+        val json = getHotstarSlugJson(pageSlug) ?: return emptyList()
 
         val parsed = runCatching { AppUtils.parseJson<HotstarSlugResponse>(json) }.getOrNull()
         val wrappers = parsed?.success?.page?.spaces?.get("tray")?.widgetWrappers ?: return emptyList()
@@ -522,8 +573,9 @@ open class StremioOttProvider(
             items.map { itemWrapper: HotstarItemWrapper ->
                 async {
                     val posterData = itemWrapper.verticalPoster?.data
-                        ?: itemWrapper.horizontalCard?.data
                         ?: itemWrapper.overlayPoster?.data?.verticalPoster?.data
+                        ?: itemWrapper.horizontalPoster?.data
+                        ?: itemWrapper.horizontalCard?.data
                         ?: return@async null
                     val title = (posterData.expandedPoster?.contentInfo?.title ?: posterData.image?.alt)?.trim() ?: return@async null
                     if (title.isBlank()) return@async null
@@ -531,9 +583,15 @@ open class StremioOttProvider(
                     val tags = posterData.expandedPoster?.contentInfo?.tags?.mapNotNull { it.value } ?: emptyList()
                     val year = tags.firstOrNull { it.length == 4 && it.all { c -> c.isDigit() } }?.toIntOrNull()
 
-                    val tmdbId = resolveTmdbId(null, isMovie, title) ?: return@async null
+                    val resolved = resolveTmdbMeta(null, isMovie, title) ?: return@async null
+                    val tmdbId = resolved.id
 
-                    val poster: String? = posterData.image?.src?.let { "https://img.hotstar.com/image/upload/v1/$it" }
+                    val hsSrc = posterData.image?.src
+                    val poster: String? = if (hsSrc != null && !hsSrc.endsWith("-h")) {
+                        "https://img.hotstar.com/image/upload/v1/$hsSrc"
+                    } else {
+                        resolved.posterUrl ?: hsSrc?.let { "https://img.hotstar.com/image/upload/v1/$it" }
+                    }
                     val itemUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
 
                     if (isMovie) {
@@ -799,7 +857,18 @@ open class StremioOttProvider(
             }
         }
 
-        val response = newHomePageResponse(request.name, items, hasNext = false)
+        val isHorizontal = request.data.startsWith("LIVE_") ||
+            request.data.startsWith("SONY_CNC:") ||
+            request.data.contains("horizontal", ignoreCase = true)
+
+        val response = newHomePageResponse(
+            HomePageList(
+                name = request.name,
+                list = items,
+                isHorizontalImages = isHorizontal
+            ),
+            hasNext = false
+        )
         synchronized(ottCache) {
             ottCache[cacheKey] = now to response
         }
@@ -1196,6 +1265,9 @@ open class StremioOttProvider(
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class SonyLivEmfAttributes(
         @JsonProperty("SameAs") val sameAs: List<String>? = null,
+        @JsonProperty("img_poster_2000_3000") val imgPoster20003000: String? = null,
+        @JsonProperty("image_600x900_clean") val image600x900Clean: String? = null,
+        @JsonProperty("apv_poster_art") val apvPosterArt: String? = null,
         @JsonProperty("tv_background_image") val tvBackgroundImage: String? = null,
         @JsonProperty("img_tile_3840_2160") val imgTile38402160: String? = null,
         @JsonProperty("masthead_large_v2") val mastheadLargeV2: String? = null
@@ -1275,10 +1347,16 @@ open class StremioOttProvider(
         @JsonProperty("items") val items: List<HotstarItemWrapper>? = null
     )
 
+    data class TmdbResolvedMeta(
+        val id: Long,
+        val posterUrl: String? = null
+    )
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class HotstarItemWrapper(
         @JsonProperty("vertical_content_poster") val verticalPoster: HotstarPosterWrapper? = null,
         @JsonProperty("horizontal_content_card") val horizontalCard: HotstarPosterWrapper? = null,
+        @JsonProperty("horizontal_content_poster") val horizontalPoster: HotstarPosterWrapper? = null,
         @JsonProperty("image_overlay_vertical_content_poster") val overlayPoster: HotstarOverlayPosterWrapper? = null
     )
 
