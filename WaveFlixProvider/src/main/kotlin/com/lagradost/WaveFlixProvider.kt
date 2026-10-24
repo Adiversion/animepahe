@@ -4,6 +4,8 @@ import android.util.Base64
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lagradost.cloudstream3.*
+import com.lagradost.cloudstream3.LoadResponse.Companion.addImdbId
+import com.lagradost.cloudstream3.utils.AppUtils.tryParseJson
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
 import com.lagradost.cloudstream3.utils.AppUtils.toJson
@@ -117,17 +119,28 @@ class WaveFlixProvider : MainAPI() {
         val yearMatch = Regex("""\b(19\d{2}|20\d{2})\b""").find(rawTitle)
         val year = yearMatch?.groupValues?.get(1)?.toIntOrNull()
 
+        // Resolve canonical IMDb ID via Cinemeta catalog search for 100% exact scraper matching (CSX methodology)
+        val imdbId = runCatching {
+            val qType = if (isMovie) "movie" else "series"
+            val cUrl = "https://v3-cinemeta.strem.io/catalog/$qType/top/search=${URLEncoder.encode(cleanTitle, "UTF-8")}.json"
+            val cRes = app.get(cUrl, timeout = 4).text
+            val cData = tryParseJson<CinemetaSearchResponse>(cRes)
+            cData?.metas?.firstOrNull()?.id?.takeIf { it.startsWith("tt") }
+        }.getOrNull()
+
         if (isMovie) {
             val linkData = WaveLinkData(
                 tmdbId = tmdbId,
                 isMovie = true,
                 title = cleanTitle,
-                year = year
+                year = year,
+                imdbId = imdbId
             )
             return newMovieLoadResponse(cleanTitle, url, TvType.Movie, linkData.toJson()) {
                 this.posterUrl = poster
                 this.plot = plot
                 this.year = year
+                if (!imdbId.isNullOrBlank()) addImdbId(imdbId)
             }
         } else {
             val episodes = mutableListOf<Episode>()
@@ -141,7 +154,8 @@ class WaveFlixProvider : MainAPI() {
                         season = seasonNum,
                         episode = epNum,
                         title = cleanTitle,
-                        year = year
+                        year = year,
+                        imdbId = imdbId
                     )
 
                     val epPoster = if (!ep.stillPath.isNullOrBlank()) {
@@ -207,6 +221,7 @@ class WaveFlixProvider : MainAPI() {
                 this.posterUrl = poster
                 this.plot = plot
                 this.year = year
+                if (!imdbId.isNullOrBlank()) addImdbId(imdbId)
             }
         }
     }
@@ -271,7 +286,7 @@ class WaveFlixProvider : MainAPI() {
         // 2. Query Nxsha Multi-Server Playback Engine
         val nxshaJob = async {
             try {
-                val serverPayload = """{"tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+                val serverPayload = """{"tmdbId":"$tmdbId","imdb_id":"${linkData.imdbId ?: ""}","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
                 val encServerQuery = NxshaCrypto.encrypt(serverPayload)
                 val serverUrl = "https://nxsha.space/api/servers?q=${URLEncoder.encode(encServerQuery, "UTF-8")}"
 
@@ -290,7 +305,7 @@ class WaveFlixProvider : MainAPI() {
                         val serverJobs = activeServers.map { srv ->
                             async {
                                 try {
-                                    val sourcePayload = """{"ex_lang":false,"provider":"${srv.scraper}","tmdbId":"$tmdbId","imdb_id":"","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
+                                    val sourcePayload = """{"ex_lang":false,"provider":"${srv.scraper}","tmdbId":"$tmdbId","imdb_id":"${linkData.imdbId ?: ""}","type":"${if (isMovie) "movie" else "tv"}","season":$season,"episode":$episode}"""
                                     val encSourceQuery = NxshaCrypto.encrypt(sourcePayload)
                                     val sourceUrl = "https://nxsha.space/api/sources?q=${URLEncoder.encode(encSourceQuery, "UTF-8")}"
 
@@ -495,6 +510,7 @@ class WaveFlixProvider : MainAPI() {
         }
 
         val resolvedTitle = linkData.title
+        val imdbId = linkData.imdbId
         val (coreTitle, coreTokens) = extractSearchTokens(resolvedTitle)
         val searchTitle = if (coreTitle.isNotBlank()) coreTitle else (resolvedTitle ?: "")
 
@@ -507,11 +523,11 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
-        // 6. Direct RogMovies Indian Cloud & Multi-Audio Integration (Word-based fuzzy match)
+        // 6. Direct RogMovies / VegaMovies Indian Cloud Integration (CSX IMDb Anchored)
         val rogMoviesJob = async {
-            if (searchTitle.isNotBlank()) {
+            if (searchTitle.isNotBlank() || !imdbId.isNullOrBlank()) {
                 try {
-                    queryRogMovies(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryRogMovies(searchTitle, coreTokens, linkData.year, isMovie, season, episode, imdbId, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -519,15 +535,15 @@ class WaveFlixProvider : MainAPI() {
         // 7. Direct MultiMovies Integration (Cineverse / Filmu / Nexus / VidBolt / Vidrift)
         val multiMoviesJob = async {
             try {
-                queryMultiMovies(tmdbId.toString(), null, isMovie, season, episode, subtitleCallback, callback)
+                queryMultiMovies(tmdbId.toString(), imdbId, isMovie, season, episode, subtitleCallback, callback)
             } catch (_: Throwable) {}
         }
 
-        // 8. Direct Bollyflix Indian Cloud Integration
+        // 8. Direct Bollyflix Indian Cloud Integration (CSX IMDb Anchored)
         val bollyflixJob = async {
-            if (searchTitle.isNotBlank()) {
+            if (searchTitle.isNotBlank() || !imdbId.isNullOrBlank()) {
                 try {
-                    queryBollyflix(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryBollyflix(searchTitle, coreTokens, linkData.year, isMovie, season, episode, imdbId, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -541,11 +557,20 @@ class WaveFlixProvider : MainAPI() {
             }
         }
 
-        // 10. HDHub4u – Direct Indian cloud search via new8.hdhub4u.cl + greenmotors
+        // 10. HDHub4u – Direct Indian cloud search via Pingora Typesense + greenmotors
         val hdhub4uJob = async {
-            if (searchTitle.isNotBlank()) {
+            if (searchTitle.isNotBlank() || !imdbId.isNullOrBlank()) {
                 try {
-                    queryHDHub4u(searchTitle, coreTokens, linkData.year, isMovie, season, episode, subtitleCallback, callback)
+                    queryHDHub4u(searchTitle, coreTokens, linkData.year, isMovie, season, episode, imdbId, subtitleCallback, callback)
+                } catch (_: Throwable) {}
+            }
+        }
+
+        // 11. MoviesDrive – Direct Indian Cloud & HubCloud Integration (CSX MoviesDrive Scraper)
+        val moviesDriveJob = async {
+            if (searchTitle.isNotBlank() || !imdbId.isNullOrBlank()) {
+                try {
+                    queryMoviesDrive(searchTitle, linkData.year, isMovie, season, episode, imdbId, subtitleCallback, callback)
                 } catch (_: Throwable) {}
             }
         }
@@ -559,6 +584,7 @@ class WaveFlixProvider : MainAPI() {
         bollyflixJob.await()
         katMovieJob.await()
         hdhub4uJob.await()
+        moviesDriveJob.await()
         subtitleJob.await()
         true
     }
@@ -882,6 +908,7 @@ class WaveFlixProvider : MainAPI() {
         isMovie: Boolean,
         season: Int,
         episode: Int,
+        imdbId: String? = null,
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) = coroutineScope {
@@ -893,24 +920,40 @@ class WaveFlixProvider : MainAPI() {
         )
 
         val cleanQuery = query.replace(Regex("""[^a-zA-Z0-9\s]"""), " ").trim()
-        val searchUrl = "$base/?s=${cleanQuery.replace(" ", "+")}"
+        val searchUrl = if (!imdbId.isNullOrBlank()) {
+            "https://search.pingora.fyi/collections/post/documents/search?q=$imdbId&query_by=post_title%2Ccategory%2Cstars%2Cdirector%2Cimdb_id&query_by_weights=4%2C2%2C2%2C2%2C4&sort_by=sort_by_date%3Adesc&limit=15&highlight_fields=none&use_cache=true&page=1"
+        } else {
+            "$base/?s=${cleanQuery.replace(" ", "+")}"
+        }
 
         val searchRes = runCatching {
             app.get(searchUrl, headers = hdhubHeaders, timeout = 8)
         }.getOrNull() ?: return@coroutineScope
         DomainResolver.reportRedirect("hdhub4u", searchRes.url)
-        val searchHtml = searchRes.text
+        val searchBody = searchRes.text
 
-        val doc = Jsoup.parse(searchHtml)
         val posts = mutableListOf<Pair<String, String>>() // (url, title)
 
-        doc.select("li.thumb").forEach { thumb ->
-            val a = thumb.selectFirst("figure a, figcaption a")
-            val href = a?.attr("href")?.trim() ?: return@forEach
-            val title = a.attr("aria-label").ifBlank { thumb.selectFirst("figcaption p")?.text() ?: "" }.trim()
-            if (href.isNotBlank() && title.isNotBlank()) {
-                val fullUrl = if (href.startsWith("http")) href else "$base" + (if (href.startsWith("/")) href else "/$href")
-                posts.add(fullUrl to title)
+        if (searchUrl.contains("pingora.fyi")) {
+            val pingoraObj = runCatching { parseJson<RogSearchResponse>(searchBody) }.getOrNull()
+            pingoraObj?.hits?.forEach { hit ->
+                val permalink = hit.document?.permalink ?: return@forEach
+                val pTitle = hit.document.post_title ?: ""
+                val fullUrl = if (permalink.startsWith("http")) permalink else "$base" + (if (permalink.startsWith("/")) permalink else "/$permalink")
+                posts.add(fullUrl to pTitle)
+            }
+        }
+
+        if (posts.isEmpty()) {
+            val doc = Jsoup.parse(searchBody)
+            doc.select("li.thumb").forEach { thumb ->
+                val a = thumb.selectFirst("figure a, figcaption a")
+                val href = a?.attr("href")?.trim() ?: return@forEach
+                val title = a.attr("aria-label").ifBlank { thumb.selectFirst("figcaption p")?.text() ?: "" }.trim()
+                if (href.isNotBlank() && title.isNotBlank()) {
+                    val fullUrl = if (href.startsWith("http")) href else "$base" + (if (href.startsWith("/")) href else "/$href")
+                    posts.add(fullUrl to title)
+                }
             }
         }
 
@@ -1035,6 +1078,88 @@ class WaveFlixProvider : MainAPI() {
         postJobs.awaitAll()
     }
 
+
+    private suspend fun queryMoviesDrive(
+        query: String,
+        year: Int?,
+        isMovie: Boolean,
+        season: Int,
+        episode: Int,
+        imdbId: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val base = DomainResolver.get("moviesdrive")
+        val searchUrl = if (!imdbId.isNullOrBlank()) {
+            "$base/search.php?q=$imdbId"
+        } else {
+            "$base/search.php?q=${URLEncoder.encode(query, "UTF-8")}"
+        }
+        val headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to "$base/"
+        )
+        val jsonResponse = runCatching {
+            app.get(searchUrl, headers = headers, timeout = 7)
+        }.getOrNull() ?: return
+        DomainResolver.reportRedirect("moviesdrive", jsonResponse.url)
+        val jsonRes = jsonResponse.text
+        val data = runCatching { parseJson<RogSearchResponse>(jsonRes) }.getOrNull() ?: return
+        val hits = data.hits ?: return
+
+        for (hit in hits) {
+            val doc = hit.document ?: continue
+            if (!imdbId.isNullOrBlank() && !doc.imdb_id.isNullOrBlank() && doc.imdb_id != imdbId) continue
+            val permalink = doc.permalink ?: continue
+            val matchedItem = if (permalink.startsWith("http")) permalink else "$base$permalink"
+
+            val document = runCatching { app.get(matchedItem, headers = headers, timeout = 8).document }.getOrNull() ?: continue
+            if (isMovie) {
+                document.select("h5 > a, p > a").forEach { a ->
+                    val href = a.attr("href")
+                    if (href.contains("hubcloud") || href.contains("gdflix") || href.contains("drive")) {
+                        runCatching { loadExtractor(href, matchedItem, subtitleCallback, callback) }
+                    } else if (href.startsWith("http") && !href.contains("trailer")) {
+                        val intermediateDoc = runCatching { app.get(href, headers = headers, timeout = 7).document }.getOrNull()
+                        intermediateDoc?.select("a[href*='hubcloud'], a[href*='gdflix'], a[href*='gdlink']")?.forEach { subA ->
+                            runCatching { loadExtractor(subA.attr("href"), href, subtitleCallback, callback) }
+                        }
+                    }
+                }
+            } else {
+                val sPad = String.format("%02d", season)
+                val ePad = String.format("%02d", episode)
+                val stag = "season $season|s$sPad|s$season"
+                val sep = "ep$ePad|ep$episode|episode $episode|episode $ePad"
+                val entries = document.select("h5, h4, h3").filter { el ->
+                    el.text().contains(Regex("(?i)($stag)"))
+                }
+                entries.forEach { entry ->
+                    val href = entry.nextElementSibling()?.selectFirst("a")?.attr("href") ?: ""
+                    if (href.isNotBlank()) {
+                        val epDoc = runCatching { app.get(href, headers = headers, timeout = 7).document }.getOrNull()
+                        val fEp = epDoc?.selectFirst("h5:matches((?i)($sep)), h4:matches((?i)($sep)), p:matches((?i)($sep))")
+                        val linklist = mutableListOf<String>()
+                        fEp?.nextElementSibling()?.select("a")?.forEach { subA ->
+                            val sHref = subA.attr("href")
+                            if (sHref.isNotBlank()) linklist.add(sHref)
+                        }
+                        linklist.forEach { u ->
+                            if (u.contains("hubcloud") || u.contains("gdflix") || u.contains("gdlink")) {
+                                runCatching { loadExtractor(u, href, subtitleCallback, callback) }
+                            } else {
+                                val finalDoc = runCatching { app.get(u, headers = headers, timeout = 6).document }.getOrNull()
+                                finalDoc?.select("a[href*='hubcloud'], a[href*='gdflix'], a[href*='gdlink']")?.forEach { directA ->
+                                    runCatching { loadExtractor(directA.attr("href"), u, subtitleCallback, callback) }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun extractSearchTokens(rawTitle: String?): Pair<String, List<String>> {
         if (rawTitle.isNullOrBlank()) return "" to emptyList()
         var base = rawTitle
@@ -1127,12 +1252,13 @@ class WaveFlixProvider : MainAPI() {
         isMovie: Boolean,
         season: Int,
         episode: Int,
+        imdbId: String? = null,
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
         val base = DomainResolver.get("bollyflix")
         val cleanQuery = query.replace(Regex("[^a-zA-Z0-9 ]"), " ").trim()
-        val searchUrl = "$base/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
+        val searchUrl = if (!imdbId.isNullOrBlank()) "$base/search/$imdbId" else "$base/?s=${URLEncoder.encode(cleanQuery, "UTF-8")}"
         val headers = mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer" to "$base/"
@@ -1202,11 +1328,16 @@ class WaveFlixProvider : MainAPI() {
         isMovie: Boolean,
         season: Int,
         episode: Int,
+        imdbId: String? = null,
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) {
         val base = DomainResolver.get("rogmovies")
-        val searchUrl = "$base/ts-search.php?q=${URLEncoder.encode(query, "UTF-8")}&page=1"
+        val searchUrl = if (!imdbId.isNullOrBlank()) {
+            "$base/ts-search.php?q=$imdbId&page=1"
+        } else {
+            "$base/ts-search.php?q=${URLEncoder.encode(query, "UTF-8")}&page=1"
+        }
         val headers = mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer" to "$base/?s="
@@ -1227,11 +1358,18 @@ class WaveFlixProvider : MainAPI() {
 
         val relevantHits = hits.filter { hit ->
             val hitTitle = hit.document?.post_title?.lowercase() ?: ""
-            if (primaryWord.isNotBlank() && !hitTitle.contains(primaryWord)) return@filter false
+            val hitImdb = hit.document?.imdb_id
 
-            val tokenMatches = queryTokens.count { hitTitle.contains(it) }
-            val minMatches = (queryTokens.size * 0.7).coerceAtLeast(1.0).toInt()
-            val isNameMatch = hitTitle.contains(cleanQuery) || (queryTokens.isNotEmpty() && tokenMatches >= minMatches)
+            // CSX Invariant: Strict IMDb check when available ensures 0 wrong movie/show collisions
+            if (!imdbId.isNullOrBlank() && !hitImdb.isNullOrBlank() && hitImdb != imdbId) return@filter false
+
+            if (imdbId.isNullOrBlank()) {
+                if (primaryWord.isNotBlank() && !hitTitle.contains(primaryWord)) return@filter false
+                val tokenMatches = queryTokens.count { hitTitle.contains(it) }
+                val minMatches = (queryTokens.size * 0.7).coerceAtLeast(1.0).toInt()
+                val isNameMatch = hitTitle.contains(cleanQuery) || (queryTokens.isNotEmpty() && tokenMatches >= minMatches)
+                if (!isNameMatch) return@filter false
+            }
 
             val isSeasonMatch = if (!isMovie) {
                 val sStr = season.toString()
@@ -1241,13 +1379,11 @@ class WaveFlixProvider : MainAPI() {
                 hitTitle.contains("season 1-") ||
                 (season == 1 && (hitTitle.contains("complete") || (!hitTitle.contains("season 2") && !hitTitle.contains("s02"))))
             } else {
-                if (year != null) {
-                    val yearMatches = hitTitle.contains(year.toString()) || hitTitle.contains((year - 1).toString()) || hitTitle.contains((year + 1).toString())
-                    yearMatches || hitTitle.contains(cleanQuery)
-                } else true
+                // Reject TV shows when playing a movie
+                !hitTitle.contains("season") && !hitTitle.contains("s01") && !hitTitle.contains("s02") && !hitTitle.contains("episode")
             }
 
-            isNameMatch && isSeasonMatch
+            isSeasonMatch
         }
 
         val targetHits = relevantHits
@@ -1260,6 +1396,33 @@ class WaveFlixProvider : MainAPI() {
             }.getOrNull() ?: return@forEach
 
             val doc = org.jsoup.Jsoup.parse(postHtml)
+            val currentImdb = doc.select("a[href*='imdb']").attr("href").substringAfter("title/").substringBefore("/")
+            if (!imdbId.isNullOrBlank() && currentImdb.isNotBlank() && currentImdb != imdbId) {
+                return@forEach
+            }
+
+            // CSX Exact Episode Selector for TV series
+            if (!isMovie) {
+                doc.select("h4:matches((?i)(Season $season)), h3:matches((?i)(Season $season)), h5:matches((?i)(Season $season))").forEach { h ->
+                    h.nextElementSibling()?.select("a:matches((?i)(V-Cloud|Single|Episode|G-Direct|Instant|Resumable))")?.forEach { a ->
+                        val href = a.attr("href").trim()
+                        if (href.isNotBlank()) {
+                            runCatching {
+                                val epHtml = app.get(href, headers = headers, timeout = 7).text
+                                val epDoc = org.jsoup.Jsoup.parse(epHtml)
+                                val epLink = epDoc.selectFirst("h4:contains(Episode):contains($episode)")
+                                    ?.nextElementSibling()
+                                    ?.selectFirst("a:matches((?i)(V-Cloud|fastdl|G-Direct|Resumable))")
+                                    ?.attr("href")
+                                if (!epLink.isNullOrBlank()) {
+                                    loadExtractor(epLink, href, subtitleCallback, callback)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             doc.select("a[href*='vcloud.'], a[href*='hubcloud.'], a[href*='fastdl.'], a[href*='fast-dl.'], a[href*='zee-dl.']").forEach { a ->
                 val href = a.attr("href").trim()
                 val btnText = a.text().trim()
@@ -1419,7 +1582,8 @@ class WaveFlixProvider : MainAPI() {
         val season: Int? = null,
         val episode: Int? = null,
         val title: String? = null,
-        val year: Int? = null
+        val year: Int? = null,
+        val imdbId: String? = null
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -1434,8 +1598,20 @@ class WaveFlixProvider : MainAPI() {
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CinemetaSearchResponse(
+        @JsonProperty("metas") val metas: List<CinemetaMetaItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CinemetaMetaItem(
+        @JsonProperty("id") val id: String? = null,
+        @JsonProperty("name") val name: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class RogDocument(
         @JsonProperty("id") val id: String? = null,
+        @JsonProperty("imdb_id") val imdb_id: String? = null,
         @JsonProperty("post_title") val post_title: String? = null,
         @JsonProperty("permalink") val permalink: String? = null
     )

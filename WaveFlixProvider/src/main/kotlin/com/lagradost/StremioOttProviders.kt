@@ -932,8 +932,13 @@ open class StremioOttProvider(
                 ).parsedSafe<CncStreamResponse>()
 
                 streamRes?.streams?.forEach { s ->
-                    val sUrl = s.url?.trim() ?: return@forEach
-                    if (sUrl.isBlank() || sUrl.startsWith("javascript:")) return@forEach
+                    val rawUrl = s.url?.trim() ?: return@forEach
+                    if (rawUrl.isBlank() || rawUrl.startsWith("javascript:")) return@forEach
+
+                    // Upgrade insecure HTTP bridge IP to official HTTPS domain to prevent Android cleartext 2004 errors
+                    val sUrl = if (rawUrl.contains("140.238.244.130")) {
+                        rawUrl.replace("http://140.238.244.130", "https://cncverse.dpdns.org")
+                    } else rawUrl
 
                     val sTitle = s.title ?: ""
                     val sName = s.name ?: "Live Stream"
@@ -949,6 +954,15 @@ open class StremioOttProvider(
                     val headers = s.behaviorHints?.proxyHeaders?.request?.toMutableMap() ?: mutableMapOf()
                     if (!headers.containsKey("User-Agent")) {
                         headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                    }
+
+                    // Skip dead Akamai live streams returning HTTP 404 to prevent ERROR_CODE_IO_BAD_HTTP_STATUS (2004)
+                    if (sUrl.contains("akamaized.net") || sUrl.contains("sonydaime")) {
+                        val isDead = runCatching {
+                            val check = app.get(sUrl, headers = headers, timeout = 2)
+                            check.code == 404 || check.code == 403
+                        }.getOrDefault(false)
+                        if (isDead) return@forEach
                     }
 
                     val label = when {
@@ -995,7 +1009,10 @@ open class StremioOttProvider(
                 val cleanJson = if (jsonStr.contains("::{")) jsonStr.substringAfter("::") else jsonStr
 
                 val cncObj = AppUtils.parseJson<CncLiveStreamItem>(cleanJson)
-                val streamUrl = cncObj.url ?: return false
+                val rawStreamUrl = cncObj.url ?: return false
+                val streamUrl = if (rawStreamUrl.contains("140.238.244.130")) {
+                    rawStreamUrl.replace("http://140.238.244.130", "https://cncverse.dpdns.org")
+                } else rawStreamUrl
                 val cookie = cncObj.cookie
                 val referer = cncObj.headers?.get("Referer") ?: "https://www.hotstar.com/"
                 val origin = cncObj.headers?.get("Origin") ?: "https://www.hotstar.com"
