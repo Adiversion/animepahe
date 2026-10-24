@@ -1536,6 +1536,7 @@ open class StremioOttProvider(
         @JsonProperty("id") val id: String? = null,
         @JsonProperty("name") val name: String? = null,
         @JsonProperty("moviedb_id") val moviedbId: Long? = null,
+        @JsonProperty("poster") val poster: String? = null,
         @JsonProperty("year") val year: String? = null
     )
 }
