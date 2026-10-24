@@ -512,7 +512,7 @@ open class StremioOttProvider(
                 headerMap.values.any { v ->
                     (v as? Map<*, *>)?.get("title")?.toString()?.contains(trayKeyword, ignoreCase = true) == true
                 }
-            } ?: wrappers.firstOrNull { it.template == "ScrollableTrayWidget" && it.widget?.data?.items?.isNotEmpty() == true }
+            }
         } ?: return emptyList()
 
         val items = targetWrapper.widget?.data?.items?.take(count) ?: return emptyList()
@@ -568,14 +568,35 @@ open class StremioOttProvider(
                 val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
                 val shelfItems = fetchAppleTvShelf(shelfId, count)
                 if (shelfItems.isNotEmpty()) shelfItems else {
-                    val isMovie = shelfId.contains("Movies", ignoreCase = true)
+                    val isMovie = shelfId.contains("Movies", ignoreCase = true) || shelfId.contains("movies-", ignoreCase = true)
+                    val genres = when {
+                        shelfId.contains("action", ignoreCase = true) -> listOf("act", "trl")
+                        shelfId.contains("comedies", ignoreCase = true) -> listOf("cmy")
+                        shelfId.contains("dramas", ignoreCase = true) -> listOf("dra")
+                        shelfId.contains("kids", ignoreCase = true) -> listOf("ani", "fml")
+                        else -> null
+                    }
+                    val sortBy = when {
+                        shelfId.contains("Charts", ignoreCase = true) -> "POPULAR"
+                        shelfId.contains("must-see", ignoreCase = true) -> "TRENDING"
+                        shelfId.contains("newest", ignoreCase = true) -> "TRENDING"
+                        shelfId.contains("free-premieres", ignoreCase = true) -> "POPULAR"
+                        else -> "POPULAR"
+                    }
+                    val minScore = when {
+                        shelfId.contains("must-see", ignoreCase = true) -> 7.5
+                        shelfId.contains("dramas", ignoreCase = true) -> 7.0
+                        shelfId.contains("free-premieres", ignoreCase = true) -> 7.0
+                        else -> 5.5
+                    }
                     fetchJustWatchCatalog(
                         pkg = jwPackage,
                         isMovie = isMovie,
                         country = country,
                         count = count,
-                        sortBy = "TRENDING",
-                        minScore = 6.0
+                        genres = genres,
+                        sortBy = sortBy,
+                        minScore = minScore
                     )
                 }
             }
