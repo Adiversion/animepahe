@@ -285,6 +285,66 @@ open class StremioOttProvider(
         }
     }
 
+    private suspend fun fetchSonyLivTray(trayId: String, count: Int = 15): List<SearchResponse> {
+        val url = if (trayId == "POPULAR_SEARCH") {
+            "https://apiv3.sonyliv.com/AGL/4.8/A/ENG/WEB/IN/CT/TRAY/SEARCH/POPULAR?from=0&to=$count"
+        } else {
+            "https://apiv3.sonyliv.com/AGL/4.8/A/ENG/WEB/IN/CT/TRAY/EXTCOLLECTION/$trayId?from=0&to=$count"
+        }
+
+        val json = runCatching {
+            app.get(
+                url,
+                headers = mapOf(
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                    "Origin" to "https://www.sonyliv.com",
+                    "Referer" to "https://www.sonyliv.com/"
+                ),
+                timeout = 7
+            ).text
+        }.getOrNull() ?: return emptyList()
+
+        val parsed = runCatching { parseJson<SonyLivTrayResponse>(json) }.getOrNull()
+        val containers = parsed?.resultObj?.containers ?: return emptyList()
+
+        return coroutineScope {
+            containers.map { container ->
+                async {
+                    val meta = container.metadata ?: return@async null
+                    val title = meta.title?.trim() ?: return@async null
+                    if (title.isBlank()) return@async null
+
+                    val isMovie = meta.contentSubtype?.contains("MOVIE", ignoreCase = true) == true
+                    val year = meta.year?.toIntOrNull()
+
+                    val imdbId = meta.emfAttributes?.sameAs?.firstOrNull { it.contains("imdb.com/title/") }
+                        ?.substringAfter("title/")?.trimEnd('/')
+
+                    val tmdbId = resolveTmdbId(imdbId, isMovie, title) ?: return@async null
+
+                    val poster = meta.emfAttributes?.tvBackgroundImage
+                        ?: meta.emfAttributes?.imgTile38402160
+                        ?: meta.emfAttributes?.mastheadLargeV2
+                        ?: meta.pictureUrl?.takeIf { it != "NA" }
+
+                    val itemUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+
+                    if (isMovie) {
+                        newMovieSearchResponse(title, itemUrl, TvType.Movie) {
+                            this.posterUrl = poster
+                            this.year = year
+                        }
+                    } else {
+                        newTvSeriesSearchResponse(title, itemUrl, TvType.TvSeries) {
+                            this.posterUrl = poster
+                            this.year = year
+                        }
+                    }
+                }
+            }.awaitAll().filterNotNull().distinctBy { it.url }
+        }
+    }
+
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val country = getUserCountry()
         val cacheKey = "$name/$country/${request.data}/${request.name}/$page"
@@ -298,6 +358,23 @@ open class StremioOttProvider(
         }
 
         val items = when {
+            request.data.startsWith("SONYLIV_TRAY:") -> {
+                val parts = request.data.removePrefix("SONYLIV_TRAY:").split(":")
+                val trayId = parts.getOrNull(0) ?: "9014011"
+                val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
+                val trayItems = fetchSonyLivTray(trayId, count)
+                if (trayItems.isNotEmpty()) trayItems else {
+                    fetchJustWatchCatalog(
+                        pkg = jwPackage,
+                        isMovie = false,
+                        country = country,
+                        count = count,
+                        productionCountries = listOf("IN"),
+                        sortBy = "TRENDING",
+                        minScore = 6.0
+                    )
+                }
+            }
             request.data.startsWith("LIVE_CNC:") -> {
                 val cat = request.data.substringAfter("LIVE_CNC:")
                 fetchCncChannels(cat)
@@ -665,6 +742,40 @@ open class StremioOttProvider(
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
+    data class SonyLivTrayResponse(
+        @JsonProperty("resultObj") val resultObj: SonyLivResultObj? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class SonyLivResultObj(
+        @JsonProperty("containers") val containers: List<SonyLivContainer>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class SonyLivContainer(
+        @JsonProperty("id") val id: Long? = null,
+        @JsonProperty("metadata") val metadata: SonyLivMetadata? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class SonyLivMetadata(
+        @JsonProperty("contentId") val contentId: Long? = null,
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("contentSubtype") val contentSubtype: String? = null,
+        @JsonProperty("year") val year: String? = null,
+        @JsonProperty("pictureUrl") val pictureUrl: String? = null,
+        @JsonProperty("emfAttributes") val emfAttributes: SonyLivEmfAttributes? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class SonyLivEmfAttributes(
+        @JsonProperty("SameAs") val sameAs: List<String>? = null,
+        @JsonProperty("tv_background_image") val tvBackgroundImage: String? = null,
+        @JsonProperty("img_tile_3840_2160") val imgTile38402160: String? = null,
+        @JsonProperty("masthead_large_v2") val mastheadLargeV2: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class JwGraphQLResponse(
         @JsonProperty("data") val data: JwData? = null
     )
@@ -788,10 +899,12 @@ class SonyLivProvider : StremioOttProvider(
     providerId = "snl",
     jwPackage = "snl",
     customMainPage = mainPageOf(
-        "SHOW_IN:10:0" to "Top 10 Shows on SonyLIV Today",
-        "MOVIE_IN:10:0" to "Top 10 Movies on SonyLIV Today",
-        "SHOW_IN:15:10" to "Popular SonyLIV Originals",
-        "MOVIE_IN:15:10" to "Popular Movies on SonyLIV"
+        "SONYLIV_TRAY:9014011:15" to "🔥 Trending in India Today",
+        "SONYLIV_TRAY:9015093:15" to "✨ Popular SonyLIV Originals",
+        "SONYLIV_TRAY:9016638:15" to "🎬 Blockbuster Movies on SonyLIV",
+        "SONYLIV_TRAY:POPULAR_SEARCH:15" to "📺 Popular on Sony SAB & TV",
+        "SONYLIV_TRAY:3937924064:12" to "🏆 Trending in Sports",
+        "SONYLIV_TRAY:9012681:10" to "⏳ Upcoming on LIV"
     )
 )
 
