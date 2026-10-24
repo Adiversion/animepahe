@@ -4,7 +4,58 @@ import android.util.Base64
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.*
 import com.lagradost.cloudstream3.utils.AppUtils.parseJson
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.jsoup.Jsoup
+
+fun parseStreamQuality(qualityStr: String?): Int {
+    if (qualityStr.isNullOrBlank()) return Qualities.Unknown.value
+    val match = Regex("""(\d{3,4})p?""").find(qualityStr)
+    return when (match?.groupValues?.get(1)?.toIntOrNull()) {
+        2160, 4 -> Qualities.P2160.value
+        1440 -> Qualities.P1440.value
+        1080 -> Qualities.P1080.value
+        720 -> Qualities.P720.value
+        480 -> Qualities.P480.value
+        360 -> Qualities.P360.value
+        else -> when {
+            qualityStr.contains("4k", ignoreCase = true) || qualityStr.contains("uhd", ignoreCase = true) -> Qualities.P2160.value
+            qualityStr.contains("1080", ignoreCase = true) || qualityStr.contains("fhd", ignoreCase = true) -> Qualities.P1080.value
+            qualityStr.contains("720", ignoreCase = true) || qualityStr.contains("hd", ignoreCase = true) -> Qualities.P720.value
+            qualityStr.contains("480", ignoreCase = true) || qualityStr.contains("sd", ignoreCase = true) -> Qualities.P480.value
+            else -> Qualities.Unknown.value
+        }
+    }
+}
+
+fun unpackDeanEdwards(script: String): String {
+    val match = Regex("""eval\(function\(p,a,c,k,e,[rd]\)\{.*?return p\}\s*\(\s*['"](.*?)['"]\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*['"](.*?)['"]\.split\(['"]\|['"]\)""", RegexOption.DOT_MATCHES_ALL).find(script) ?: return script
+    val (p, aStr, cStr, kStr) = match.destructured
+    val a = aStr.toIntOrNull() ?: 10
+    val c = cStr.toIntOrNull() ?: 0
+    val k = kStr.split("|")
+    val chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    fun baseN(num: Int, base: Int): String {
+        var n = num
+        var res = ""
+        while (n > 0) {
+            res = chars[n % base] + res
+            n /= base
+        }
+        return if (res.isEmpty()) "0" else res
+    }
+    val dict = HashMap<String, String>()
+    for (i in 0 until c) {
+        val key = baseN(i, a)
+        val word = if (i < k.size && k[i].isNotEmpty()) k[i] else key
+        dict[key] = word
+    }
+    return Regex("""\b\w+\b""").replace(p) { m ->
+        dict[m.value] ?: m.value
+    }
+}
 
 fun extractResolution(vararg sources: String?): Int {
     for (s in sources) {
@@ -279,6 +330,14 @@ class FastDlLolExtractor : FastDLExtractor() {
     override val mainUrl = "https://fastdl.lol"
 }
 
+class FastDlServerExtractor : FastDLExtractor() {
+    override val mainUrl = "https://dl.fastdlserver.site"
+}
+
+class FastDlSiteExtractor : FastDLExtractor() {
+    override val mainUrl = "https://fastdlserver.site"
+}
+
 open class DriveSeedExtractor : ExtractorApi() {
     override val name = "DriveSeed"
     override val mainUrl = "https://driveseed.org"
@@ -328,6 +387,14 @@ open class HubdriveExtractor : ExtractorApi() {
             loadExtractor(hubcloudMatch, subtitleCallback, callback)
         }
     }
+}
+
+class HubdrivePicsExtractor : HubdriveExtractor() {
+    override val mainUrl = "https://hubdrive.pics"
+}
+
+class HubdriveLolExtractor : HubdriveExtractor() {
+    override val mainUrl = "https://hubdrive.lol"
 }
 
 open class HubcloudExtractor : ExtractorApi() {
@@ -441,6 +508,19 @@ open class HubcloudExtractor : ExtractorApi() {
                         )
                     }
                 }
+                href.contains("workers.dev") || href.contains("cloudserver") -> {
+                    callback(
+                        newExtractorLink(
+                            source = name,
+                            name = "$name - [ZipDisk Server ⚡]$displayQ",
+                            url = href,
+                            type = ExtractorLinkType.VIDEO
+                        ) {
+                            this.referer = ""
+                            this.quality = finalQ
+                        }
+                    )
+                }
             }
         }
     }
@@ -458,6 +538,14 @@ class HubcloudLolExtractor : HubcloudExtractor() {
     override val mainUrl = "https://hubcloud.lol"
 }
 
+class HubcloudPicsExtractor : HubcloudExtractor() {
+    override val mainUrl = "https://hubcloud.pics"
+}
+
+class HubcloudBarExtractor : HubcloudExtractor() {
+    override val mainUrl = "https://hubcloud.bar"
+}
+
 open class CineverseExtractor : ExtractorApi() {
     override val name = "Cineverse"
     override val mainUrl = "https://rozgarlelo.modiplay.xyz"
@@ -473,6 +561,15 @@ open class CineverseExtractor : ExtractorApi() {
             app.get(url, headers = mapOf("Referer" to (referer ?: "https://m1.multimovies.courses/"))).text
         }.getOrNull() ?: return
 
+        // 1. Direct Minochinos embed detection
+        val minoUrl = Regex("""https?://minochinos\.[a-z]+/embed/[a-zA-Z0-9]+""").find(html)?.value
+        if (!minoUrl.isNullOrBlank()) {
+            runCatching {
+                loadExtractor(minoUrl, url, subtitleCallback, callback)
+            }
+        }
+
+        // 2. Proxy or direct player resolution
         val iframeSrc = Regex("""<iframe[^>]*src=["']([^"']+)["']""").find(html)?.groupValues?.get(1)
         val targetUrl = if (!iframeSrc.isNullOrBlank()) {
             if (iframeSrc.startsWith("http")) iframeSrc else "https://rozgarlelo.modiplay.xyz$iframeSrc"
@@ -485,10 +582,13 @@ open class CineverseExtractor : ExtractorApi() {
         } else html
 
         val embedUrl = Regex("""EMBED_URL\s*=\s*['"]([^'"]+)['"]""").find(proxyHtml)?.groupValues?.get(1)
+            ?: Regex("""https?://hanerix\.[a-z]+/e/[a-zA-Z0-9]+""").find(proxyHtml)?.value
             ?: Regex("""https?://vidara\.[a-z]+/e/[a-zA-Z0-9]+""").find(proxyHtml)?.value
 
         if (!embedUrl.isNullOrBlank()) {
-            loadExtractor(embedUrl, targetUrl, subtitleCallback, callback)
+            runCatching {
+                loadExtractor(embedUrl, targetUrl, subtitleCallback, callback)
+            }
         }
     }
 }
@@ -777,4 +877,270 @@ open class HubcdnExtractor : ExtractorApi() {
     }
 }
 
+// ─── Vidbolt Direct Resolver & Extractor ──────────────────────────────────────
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class VidboltResponse(
+    @JsonProperty("stream") val stream: VidboltStream? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class VidboltStream(
+    @JsonProperty("server") val server: String? = null,
+    @JsonProperty("sources") val sources: List<VidboltSource>? = null,
+    @JsonProperty("tracks") val tracks: List<VidboltTrack>? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class VidboltSource(
+    @JsonProperty("url") val url: String? = null,
+    @JsonProperty("quality") val quality: String? = null,
+    @JsonProperty("kind") val kind: String? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class VidboltTrack(
+    @JsonProperty("url") val url: String? = null,
+    @JsonProperty("label") val label: String? = null,
+    @JsonProperty("lang") val lang: String? = null
+)
+
+open class VidboltExtractor : ExtractorApi() {
+    override val name = "Vidbolt"
+    override val mainUrl = "https://vidbolt.xyz"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val cleanUrl = url.trim()
+        val isMovie = !cleanUrl.contains("/tv/")
+        val id = if (isMovie) {
+            cleanUrl.substringAfter("/movie/").substringBefore("?").substringBefore("/")
+        } else {
+            cleanUrl.substringAfter("/tv/").substringBefore("?").substringBefore("/")
+        }
+        val season = if (!isMovie) {
+            cleanUrl.substringAfter("/tv/$id/").substringBefore("/").toIntOrNull() ?: 1
+        } else 1
+        val episode = if (!isMovie) {
+            cleanUrl.substringAfter("/tv/$id/$season/").substringBefore("?").substringBefore("/").toIntOrNull() ?: 1
+        } else 1
+
+        val servers = listOf("orion", "callisto", "fastva", "vega", "quantum", "quasar")
+        val baseApi = "$mainUrl/api/resolve?type=${if (isMovie) "movie" else "tv"}&id=$id${if (!isMovie) "&season=$season&episode=$episode" else ""}"
+
+        coroutineScope {
+            val jobs = servers.map { srv ->
+                async {
+                    runCatching {
+                        val apiUrl = "$baseApi&only=$srv"
+                        val json = app.get(
+                            apiUrl,
+                            headers = mapOf(
+                                "User-Agent" to VCloudExtractor.USER_AGENT,
+                                "Referer" to cleanUrl
+                            ),
+                            timeout = 6
+                        ).parsedSafe<VidboltResponse>()
+
+                        val stream = json?.stream ?: return@runCatching
+                        val srvName = stream.server?.replaceFirstChar { it.uppercase() } ?: srv.replaceFirstChar { it.uppercase() }
+
+                        stream.sources?.forEach { src ->
+                            val sUrl = src.url?.trim() ?: return@forEach
+                            val qLabel = src.quality ?: "Auto"
+                            val isHls = src.kind?.lowercase() == "hls" || sUrl.contains(".m3u8")
+                            val qInt = parseStreamQuality(qLabel)
+
+                            callback(
+                                newExtractorLink(
+                                    source = name,
+                                    name = "$name [$srvName] - $qLabel [⚡ Direct]",
+                                    url = sUrl,
+                                    type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                ) {
+                                    this.referer = "$mainUrl/"
+                                    this.headers = mapOf(
+                                        "User-Agent" to VCloudExtractor.USER_AGENT,
+                                        "Referer" to "$mainUrl/"
+                                    )
+                                    this.quality = qInt
+                                }
+                            )
+                        }
+
+                        stream.tracks?.forEach { trk ->
+                            val trkUrl = trk.url?.trim() ?: return@forEach
+                            val lang = trk.label ?: trk.lang ?: "English"
+                            subtitleCallback(
+                                newSubtitleFile(
+                                    lang = lang,
+                                    url = trkUrl
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            jobs.forEach { it.await() }
+        }
+    }
+}
+
+// ─── Vidrift Multi-Audio Master HLS Extractor ─────────────────────────────────
+
+open class VidriftExtractor : ExtractorApi() {
+    override val name = "Vidrift"
+    override val mainUrl = "https://embed.vidrift.net"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(
+                url,
+                headers = mapOf(
+                    "User-Agent" to VCloudExtractor.USER_AGENT,
+                    "Referer" to (referer ?: "https://m1.multimovies.courses/")
+                ),
+                timeout = 7
+            ).text
+        }.getOrNull() ?: return
+
+        // 1. Extract stream sources from embedded JSON
+        val matches = Regex("""\{"index":\d+,"url":"([^"]+)".*?"name":"([^"]+)"""").findAll(html)
+        matches.forEach { m ->
+            val relUrl = m.groupValues[1]
+            val streamName = m.groupValues[2]
+            val fullUrl = if (relUrl.startsWith("http")) relUrl else "https://embed.vidrift.net$relUrl"
+            val isHls = fullUrl.contains(".m3u8")
+            val qualityInt = when {
+                streamName.contains("1080") -> Qualities.P1080.value
+                streamName.contains("720") -> Qualities.P720.value
+                streamName.contains("480") -> Qualities.P480.value
+                else -> Qualities.P1080.value
+            }
+
+            callback(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - $streamName [⚡ Multi-Audio]",
+                    url = fullUrl,
+                    type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                ) {
+                    this.referer = "https://embed.vidrift.net/"
+                    this.headers = mapOf(
+                        "User-Agent" to VCloudExtractor.USER_AGENT,
+                        "Referer" to "https://embed.vidrift.net/"
+                    )
+                    this.quality = qualityInt
+                }
+            )
+        }
+
+        // 2. Extract subtitles from subtitleTracks
+        val subMatches = Regex("""\{"code":"[^"]*","label":"([^"]+)","lang":"[^"]*","url":"([^"]+)"""").findAll(html)
+        subMatches.forEach { sm ->
+            val sLabel = sm.groupValues[1]
+            val sPath = sm.groupValues[2]
+            val sUrl = if (sPath.startsWith("http")) sPath else "https://embed.vidrift.net$sPath"
+            subtitleCallback(
+                newSubtitleFile(
+                    lang = sLabel,
+                    url = sUrl
+                )
+            )
+        }
+    }
+}
+
+// ─── Hanerix & Minochinos Packed Extractors ───────────────────────────────────
+
+open class HanerixExtractor : ExtractorApi() {
+    override val name = "Hanerix"
+    override val mainUrl = "https://hanerix.com"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(
+                url,
+                headers = mapOf(
+                    "User-Agent" to VCloudExtractor.USER_AGENT,
+                    "Referer" to (referer ?: "https://rozgarlelo.modiplay.xyz/")
+                ),
+                timeout = 7
+            ).text
+        }.getOrNull() ?: return
+
+        val unpacked = unpackDeanEdwards(html)
+        val m3u8Match = Regex("""https?://[^\s"'<>\)\\]+\.m3u8[^\s"'<>\)\\]*""").find(unpacked)?.value
+        if (!m3u8Match.isNullOrBlank()) {
+            callback(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - Direct HLS ⚡",
+                    url = m3u8Match,
+                    type = ExtractorLinkType.M3U8
+                ) {
+                    this.referer = "$mainUrl/"
+                    this.quality = Qualities.P1080.value
+                }
+            )
+        }
+    }
+}
+
+open class MinochinosExtractor : ExtractorApi() {
+    override val name = "Minochinos"
+    override val mainUrl = "https://minochinos.com"
+    override val requiresReferer = false
+
+    override suspend fun getUrl(
+        url: String,
+        referer: String?,
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit
+    ) {
+        val html = runCatching {
+            app.get(
+                url,
+                headers = mapOf(
+                    "User-Agent" to VCloudExtractor.USER_AGENT,
+                    "Referer" to (referer ?: "https://rozgarlelo.modiplay.xyz/")
+                ),
+                timeout = 7
+            ).text
+        }.getOrNull() ?: return
+
+        val unpacked = unpackDeanEdwards(html)
+        val m3u8Match = Regex("""https?://[^\s"'<>\)\\]+\.m3u8[^\s"'<>\)\\]*""").find(unpacked)?.value
+        if (!m3u8Match.isNullOrBlank()) {
+            callback(
+                newExtractorLink(
+                    source = name,
+                    name = "$name - Direct HLS ⚡",
+                    url = m3u8Match,
+                    type = ExtractorLinkType.M3U8
+                ) {
+                    this.referer = "$mainUrl/"
+                    this.quality = Qualities.P1080.value
+                }
+            )
+        }
+    }
+}
 

@@ -10,7 +10,7 @@ object DomainResolver {
     private const val CACHE_TTL = 6 * 3600 * 1000L // 6 hours
 
     private val defaults = mapOf(
-        "rogmovies"   to "https://rogmovies.one",
+        "rogmovies"   to "https://rogmovies.im",
         "katmovie"    to "https://new.katmoviehd.top",
         "hdhub4u"     to "https://new8.hdhub4u.cl",
         "bollyflix"   to "https://bollyflix.co.za"

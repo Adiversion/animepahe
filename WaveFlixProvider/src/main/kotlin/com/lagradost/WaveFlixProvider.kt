@@ -306,16 +306,14 @@ class WaveFlixProvider : MainAPI() {
                                         if (streamUrl.isNullOrBlank()) return@mapNotNull null
                                         val qualityLabel = src.label ?: src.quality ?: "Auto"
 
-                                        // Skip 10Gbps Google CDN download links that fail HTTP Range seeking and resume
-                                        if (streamUrl.contains("video-downloads.googleusercontent.com") ||
-                                            qualityLabel.contains("10Gbps", ignoreCase = true) ||
-                                            serverDisplayName.contains("10Gbps", ignoreCase = true)
-                                        ) {
+                                        // Skip only unusable Google drive download quota warning links
+                                        if (streamUrl.contains("video-downloads.googleusercontent.com")) {
                                             return@mapNotNull null
                                         }
 
                                         val qualityInt = parseQuality(qualityLabel)
-                                        val isHls = src.type?.lowercase() == "m3u8" || streamUrl.contains(".m3u8")
+                                        val isHls = src.type?.lowercase() == "m3u8" || src.type?.lowercase() == "hls" || streamUrl.contains(".m3u8")
+                                        val isMpd = src.type?.lowercase() == "mpd" || streamUrl.contains(".mpd")
                                         val streamReferer = src.headers?.get("Referer") ?: "https://nxsha.space/"
 
                                         val streamHeaders = mapOf(
@@ -324,8 +322,20 @@ class WaveFlixProvider : MainAPI() {
                                             "Origin" to "https://nxsha.space"
                                         )
 
-                                        if (src.isEmbed == true || src.type?.lowercase() == "embed") {
-                                            // Avoid slow blocking WebViews for known Cloudflare/captcha-walled hosts
+                                        val isExtractorHost = src.isEmbed == true ||
+                                            src.type?.lowercase() == "embed" ||
+                                            streamUrl.contains("hubcloud") ||
+                                            streamUrl.contains("hubdrive") ||
+                                            streamUrl.contains("katdrive") ||
+                                            streamUrl.contains("pixeldrain") ||
+                                            streamUrl.contains("vidbolt") ||
+                                            streamUrl.contains("vidrift") ||
+                                            streamUrl.contains("filmu") ||
+                                            streamUrl.contains("modiplay") ||
+                                            streamUrl.contains("hanerix") ||
+                                            streamUrl.contains("minochinos")
+
+                                        if (isExtractorHost) {
                                             if (!streamUrl.contains("filepress") && !streamUrl.contains("filebee")) {
                                                 async {
                                                     try {
@@ -335,23 +345,31 @@ class WaveFlixProvider : MainAPI() {
                                             } else null
                                         } else {
                                             async {
-                                                // Fast-probe stream with 2s timeout to filter out dead links without lagging UI
                                                 val isPlayable = try {
-                                                    val probeHeaders = if (isHls) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
-                                                    val check = app.get(streamUrl, headers = probeHeaders, timeout = 2)
-                                                    val cType = (check.headers["Content-Type"] ?: check.headers["content-type"])?.lowercase() ?: ""
-                                                    val isNotHtml = !cType.contains("text/html")
-                                                    (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403 && isNotHtml
+                                                    if (streamUrl.contains("workers.dev") || streamUrl.contains("hscow.com") || streamUrl.contains("cloudflarestorage.com") || streamUrl.contains("kkphimplayer") || streamUrl.contains("remoteconsultinggroup")) {
+                                                        true
+                                                    } else {
+                                                        val probeHeaders = if (isHls || isMpd) streamHeaders else streamHeaders + ("Range" to "bytes=0-1024")
+                                                        val check = app.get(streamUrl, headers = probeHeaders, timeout = 4)
+                                                        val cType = (check.headers["Content-Type"] ?: check.headers["content-type"])?.lowercase() ?: ""
+                                                        val isNotHtml = !cType.contains("text/html")
+                                                        (check.isSuccessful || check.code in 200..299) && check.code != 400 && check.code != 403 && isNotHtml
+                                                    }
                                                 } catch (_: Throwable) {
-                                                    false
+                                                    isHls || isMpd || streamUrl.contains(".mp4")
                                                 }
 
                                                 if (isPlayable) {
+                                                    val linkType = when {
+                                                        isMpd -> ExtractorLinkType.DASH
+                                                        isHls -> ExtractorLinkType.M3U8
+                                                        else -> ExtractorLinkType.VIDEO
+                                                    }
                                                     val link = newExtractorLink(
                                                         source = "WaveFlix [$serverDisplayName]",
                                                         name = "$serverDisplayName - $qualityLabel",
                                                         url = streamUrl,
-                                                        type = if (isHls) ExtractorLinkType.M3U8 else ExtractorLinkType.VIDEO
+                                                        type = linkType
                                                     ) {
                                                         this.referer = streamReferer
                                                         this.headers = streamHeaders
@@ -554,28 +572,18 @@ class WaveFlixProvider : MainAPI() {
         subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ) = coroutineScope {
-        val servers = mutableListOf<String>()
-        if (isMovie) {
-            servers.add("https://embed.filmu.in/movie/$tmdbId")
-            servers.add("https://rozgarlelo.modiplay.xyz/embed/tmdb/movie?id=$tmdbId")
-            servers.add("https://vidbolt.xyz/movie/$tmdbId")
-            servers.add("https://embed.vidrift.net/embed/movie/$tmdbId")
-            servers.add("https://www.moviesnexus.fun/movie/$tmdbId?sv=multi-audio")
-            if (!imdbId.isNullOrBlank()) {
-                servers.add("https://streams.iqsmartgames.com/embed/movie/$imdbId?key=e11a7debaaa4f5d25b671706ffe4d2acb56efbd4")
-                servers.add("https://vidout.pages.dev/movie/$imdbId")
-            }
-        } else {
-            servers.add("https://embed.filmu.in/tv/$tmdbId/$season/$episode")
-            servers.add("https://rozgarlelo.modiplay.xyz/embed/tmdb/tv?id=$tmdbId&s=$season&e=$episode")
-            servers.add("https://vidbolt.xyz/tv/$tmdbId/$season/$episode")
-            servers.add("https://embed.vidrift.net/embed/tv/$tmdbId/$season/$episode")
-            servers.add("https://www.moviesnexus.fun/tv/$tmdbId/$season/$episode")
-            servers.add("https://streams.iqsmartgames.com/embed/tv/$tmdbId/$season/$episode?key=e11a7debaaa4f5d25b671706ffe4d2acb56efbd4")
-            servers.add("https://vidout.pages.dev/tv/$tmdbId/s$season/e$episode")
+        val vidboltTarget = if (isMovie) "https://vidbolt.xyz/movie/$tmdbId" else "https://vidbolt.xyz/tv/$tmdbId/$season/$episode"
+        val vidriftTarget = if (isMovie) "https://embed.vidrift.net/embed/movie/$tmdbId" else "https://embed.vidrift.net/embed/tv/$tmdbId/$season/$episode"
+        val filmuTarget = if (isMovie) "https://embed.filmu.in/movie/$tmdbId" else "https://embed.filmu.in/tv/$tmdbId/$season/$episode"
+        val modiplayTarget = if (isMovie) "https://rozgarlelo.modiplay.xyz/embed/tmdb/movie?id=$tmdbId" else "https://rozgarlelo.modiplay.xyz/embed/tmdb/tv?id=$tmdbId&s=$season&e=$episode"
+        val nexusTarget = if (isMovie) "https://www.moviesnexus.fun/movie/$tmdbId?sv=multi-audio" else "https://www.moviesnexus.fun/tv/$tmdbId/$season/$episode"
+
+        val targets = mutableListOf(vidboltTarget, vidriftTarget, filmuTarget, modiplayTarget, nexusTarget)
+        if (!imdbId.isNullOrBlank()) {
+            targets.add(if (isMovie) "https://streams.iqsmartgames.com/embed/movie/$imdbId?key=e11a7debaaa4f5d25b671706ffe4d2acb56efbd4" else "https://streams.iqsmartgames.com/embed/tv/$imdbId/$season/$episode?key=e11a7debaaa4f5d25b671706ffe4d2acb56efbd4")
         }
 
-        val jobs = servers.map { sUrl ->
+        val jobs = targets.map { sUrl ->
             async {
                 try {
                     loadExtractor(sUrl, "https://m1.multimovies.courses/", subtitleCallback, callback)

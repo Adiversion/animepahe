@@ -40,6 +40,16 @@ class WaveFlixPlugin : Plugin() {
         registerExtractorAPI(BollydriveMomExtractor())
         registerExtractorAPI(CineverseExtractor())
         registerExtractorAPI(FilmuExtractor())
+        registerExtractorAPI(FastDlServerExtractor())
+        registerExtractorAPI(FastDlSiteExtractor())
+        registerExtractorAPI(HubdrivePicsExtractor())
+        registerExtractorAPI(HubdriveLolExtractor())
+        registerExtractorAPI(HubcloudPicsExtractor())
+        registerExtractorAPI(HubcloudBarExtractor())
+        registerExtractorAPI(VidboltExtractor())
+        registerExtractorAPI(VidriftExtractor())
+        registerExtractorAPI(HanerixExtractor())
+        registerExtractorAPI(MinochinosExtractor())
 
         // KatMovieHD auxiliary extractors
         registerExtractorAPI(FuckingfastExtractor())
