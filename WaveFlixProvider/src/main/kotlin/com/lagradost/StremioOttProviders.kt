@@ -126,6 +126,84 @@ open class StremioOttProvider(
     }
 
     private suspend fun fetchCncChannels(filterType: String): List<SearchResponse> {
+        val filterUpper = filterType.uppercase()
+        val isSony = filterUpper.startsWith("SONY")
+
+        if (isSony) {
+            val results = mutableListOf<SearchResponse>()
+
+            // 1. If sports, fetch live cricket/sports events from LivXow
+            if (filterUpper.contains("SPORTS")) {
+                try {
+                    val eventsRes = app.get(
+                        "https://cncverse.dpdns.org/catalog/tv/cnc_LivXowLiveEvents_tv.json",
+                        headers = mapOf("User-Agent" to "Mozilla/5.0"),
+                        timeout = 5
+                    ).parsedSafe<CncCatalogResponse>()
+
+                    eventsRes?.metas?.forEach { meta ->
+                        val id = meta.id ?: return@forEach
+                        val name = meta.name?.trim() ?: return@forEach
+                        if (name.isBlank() || name == "⠀") return@forEach
+
+                        val targetUrl = "https://cncverse.dpdns.org/live/${URLEncoder.encode(name, "UTF-8")}?data=${URLEncoder.encode(id, "UTF-8")}"
+                        results.add(
+                            newMovieSearchResponse(name, targetUrl, TvType.Live) {
+                                this.posterUrl = meta.poster
+                            }
+                        )
+                    }
+                } catch (_: Throwable) {}
+            }
+
+            // 2. Fetch Sony live channels from JIOTVIND
+            try {
+                val jioRes = app.get(
+                    "https://cncverse.dpdns.org/catalog/tv/cnc_JIOTVIND_tv.json",
+                    headers = mapOf("User-Agent" to "Mozilla/5.0"),
+                    timeout = 6
+                ).parsedSafe<CncCatalogResponse>()
+
+                val channels = jioRes?.metas?.mapNotNull { meta ->
+                    val id = meta.id ?: return@mapNotNull null
+                    val name = meta.name?.trim() ?: return@mapNotNull null
+                    if (name.isBlank() || name == "⠀") return@mapNotNull null
+                    val lower = name.lowercase()
+
+                    if (lower.contains("epg") || lower.contains("sonic") || lower.contains("sabka bazaar") || lower.contains("sansad")) {
+                        return@mapNotNull null
+                    }
+
+                    val match = if (filterUpper.contains("SPORTS")) {
+                        lower.contains("ten 1") || lower.contains("ten 2") || lower.contains("ten 3") ||
+                        lower.contains("ten 4") || lower.contains("ten 5") || lower.contains("sony six") ||
+                        lower.contains("sony liv sports")
+                    } else {
+                        lower.contains("sony sab") || lower.contains("sony max") || lower.contains("set hd") ||
+                        lower.contains("set sd") || lower.contains("sony pix") || lower.contains("sony bbc earth") ||
+                        lower.contains("sony pal") || lower.contains("sony yay") || lower.contains("sony marathi") ||
+                        lower.contains("sony aath") || lower.contains("sony vizha")
+                    }
+
+                    if (!match) return@mapNotNull null
+
+                    val cleanDisplayName = name
+                        .replace(" STB", "")
+                        .replace(" SD", "")
+                        .trim()
+
+                    val targetUrl = "https://cncverse.dpdns.org/live/${URLEncoder.encode(cleanDisplayName, "UTF-8")}?data=${URLEncoder.encode(id, "UTF-8")}"
+                    newMovieSearchResponse(cleanDisplayName, targetUrl, TvType.Live) {
+                        this.posterUrl = meta.poster
+                    }
+                }?.distinctBy { it.name } ?: emptyList()
+
+                results.addAll(channels)
+            } catch (_: Throwable) {}
+
+            return results
+        }
+
         return try {
             val res = app.get(
                 "https://cncverse.dpdns.org/catalog/tv/cnc_JioHotstar2_tv.json",
@@ -377,6 +455,10 @@ open class StremioOttProvider(
             }
             request.data.startsWith("LIVE_CNC:") -> {
                 val cat = request.data.substringAfter("LIVE_CNC:")
+                fetchCncChannels(cat)
+            }
+            request.data.startsWith("SONY_CNC:") -> {
+                val cat = "SONY_" + request.data.substringAfter("SONY_CNC:")
                 fetchCncChannels(cat)
             }
             request.data.startsWith("LIVE_SPORTS") -> {
@@ -660,7 +742,7 @@ open class StremioOttProvider(
             val title = URLDecoder.decode(rawTitle, "UTF-8")
 
             return newMovieLoadResponse(title, url, TvType.Live, decodedId) {
-                this.plot = "Live stream from JioHotstar / Star Network"
+                this.plot = "Live stream via CNCverse Bridge"
             }
         }
 
@@ -676,6 +758,64 @@ open class StremioOttProvider(
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         if (data.startsWith("cnc:")) {
+            var foundLinks = false
+            // 1. CNCstream multi-quality and auto-decrypted stream bridge
+            try {
+                val encodedData = URLEncoder.encode(data, "UTF-8")
+                val streamApiUrl = "https://cncverse.dpdns.org/stream/tv/$encodedData.json"
+                val streamRes = app.get(
+                    streamApiUrl,
+                    headers = mapOf("User-Agent" to "Mozilla/5.0"),
+                    timeout = 8
+                ).parsedSafe<CncStreamResponse>()
+
+                streamRes?.streams?.forEach { s ->
+                    val sUrl = s.url?.trim() ?: return@forEach
+                    if (sUrl.isBlank() || sUrl.startsWith("javascript:")) return@forEach
+
+                    val sTitle = s.title ?: ""
+                    val sName = s.name ?: "Live Stream"
+
+                    val quality = when {
+                        sTitle.contains("1080") || sName.contains("1080") -> Qualities.P1080.value
+                        sTitle.contains("720") || sName.contains("720") -> Qualities.P720.value
+                        sTitle.contains("480") || sName.contains("480") -> Qualities.P480.value
+                        sTitle.contains("360") || sName.contains("360") -> Qualities.P360.value
+                        else -> Qualities.Unknown.value
+                    }
+
+                    val headers = s.behaviorHints?.proxyHeaders?.request?.toMutableMap() ?: mutableMapOf()
+                    if (!headers.containsKey("User-Agent")) {
+                        headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                    }
+
+                    val label = when {
+                        sTitle.contains("🏷️") -> sTitle.substringAfter("🏷️").substringBefore("🎞️").substringBefore("🛰️").trim()
+                        sName.isNotBlank() && !sName.startsWith("✨") -> sName.substringBefore("•").trim()
+                        sTitle.isNotBlank() && !sTitle.startsWith("Click to donate") -> sTitle.lines().firstOrNull()?.trim() ?: "Live Stream"
+                        else -> "Live Stream"
+                    }
+
+                    callback(
+                        newExtractorLink(
+                            source = "Live Stream",
+                            name = label,
+                            url = sUrl,
+                            type = if (sUrl.contains(".mpd")) ExtractorLinkType.DASH else ExtractorLinkType.M3U8
+                        ) {
+                            this.headers = headers
+                            this.quality = quality
+                        }
+                    )
+                    foundLinks = true
+                }
+            } catch (_: Throwable) {
+                // Ignore and fall back to direct base64 decode
+            }
+
+            if (foundLinks) return true
+
+            // 2. Direct base64 fallback (e.g. JioHotstar direct m3u8 streams)
             try {
                 val b64Payload = data.removePrefix("cnc:").replace("-", "+").replace("_", "/")
                 val padLen = (4 - (b64Payload.length % 4)) % 4
@@ -701,7 +841,7 @@ open class StremioOttProvider(
 
                 callback(
                     newExtractorLink(
-                        source = "JioHotstar Live",
+                        source = "Live Stream",
                         name = cncObj.title ?: "Live Stream",
                         url = streamUrl,
                         type = if (streamUrl.contains(".mpd")) ExtractorLinkType.DASH else ExtractorLinkType.M3U8
@@ -729,6 +869,29 @@ open class StremioOttProvider(
         @JsonProperty("name") val name: String? = null,
         @JsonProperty("poster") val poster: String? = null,
         @JsonProperty("type") val type: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncStreamResponse(
+        @JsonProperty("streams") val streams: List<CncStreamItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncStreamItem(
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("name") val name: String? = null,
+        @JsonProperty("url") val url: String? = null,
+        @JsonProperty("behaviorHints") val behaviorHints: CncBehaviorHints? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncBehaviorHints(
+        @JsonProperty("proxyHeaders") val proxyHeaders: CncProxyHeaders? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class CncProxyHeaders(
+        @JsonProperty("request") val request: Map<String, String>? = null
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -899,6 +1062,8 @@ class SonyLivProvider : StremioOttProvider(
     providerId = "snl",
     jwPackage = "snl",
     customMainPage = mainPageOf(
+        "SONY_CNC:SPORTS" to "⚡ Sony Sports Live & Matches",
+        "SONY_CNC:ENTERTAINMENT" to "📺 Sony Network Live TV Channels",
         "SONYLIV_TRAY:9014011:15" to "🔥 Trending in India Today",
         "SONYLIV_TRAY:9015093:15" to "✨ Popular SonyLIV Originals",
         "SONYLIV_TRAY:9016638:15" to "🎬 Blockbuster Movies on SonyLIV",
