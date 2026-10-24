@@ -89,13 +89,15 @@ open class StremioOttProvider(
     }
 
     private suspend fun resolveTmdbId(id: String?, isMovie: Boolean, name: String?): Long? {
-        if (id.isNullOrBlank()) return null
-        if (id.toLongOrNull() != null) return id.toLong()
+        if (id.isNullOrBlank() && name.isNullOrBlank()) return null
+        val numId = id?.toLongOrNull()
+        if (numId != null) return numId
 
-        idCache[id]?.let { return it }
+        val cacheKey = id ?: "name:${name?.lowercase()?.trim()}"
+        idCache[cacheKey]?.let { return it }
 
         // 1. If it's an IMDb ID (e.g. tt11663228), query Cinemeta
-        if (id.startsWith("tt")) {
+        if (!id.isNullOrBlank() && id.startsWith("tt")) {
             val cType = if (isMovie) "movie" else "series"
             val cinRes = runCatching {
                 app.get("https://v3-cinemeta.strem.io/meta/$cType/$id.json", timeout = 3)
@@ -103,7 +105,7 @@ open class StremioOttProvider(
             }.getOrNull()
             val foundId = cinRes?.meta?.moviedbId
             if (foundId != null && foundId > 0) {
-                idCache[id] = foundId
+                idCache[cacheKey] = foundId
                 return foundId
             }
         }
@@ -117,7 +119,7 @@ open class StremioOttProvider(
                 searchRes?.results?.firstOrNull()?.id
             }.getOrNull()
             if (found != null && found > 0) {
-                idCache[id] = found
+                idCache[cacheKey] = found
                 return found
             }
         }
@@ -423,6 +425,130 @@ open class StremioOttProvider(
         }
     }
 
+    private suspend fun fetchAppleTvShelf(shelfId: String, count: Int = 15): List<SearchResponse> {
+        val utsk = "6e3013c6d6fae3c2::::::"
+        val url = "https://uts-api.itunes.apple.com/uts/v3/shelves/$shelfId?caller=web&sf=143467&v=72&pfm=web&locale=en-IN&utsk=$utsk"
+
+        val json = runCatching {
+            app.get(
+                url,
+                headers = mapOf(
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                    "Accept" to "application/json",
+                    "Origin" to "https://tv.apple.com",
+                    "Referer" to "https://tv.apple.com/"
+                ),
+                timeout = 7
+            ).text
+        }.getOrNull() ?: return emptyList()
+
+        val parsed = runCatching { AppUtils.parseJson<AppleTvShelfResponse>(json) }.getOrNull()
+        val items = parsed?.data?.shelf?.items?.take(count) ?: return emptyList()
+
+        return coroutineScope {
+            items.map { item: AppleTvShelfItem ->
+                async {
+                    val title = item.title?.trim() ?: return@async null
+                    if (title.isBlank()) return@async null
+
+                    val isMovie = item.type?.equals("Movie", ignoreCase = true) == true
+                    val year = item.releaseDate?.let { rd ->
+                        val cal = java.util.Calendar.getInstance()
+                        cal.timeInMillis = rd
+                        cal.get(java.util.Calendar.YEAR)
+                    }
+
+                    val tmdbId = resolveTmdbId(null, isMovie, title) ?: return@async null
+
+                    val rawPoster = item.images?.shelfImage?.url ?: item.images?.transitionImage?.url
+                    val poster: String? = rawPoster?.replace("{w}x{h}.{f}", "720x1080.webp")
+
+                    val itemUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+
+                    if (isMovie) {
+                        newMovieSearchResponse(title, itemUrl, TvType.Movie) {
+                            this.posterUrl = poster
+                            this.year = year
+                        }
+                    } else {
+                        newTvSeriesSearchResponse(title, itemUrl, TvType.TvSeries) {
+                            this.posterUrl = poster
+                            this.year = year
+                        }
+                    }
+                }
+            }.awaitAll().filterNotNull().distinctBy { it.url }
+        }
+    }
+
+    private suspend fun fetchHotstarTray(pageSlug: String, trayKeyword: String, count: Int = 15): List<SearchResponse> {
+        val token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJoSWRcIjpcImEzMDQ0ZjYxN2NkOTRlMmY5NjAxNmU3ZTZkYzFmMWJiXCIsXCJwSWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJkd0hpZFwiOlwiNTcyNDAzZjM1OGM4MTlkNTZmZWY5NDliOWFmNTZlM2ZjODU3MmE2ZTBkN2JjMDZmYmY1MmFhYzc2YWY4NDc5ZlwiLFwiZHdQaWRcIjpcImFiZmZmMGNmMDNmN2JhNDY4MWUwODZlZDIxZTllMGQ4ZGI0MjBiODBhYjZjNWU3YmU5ZjgxMzFlMTlmYWY5NGJcIixcIm9sZEhpZFwiOlwiYTMwNDRmNjE3Y2Q5NGUyZjk2MDE2ZTdlNmRjMWYxYmJcIixcIm9sZFBpZFwiOlwiMTgzZjA0ODFjMjgxNDc5NmE3MWI3NjMxNTM1OGZkYmZcIixcImlzUGlpVXNlck1pZ3JhdGVkXCI6ZmFsc2UsXCJuYW1lXCI6XCJZb3VcIixcImlwXCI6XCIyNDAxOjQ5MDA6ODhiZDpiMzY2OjE0OTM6Mzg5OTo1OGIyOmNkMGZcIixcImNvdW50cnlDb2RlXCI6XCJpblwiLFwiY3VzdG9tZXJUeXBlXCI6XCJudVwiLFwidHlwZVwiOlwiZ3Vlc3RcIixcImlzRW1haWxWZXJpZmllZFwiOmZhbHNlLFwiaXNQaG9uZVZlcmlmaWVkXCI6ZmFsc2UsXCJkZXZpY2VJZFwiOlwiODkxMTllLTYyMjNlOS04ZTg5NjYtMzdhNTdjXCIsXCJwcm9maWxlXCI6XCJBRFVMVFwiLFwidmVyc2lvblwiOlwidjJcIixcInN1YnNjcmlwdGlvbnNcIjp7XCJpblwiOnt9fSxcImlzc3VlZEF0XCI6MTc5MjczNzM1Mzk0NixcIm1hdHVyaXR5TGV2ZWxcIjpcIkFcIixcImRwaWRcIjpcIjE4M2YwNDgxYzI4MTQ3OTZhNzFiNzYzMTUzNThmZGJmXCIsXCJzdFwiOjEsXCJkYXRhXCI6XCJDZ1FJQURvQUNnd0lBQ0lJa0FHYXRlUzdsalFLTGdnQVFpb0tLRUkzWTJVeE9HVTJObVUyTWpJME9EUTNPR1l6WTJZM01qTTFNamMyTmpWbU16a3ROV1J5UWpBPVwifSIsImlzcyI6IlVNIiwiZXhwIjoxNzkyODIzNzUzLCJqdGkiOiIyNDQxZTg1ZjEwNzQ0OGZkOWNmOTlmZjczYjQwMmZjMCIsImlhdCI6MTc5MjczNzM1MywiYXBwSWQiOiIiLCJ0ZW5hbnQiOiIiLCJ2ZXJzaW9uIjoiMV8wIiwiYXVkIjoidW1fYWNjZXNzIn0.TrOwZtwk1VHX4_i-C3280eyLfqDXX_PMcYAlPRoMXhc"
+        val url = "https://www.hotstar.com/api/internal/bff/v2/slugs/in/$pageSlug"
+
+        val json = runCatching {
+            app.get(
+                url,
+                headers = mapOf(
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                    "Accept" to "application/json, text/plain, */*",
+                    "x-hs-usertoken" to token,
+                    "X-HS-Platform" to "web",
+                    "X-Country-Code" to "in"
+                ),
+                timeout = 7
+            ).text
+        }.getOrNull() ?: return emptyList()
+
+        val parsed = runCatching { AppUtils.parseJson<HotstarSlugResponse>(json) }.getOrNull()
+        val wrappers = parsed?.success?.page?.spaces?.get("tray")?.widgetWrappers ?: return emptyList()
+
+        val idx = trayKeyword.toIntOrNull()
+        val targetWrapper = if (idx != null && idx >= 0 && idx < wrappers.size) {
+            wrappers[idx]
+        } else {
+            wrappers.firstOrNull { w ->
+                if (w.template != "ScrollableTrayWidget") return@firstOrNull false
+                val headerMap = w.widget?.data?.header ?: return@firstOrNull false
+                headerMap.values.any { v ->
+                    (v as? Map<*, *>)?.get("title")?.toString()?.contains(trayKeyword, ignoreCase = true) == true
+                }
+            } ?: wrappers.firstOrNull { it.template == "ScrollableTrayWidget" && it.widget?.data?.items?.isNotEmpty() == true }
+        } ?: return emptyList()
+
+        val items = targetWrapper.widget?.data?.items?.take(count) ?: return emptyList()
+        val isMovie = pageSlug.contains("movies", ignoreCase = true)
+
+        return coroutineScope {
+            items.map { itemWrapper: HotstarItemWrapper ->
+                async {
+                    val posterData = itemWrapper.verticalPoster?.data ?: itemWrapper.horizontalCard?.data ?: return@async null
+                    val title = (posterData.expandedPoster?.contentInfo?.title ?: posterData.image?.alt)?.trim() ?: return@async null
+                    if (title.isBlank()) return@async null
+
+                    val tags = posterData.expandedPoster?.contentInfo?.tags?.mapNotNull { it.value } ?: emptyList()
+                    val year = tags.firstOrNull { it.length == 4 && it.all { c -> c.isDigit() } }?.toIntOrNull()
+
+                    val tmdbId = resolveTmdbId(null, isMovie, title) ?: return@async null
+
+                    val poster: String? = posterData.image?.src?.let { "https://img.hotstar.com/image/upload/v1/$it" }
+                    val itemUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
+
+                    if (isMovie) {
+                        newMovieSearchResponse(title, itemUrl, TvType.Movie) {
+                            this.posterUrl = poster
+                            this.year = year
+                        }
+                    } else {
+                        newTvSeriesSearchResponse(title, itemUrl, TvType.TvSeries) {
+                            this.posterUrl = poster
+                            this.year = year
+                        }
+                    }
+                }
+            }.awaitAll().filterNotNull().distinctBy { it.url }
+        }
+    }
+
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val country = getUserCountry()
         val cacheKey = "$name/$country/${request.data}/${request.name}/$page"
@@ -436,6 +562,42 @@ open class StremioOttProvider(
         }
 
         val items = when {
+            request.data.startsWith("APPLE_SHELF:") -> {
+                val parts = request.data.removePrefix("APPLE_SHELF:").split(":")
+                val shelfId = parts.getOrNull(0) ?: "uts.col.ChartsMovies.tvs.sbd.4000"
+                val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
+                val shelfItems = fetchAppleTvShelf(shelfId, count)
+                if (shelfItems.isNotEmpty()) shelfItems else {
+                    val isMovie = shelfId.contains("Movies", ignoreCase = true)
+                    fetchJustWatchCatalog(
+                        pkg = jwPackage,
+                        isMovie = isMovie,
+                        country = country,
+                        count = count,
+                        sortBy = "TRENDING",
+                        minScore = 6.0
+                    )
+                }
+            }
+            request.data.startsWith("HOTSTAR_TRAY:") -> {
+                val parts = request.data.removePrefix("HOTSTAR_TRAY:").split(":")
+                val pageType = parts.getOrNull(0) ?: "movies"
+                val trayName = parts.getOrNull(1) ?: "Popular"
+                val count = parts.getOrNull(2)?.toIntOrNull() ?: 15
+                val trayItems = fetchHotstarTray(pageType, trayName, count)
+                if (trayItems.isNotEmpty()) trayItems else {
+                    val isMovie = pageType.equals("movies", ignoreCase = true)
+                    fetchJustWatchCatalog(
+                        pkg = jwPackage,
+                        isMovie = isMovie,
+                        country = country,
+                        count = count,
+                        productionCountries = listOf("IN"),
+                        sortBy = "TRENDING",
+                        minScore = 6.0
+                    )
+                }
+            }
             request.data.startsWith("SONYLIV_TRAY:") -> {
                 val parts = request.data.removePrefix("SONYLIV_TRAY:").split(":")
                 val trayId = parts.getOrNull(0) ?: "9014011"
@@ -939,6 +1101,120 @@ open class StremioOttProvider(
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AppleTvShelfResponse(
+        @JsonProperty("data") val data: AppleTvShelfData? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AppleTvShelfData(
+        @JsonProperty("shelf") val shelf: AppleTvShelfObj? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AppleTvShelfObj(
+        @JsonProperty("id") val id: String? = null,
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("items") val items: List<AppleTvShelfItem>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AppleTvShelfItem(
+        @JsonProperty("id") val id: String? = null,
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("type") val type: String? = null,
+        @JsonProperty("images") val images: AppleTvImages? = null,
+        @JsonProperty("releaseDate") val releaseDate: Long? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AppleTvImages(
+        @JsonProperty("shelfImage") val shelfImage: AppleTvImageDetails? = null,
+        @JsonProperty("transitionImage") val transitionImage: AppleTvImageDetails? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class AppleTvImageDetails(
+        @JsonProperty("url") val url: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarSlugResponse(
+        @JsonProperty("success") val success: HotstarSlugSuccess? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarSlugSuccess(
+        @JsonProperty("page") val page: HotstarSlugPage? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarSlugPage(
+        @JsonProperty("spaces") val spaces: Map<String, HotstarSlugSpace>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarSlugSpace(
+        @JsonProperty("widget_wrappers") val widgetWrappers: List<HotstarWidgetWrapper>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarWidgetWrapper(
+        @JsonProperty("template") val template: String? = null,
+        @JsonProperty("widget") val widget: HotstarWidget? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarWidget(
+        @JsonProperty("data") val data: HotstarWidgetData? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarWidgetData(
+        @JsonProperty("header") val header: Map<String, Any?>? = null,
+        @JsonProperty("items") val items: List<HotstarItemWrapper>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarItemWrapper(
+        @JsonProperty("vertical_content_poster") val verticalPoster: HotstarPosterWrapper? = null,
+        @JsonProperty("horizontal_content_card") val horizontalCard: HotstarPosterWrapper? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarPosterWrapper(
+        @JsonProperty("data") val data: HotstarPosterData? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarPosterData(
+        @JsonProperty("content_id") val contentId: String? = null,
+        @JsonProperty("image") val image: HotstarImageData? = null,
+        @JsonProperty("expanded_content_poster") val expandedPoster: HotstarExpandedPoster? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarImageData(
+        @JsonProperty("src") val src: String? = null,
+        @JsonProperty("alt") val alt: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarExpandedPoster(
+        @JsonProperty("content_info") val contentInfo: HotstarContentInfo? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarContentInfo(
+        @JsonProperty("title") val title: String? = null,
+        @JsonProperty("tags") val tags: List<HotstarTag>? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarTag(
+        @JsonProperty("value") val value: String? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class JwGraphQLResponse(
         @JsonProperty("data") val data: JwData? = null
     )
@@ -1023,11 +1299,13 @@ class JioHotstarProvider : StremioOttProvider(
     customMainPage = mainPageOf(
         "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
         "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
-        "SHOW_IN:10:0" to "Top 10 in India Today - Hindi",
-        "PEACOCK:10" to "Peacock's Finest",
-        "MOVIE_GENRE:act:12:0" to "Action Movies on JioHotstar",
-        "MOVIE_GENRE:rma:12:0" to "Find Your Love Story",
-        "SHOW_GENRE:fml,ani:12:0" to "Tiny but Mighty (Kids & Family)"
+        "HOTSTAR_TRAY:shows:Popular Shows:20" to "🔥 Popular Shows on JioHotstar",
+        "HOTSTAR_TRAY:movies:Popular Movies:20" to "🎬 Popular Movies on JioHotstar",
+        "HOTSTAR_TRAY:movies:Best of Bollywood Movies:15" to "✨ Best of Bollywood Movies",
+        "HOTSTAR_TRAY:movies:Best of Hollywood Dubbed:15" to "🌍 Best of Hollywood Dubbed",
+        "HOTSTAR_TRAY:shows:Must Watch Originals:10" to "⭐ Must Watch Hotstar Specials",
+        "HOTSTAR_TRAY:shows:Kids Shows:12" to "🧸 Kids Shows & Animation",
+        "HOTSTAR_TRAY:shows:Real Lives, Unlimited Drama:10" to "🎭 Reality & Drama Shows"
     )
 )
 
@@ -1078,13 +1356,15 @@ class AppleTvProvider : StremioOttProvider(
     providerId = "atp",
     jwPackage = "atp",
     customMainPage = mainPageOf(
-        "SHOW:10:0" to "Top 10 Shows on Apple TV+ Today",
-        "MOVIE:10:0" to "Top 10 Movies on Apple TV+ Today",
-        "SHOW:15:10" to "Popular Series on Apple TV+",
-        "MOVIE:15:10" to "Popular Movies on Apple TV+",
-        "SHOW_GENRE:scf:12:0" to "Epic Sci-Fi & Speculative Fiction",
-        "SHOW_GENRE:trl,crm:12:0" to "Acclaimed Drama & Thriller Series",
-        "SHOW_GENRE:cmy:12:0" to "Feel-Good Comedies & Hits"
+        "APPLE_SHELF:uts.col.ChartsMovies.tvs.sbd.4000:10" to "🔥 Top 10 Movies on Apple TV+ Today",
+        "APPLE_SHELF:uts.col.ChartsShows.tvs.sbd.4000:10" to "⭐ Top 10 Shows on Apple TV+ Today",
+        "APPLE_SHELF:uts.col.tv-plus-must-see-hits:15" to "✨ Must-See Hits & Blockbusters",
+        "APPLE_SHELF:uts.col.tv-plus-newest-releases:15" to "🆕 New Releases on Apple TV+",
+        "APPLE_SHELF:uts.col.apple-tv-movies-action:12" to "💥 Action & Thriller Movies",
+        "APPLE_SHELF:uts.col.apple-tv-movies-comedies:12" to "🎭 Feel-Good Comedies",
+        "APPLE_SHELF:uts.col.apple-tv-movies-dramas:12" to "🏆 Acclaimed Dramas & Originals",
+        "APPLE_SHELF:uts.col.kids-tv-plus-shows:12" to "🧸 Kids & Family Shows",
+        "APPLE_SHELF:uts.col.free-premieres-on-tv-plus:5" to "🎁 Watch Premieres for Free"
     )
 )
 
