@@ -60,5 +60,6 @@ class WaveFlixPlugin : Plugin() {
         registerExtractorAPI(GreenmotorsClubExtractor())
         registerExtractorAPI(HblinksExtractor())
         registerExtractorAPI(HubcdnExtractor())
+        registerExtractorAPI(HubcdnWikiExtractor())
     }
 }

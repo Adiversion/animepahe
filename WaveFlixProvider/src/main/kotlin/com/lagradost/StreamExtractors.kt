@@ -447,11 +447,11 @@ open class HubcloudExtractor : ExtractorApi() {
             val displayQ = if (qTag.isNotBlank()) " $qTag" else ""
 
             when {
-                href.contains("cloudflarestorage.com") -> {
+                href.contains("cloudflarestorage.com") || href.contains(".r2.dev") -> {
                     callback(
                         newExtractorLink(
                             source = name,
-                            name = "$name - [Fast Server : Cloudflare R2 ⚡]$displayQ",
+                            name = "$name - [Fast CDN : Cloudflare R2 ⚡]$displayQ",
                             url = href,
                             type = ExtractorLinkType.VIDEO
                         ) {
@@ -498,7 +498,7 @@ open class HubcloudExtractor : ExtractorApi() {
                         callback(
                             newExtractorLink(
                                 source = name,
-                                name = "$name - [WebPlayer Stream ⚡]$displayQ",
+                                name = "$name - [WebPlayer CDN ⚡]$displayQ",
                                 url = decoded,
                                 type = ExtractorLinkType.VIDEO
                             ) {
@@ -508,7 +508,7 @@ open class HubcloudExtractor : ExtractorApi() {
                         )
                     }
                 }
-                href.contains("workers.dev") || href.contains("cloudserver") -> {
+                (href.contains("workers.dev") || href.contains("cloudserver")) && !href.contains("gpdl.") -> {
                     callback(
                         newExtractorLink(
                             source = name,
@@ -520,6 +520,35 @@ open class HubcloudExtractor : ExtractorApi() {
                             this.quality = finalQ
                         }
                     )
+                }
+                href.contains("gpdl.") || btn.text().contains("10Gbps", ignoreCase = true) -> {
+                    // Resolve 10Gbps redirect chain: gpdl -> workers.dev -> cryptonewz.online/dl.php?link=<google_url>
+                    // Only emit if the underlying Google direct video link can be resolved, avoiding raw HTML in ExoPlayer
+                    runCatching {
+                        val headRes = app.get(href, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to phpBtn), followRedirects = false)
+                        val loc1 = headRes.headers["Location"] ?: headRes.headers["location"]
+                        val finalLoc = if (!loc1.isNullOrBlank() && loc1.contains("workers.dev")) {
+                            val r2 = app.get(loc1, headers = mapOf("User-Agent" to VCloudExtractor.USER_AGENT, "Referer" to href), followRedirects = false)
+                            r2.headers["Location"] ?: r2.headers["location"] ?: loc1
+                        } else loc1
+
+                        val gLink = finalLoc?.let { loc ->
+                            Regex("""[?&]link=(https?://[^"'\s&]+)""").find(loc)?.groupValues?.get(1)
+                        }
+                        if (!gLink.isNullOrBlank()) {
+                            callback(
+                                newExtractorLink(
+                                    source = name,
+                                    name = "$name - [Server 10Gbps : Unbuffered Direct]$displayQ",
+                                    url = gLink,
+                                    type = ExtractorLinkType.VIDEO
+                                ) {
+                                    this.referer = ""
+                                    this.quality = finalQ
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -825,6 +854,10 @@ open class HblinksExtractor : ExtractorApi() {
 }
 
 // ─── HubCDN Extractor ────────────────────────────────────────────────────────
+
+class HubcdnWikiExtractor : HubcdnExtractor() {
+    override val mainUrl = "https://hubcdn.wiki"
+}
 
 open class HubcdnExtractor : ExtractorApi() {
     override val name = "HubCDN"
