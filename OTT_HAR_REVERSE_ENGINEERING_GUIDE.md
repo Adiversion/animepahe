@@ -272,7 +272,59 @@ https://sonydaime.akamaized.net/hls/live/.../master.m3u8
 
 ---
 
-## 6. End-to-End CloudStream Provider Integration
+## 6. Amazon Prime Video (`www.primevideo.com`) Reverse-Engineering
+
+### 6.1 HAR Source File
+* **Source Capture**: `C:\Users\SANCHAR\Downloads\www.primevideo.com.har` (43.4 MB, 245 network entries)
+
+### 6.2 Architecture: Two-Tier SSR + REST Pagination
+Prime Video implements a hybrid architecture:
+1. **Tier 1 (Initial Page Load - SSR Embedded State)**:
+   - Request: `GET https://www.primevideo.com/` (HTTP 200, 1.42 MB HTML).
+   - In the HTML, an embedded `<script>` tag contains the full serialized React initial state:
+     `{"init": {"path": "/storefront", "preparations": {"body": {"containers": [...]}}}}`
+   - Yields the first 7 primary carousels and the pagination token (`serviceToken`).
+2. **Tier 2 (Infinite Scroll REST API - `/api/getLandingPage`)**:
+   - Request: `POST https://www.primevideo.com/api/getLandingPage?`
+   - Content-Type: `application/x-www-form-urlencoded`
+   - Payload:
+     `pageType=home&pageId=home&pageNumber=2&pageSize=14&startIndex=9&serviceToken={serviceToken}&targetId={targetId}&decorationScheme=web-decoration-gti-v4&featureScheme=web-features-v6`
+   - Yields pure JSON (762 KB) with 12 additional carousels.
+
+### 6.3 Authentication & CloudFront WAF Invariants
+* **Zero Cookies / Public Guest Session**: The HAR capture confirmed that **0 cookies** are needed for storefront queries. Prime Video serves public catalogs anonymously without user login.
+* **WAF Header Requirements**: Amazon's CloudFront WAF checks for standard browser Client Hints and Sec-Fetch headers. To prevent `HTTP 503: Service Temporarily Unavailable`, clients must send:
+  - `User-Agent`: Desktop Chrome UA
+  - `Referer`: `https://www.google.com/`
+  - `sec-ch-ua`: `"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"`
+  - `sec-fetch-dest`: `document`
+  - `sec-fetch-mode`: `navigate`
+  - `sec-fetch-site`: `cross-site`
+
+### 6.4 Catalog Trays & Content Taxonomy Discovered
+
+| Tray Identifier | Type | Title in UI | Sample Titles |
+| :--- | :--- | :--- | :--- |
+| **Page 2 - Tray 5** | `Charts` | **Top 10 with Prime** | *Rise And Fall*, *Jailer*, *Lenin Pandiyan*, *Chaar Yaar*, *Dupahiya* |
+| **Page 1 - Tray 2** | `StandardCarousel` | **Trending Movies: Watch for Free** | *Jailer*, *Drishyam 2 (Hindi)*, *Pushpa: The Rise*, *Vettaiyan* |
+| **Page 1 - Tray 3** | `StandardCarousel` | **Blockbuster Movies** | *Jailer*, *Khalifa*, *Sardar 2*, *Pushpa: The Rise* |
+| **Page 1 - Tray 5** | `SuperCarousel` | **Featured Originals: Series** | *Duniya Ki Thain Thain*, *Dupahiya*, *Rise And Fall*, *Mirzapur* |
+| **Page 2 - Tray 6** | `SuperCarousel` | **Featured Originals: Movies** | *Masterplan*, *Love Of Your Life*, *My Fault*, *Your Fault*, *Red One* |
+| **Page 2 - Tray 2** | `StandardCarousel` | **Cop Universe** | *Drishyam 2 (Hindi)*, *Waiting Hai*, *Rahasya*, *Section 375*, *B.A. Pass* |
+| **Page 2 - Tray 8** | `StandardCarousel` | **Top movies** | *Awarapan 2*, *Khalifa*, *Sardar 2*, *Lenin Pandiyan*, *O'Romeo* |
+| **Page 2 - Tray 10** | `StandardCarousel` | **Popular Action Movies** | *The Lake*, *Security*, *The Boy*, *The Dead Lands* |
+| **Page 2 - Tray 11** | `StandardCarousel` | **Korean dramas** | *True Beauty*, *GOOD BOY*, *Guardian: The Lonely And Great God* |
+
+### 6.5 Entity Schema & Poster CDN
+Inside each container `entities[]`:
+* **Title**: `displayTitle` or `title`
+* **Release Year**: `releaseYear` (integer e.g. `2024`)
+* **ASIN / Identifier**: Extracted from `link.url` (e.g. `/detail/0HNZIYOI76383DKI61QMTROL4K`)
+* **Poster CDN**: `images.cover.url` -> `https://m.media-amazon.com/images/S/pv-target-images/{hash}._UR1920,1080_.jpg`
+
+---
+
+## 7. End-to-End CloudStream Provider Integration
 
 ```mermaid
 sequenceDiagram
@@ -310,7 +362,7 @@ sequenceDiagram
 
 ---
 
-## 7. Verification Checklist for New HAR Audits
+## 8. Verification Checklist for New HAR Audits
 
 When inspecting future HAR captures from OTT platforms, follow this checklist:
 
