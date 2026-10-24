@@ -104,6 +104,30 @@ open class StremioOttProvider(
             "Tale Of The Nine Tailed"
         )
 
+        private val PRIME_SERIES = listOf(
+            "Mirzapur",
+            "The Family Man",
+            "Panchayat",
+            "Farzi",
+            "Paatal Lok",
+            "Jubilee",
+            "Made in Heaven",
+            "Breathe",
+            "Dahaad",
+            "Bambai Meri Jaan"
+        )
+
+        private val PRIME_ACTION = listOf(
+            "K.G.F: Chapter 2",
+            "Kantara",
+            "Pushpa: The Rise",
+            "Salaar",
+            "Garudan",
+            "Raayan",
+            "Tiger 3",
+            "Pathaan"
+        )
+
         private val COP_UNIVERSE_QUERIES = listOf(
             "Singham Again",
             "Sooryavanshi",
@@ -684,99 +708,20 @@ open class StremioOttProvider(
                 val parts = request.data.removePrefix("APPLE_SHELF:").split(":")
                 val shelfId = parts.getOrNull(0) ?: "uts.col.ChartsMovies.tvs.sbd.4000"
                 val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
-                val shelfItems = fetchAppleTvShelf(shelfId, count)
-                if (shelfItems.isNotEmpty()) shelfItems else {
-                    val isMovie = shelfId.contains("Movies", ignoreCase = true) || shelfId.contains("movies-", ignoreCase = true)
-                    val genres = when {
-                        shelfId.contains("action", ignoreCase = true) -> listOf("act", "trl")
-                        shelfId.contains("comedies", ignoreCase = true) -> listOf("cmy")
-                        shelfId.contains("dramas", ignoreCase = true) -> listOf("dra")
-                        shelfId.contains("kids", ignoreCase = true) -> listOf("ani", "fml")
-                        else -> null
-                    }
-                    val sortBy = when {
-                        shelfId.contains("Charts", ignoreCase = true) -> "POPULAR"
-                        shelfId.contains("must-see", ignoreCase = true) -> "TRENDING"
-                        shelfId.contains("newest", ignoreCase = true) -> "TRENDING"
-                        shelfId.contains("free-premieres", ignoreCase = true) -> "POPULAR"
-                        else -> "POPULAR"
-                    }
-                    val minScore = when {
-                        shelfId.contains("must-see", ignoreCase = true) -> 7.5
-                        shelfId.contains("dramas", ignoreCase = true) -> 7.0
-                        shelfId.contains("free-premieres", ignoreCase = true) -> 7.0
-                        else -> 5.5
-                    }
-                    fetchJustWatchCatalog(
-                        pkg = jwPackage,
-                        isMovie = isMovie,
-                        country = country,
-                        count = count,
-                        genres = genres,
-                        sortBy = sortBy,
-                        minScore = minScore
-                    )
-                }
+                fetchAppleTvShelf(shelfId, count)
             }
             request.data.startsWith("HOTSTAR_TRAY:") -> {
                 val parts = request.data.removePrefix("HOTSTAR_TRAY:").split(":")
                 val pageType = parts.getOrNull(0) ?: "movies"
                 val trayName = parts.getOrNull(1) ?: "Popular"
                 val count = parts.getOrNull(2)?.toIntOrNull() ?: 15
-                val trayItems = fetchHotstarTray(pageType, trayName, count)
-                if (trayItems.isNotEmpty()) trayItems else {
-                    val isMovie = pageType.equals("movies", ignoreCase = true)
-                    val prodCountries = when {
-                        trayName.contains("Hollywood", ignoreCase = true) -> listOf("US", "GB")
-                        trayName.contains("Bollywood", ignoreCase = true) -> listOf("IN")
-                        trayName.contains("Specials", ignoreCase = true) -> listOf("IN")
-                        else -> null
-                    }
-                    val genres = when {
-                        trayName.contains("Kids", ignoreCase = true) || trayName.contains("Animation", ignoreCase = true) -> listOf("ani", "fml")
-                        trayName.contains("Action", ignoreCase = true) -> listOf("act", "trl")
-                        trayName.contains("Reality", ignoreCase = true) -> listOf("rly", "doc")
-                        trayName.contains("Drama", ignoreCase = true) -> listOf("dra")
-                        else -> null
-                    }
-                    val sortBy = when {
-                        trayName.contains("Popular", ignoreCase = true) -> "POPULAR"
-                        trayName.contains("Hollywood", ignoreCase = true) -> "POPULAR"
-                        trayName.contains("Kids", ignoreCase = true) -> "POPULAR"
-                        else -> "TRENDING"
-                    }
-                    val minScore = when {
-                        trayName.contains("Specials", ignoreCase = true) || trayName.contains("Must Watch", ignoreCase = true) -> 7.0
-                        else -> 5.5
-                    }
-                    fetchJustWatchCatalog(
-                        pkg = jwPackage,
-                        isMovie = isMovie,
-                        country = country,
-                        count = count,
-                        genres = genres,
-                        productionCountries = prodCountries,
-                        sortBy = sortBy,
-                        minScore = minScore
-                    )
-                }
+                fetchHotstarTray(pageType, trayName, count)
             }
             request.data.startsWith("SONYLIV_TRAY:") -> {
                 val parts = request.data.removePrefix("SONYLIV_TRAY:").split(":")
                 val trayId = parts.getOrNull(0) ?: "9014011"
                 val count = parts.getOrNull(1)?.toIntOrNull() ?: 15
-                val trayItems = fetchSonyLivTray(trayId, count)
-                if (trayItems.isNotEmpty()) trayItems else {
-                    fetchJustWatchCatalog(
-                        pkg = jwPackage,
-                        isMovie = false,
-                        country = country,
-                        count = count,
-                        productionCountries = listOf("IN"),
-                        sortBy = "TRENDING",
-                        minScore = 6.0
-                    )
-                }
+                fetchSonyLivTray(trayId, count)
             }
             request.data.startsWith("LIVE_CNC:") -> {
                 val cat = request.data.substringAfter("LIVE_CNC:")
@@ -803,6 +748,12 @@ open class StremioOttProvider(
             }
             request.data.startsWith("PRIME_KOREAN") -> {
                 fetchCuratedTitles(PRIME_KOREAN, jwPackage, country)
+            }
+            request.data.startsWith("PRIME_SERIES") -> {
+                fetchCuratedTitles(PRIME_SERIES, jwPackage, country)
+            }
+            request.data.startsWith("PRIME_ACTION") -> {
+                fetchCuratedTitles(PRIME_ACTION, jwPackage, country)
             }
             request.data.startsWith("COP_UNIVERSE") -> {
                 fetchCuratedTitles(COP_UNIVERSE_QUERIES, jwPackage, country)
@@ -1585,8 +1536,8 @@ class PrimeVideoProvider : StremioOttProvider(
         "PRIME_ORIGINALS" to "✨ Featured Originals on Prime",
         "PRIME_COP" to "🚨 Cop Universe & Crime Thrillers",
         "PRIME_KOREAN" to "🎎 Korean Dramas on Prime",
-        "SHOW_IN:12:0" to "🔥 Popular TV Shows on Prime Video",
-        "MOVIE_IN:12:0" to "🎬 Popular Bollywood Movies on Prime"
+        "PRIME_SERIES" to "🔥 Popular Series on Prime Video",
+        "PRIME_ACTION" to "⚡ Action Blockbusters on Prime"
     )
 )
 

@@ -204,7 +204,9 @@ prime_lists = {
     'Top Movies on Prime Video': ['Awarapan 2', 'Khalifa', 'Sardar 2', 'Lenin Pandiyan', 'Romeo'],
     'Featured Originals on Prime': ['Masterplan', 'Love Of Your Life', 'My Fault', 'Your Fault', 'Red One'],
     'Cop Universe & Crime Thrillers': ['Drishyam 2', 'Waiting Hai', 'Rahasya', 'Section 375', 'B.A. Pass'],
-    'Korean Dramas on Prime': ['True Beauty', 'Good Boy', 'Guardian: The Lonely And Great God']
+    'Korean Dramas on Prime': ['True Beauty', 'Good Boy', 'Guardian: The Lonely And Great God'],
+    'Popular Series on Prime Video': ['Mirzapur', 'The Family Man', 'Panchayat', 'Farzi', 'Paatal Lok'],
+    'Action Blockbusters on Prime': ['K.G.F: Chapter 2', 'Kantara', 'Pushpa: The Rise', 'Salaar', 'Tiger 3']
 }
 
 for tray_name, titles in prime_lists.items():
