@@ -521,7 +521,10 @@ open class StremioOttProvider(
         return coroutineScope {
             items.map { itemWrapper: HotstarItemWrapper ->
                 async {
-                    val posterData = itemWrapper.verticalPoster?.data ?: itemWrapper.horizontalCard?.data ?: return@async null
+                    val posterData = itemWrapper.verticalPoster?.data
+                        ?: itemWrapper.horizontalCard?.data
+                        ?: itemWrapper.overlayPoster?.data?.verticalPoster?.data
+                        ?: return@async null
                     val title = (posterData.expandedPoster?.contentInfo?.title ?: posterData.image?.alt)?.trim() ?: return@async null
                     if (title.isBlank()) return@async null
 
@@ -1275,7 +1278,18 @@ open class StremioOttProvider(
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class HotstarItemWrapper(
         @JsonProperty("vertical_content_poster") val verticalPoster: HotstarPosterWrapper? = null,
-        @JsonProperty("horizontal_content_card") val horizontalCard: HotstarPosterWrapper? = null
+        @JsonProperty("horizontal_content_card") val horizontalCard: HotstarPosterWrapper? = null,
+        @JsonProperty("image_overlay_vertical_content_poster") val overlayPoster: HotstarOverlayPosterWrapper? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarOverlayPosterWrapper(
+        @JsonProperty("data") val data: HotstarOverlayPosterData? = null
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HotstarOverlayPosterData(
+        @JsonProperty("vertical_content_poster") val verticalPoster: HotstarPosterWrapper? = null
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -1396,6 +1410,7 @@ class JioHotstarProvider : StremioOttProvider(
     jwPackage = "jhs",
     customMainPage = mainPageOf(
         "LIVE_CNC:SPORTS" to "⚡ Live Sports & Star Sports",
+        "HOTSTAR_TRAY:home:Top 10 in India Today:10" to "🔥 Top 10 in India Today",
         "LIVE_CNC:BIGGBOSS" to "👁️ Enter the Bigg Boss House",
         "HOTSTAR_TRAY:shows:Popular Shows:20" to "🔥 Popular Shows on JioHotstar",
         "HOTSTAR_TRAY:movies:Popular Movies:20" to "🎬 Popular Movies on JioHotstar",
