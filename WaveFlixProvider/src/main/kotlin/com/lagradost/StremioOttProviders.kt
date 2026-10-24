@@ -382,11 +382,11 @@ open class StremioOttProvider(
             ).text
         }.getOrNull() ?: return emptyList()
 
-        val parsed = runCatching { parseJson<SonyLivTrayResponse>(json) }.getOrNull()
+        val parsed = runCatching { AppUtils.parseJson<SonyLivTrayResponse>(json) }.getOrNull()
         val containers = parsed?.resultObj?.containers ?: return emptyList()
 
         return coroutineScope {
-            containers.map { container ->
+            containers.map { container: SonyLivContainer ->
                 async {
                     val meta = container.metadata ?: return@async null
                     val title = meta.title?.trim() ?: return@async null
@@ -400,10 +400,10 @@ open class StremioOttProvider(
 
                     val tmdbId = resolveTmdbId(imdbId, isMovie, title) ?: return@async null
 
-                    val poster = meta.emfAttributes?.tvBackgroundImage
+                    val poster: String? = meta.emfAttributes?.tvBackgroundImage
                         ?: meta.emfAttributes?.imgTile38402160
                         ?: meta.emfAttributes?.mastheadLargeV2
-                        ?: meta.pictureUrl?.takeIf { it != "NA" }
+                        ?: if (!meta.pictureUrl.isNullOrBlank() && meta.pictureUrl != "NA") meta.pictureUrl else null
 
                     val itemUrl = "https://www.waveflix.online/details/${if (isMovie) "movie" else "tv"}/$tmdbId"
 
